@@ -52,6 +52,9 @@ const authSlice = createSlice({
         success: false,
         otpSent: false,
         verified: false,
+        user: JSON.parse(localStorage.getItem("user")) || null,
+        token: localStorage.getItem("token") || null,
+        isAuthenticated: !!localStorage.getItem("token"),
     },
 
     reducers: {
@@ -61,6 +64,23 @@ const authSlice = createSlice({
             state.success = false;
             state.otpSent = false;
             state.verified = false;
+        },
+        setUser: (state, action) => {
+            state.user = action.payload;
+            state.isAuthenticated = true;
+            localStorage.setItem("user", JSON.stringify(action.payload));
+        },
+        logout: (state) => {
+            state.user = null;
+            state.token = null;
+            state.isAuthenticated = false;
+            state.loading = false;
+            state.error = null;
+            state.success = false;
+            state.otpSent = false;
+            state.verified = false;
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
         },
     },
 
@@ -111,6 +131,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { resetAuthState } = authSlice.actions;
+export const { resetAuthState, setUser, logout } = authSlice.actions;
 
 export default authSlice.reducer;
