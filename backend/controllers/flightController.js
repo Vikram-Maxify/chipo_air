@@ -15,31 +15,52 @@ exports.getFlights = async (req, res) => {
       }
     );
 
-    const flights = response.data.data.slice(0, 10).map((f) => {
-      // 🔥 SMART PRICE LOGIC
-      let price = Math.floor(Math.random() * 4000) + 3000;
+    const rawData = response.data.data;
+    console.log(rawData);
 
-      // Airline based pricing
-      if (f.airline.name?.includes("IndiGo")) price += 500;
-      if (f.airline.name?.includes("Air India")) price += 1000;
 
+    const flights = response.data.data.map((f) => {
       return {
+        route: {
+          from: {
+            city: f.departure.airport,
+            code: f.departure.iata,
+            terminal: f.departure.terminal || "N/A",
+            gate: f.departure.gate || "N/A",
+          },
+          to: {
+            city: f.arrival.airport,
+            code: f.arrival.iata,
+            terminal: f.arrival.terminal || "N/A",
+            gate: f.arrival.gate || "N/A",
+          },
+        },
+
         airline: f.airline.name,
-        flight: f.flight.iata,
-        from: f.departure.iata,
-        to: f.arrival.iata,
-        departure: f.departure.scheduled,
-        arrival: f.arrival.scheduled,
+        flightNumber: f.flight.iata,
+
+        timing: {
+          departure: {
+            scheduled: f.departure.scheduled,
+            actual: f.departure.actual,
+            delay: f.departure.delay || "On Time",
+          },
+          arrival: {
+            scheduled: f.arrival.scheduled,
+            actual: f.arrival.actual,
+            delay: f.arrival.delay || "On Time",
+          },
+        },
+
         status: f.flight_status,
-        price: price,
-        currency: "INR",
       };
     });
 
     res.json({
       success: true,
       count: flights.length,
-      flights,
+      flights,        // 👈 clean data
+      raw: rawData,   // 👈 full API data
     });
 
   } catch (err) {
