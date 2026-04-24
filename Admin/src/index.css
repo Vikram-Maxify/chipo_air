@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* global.css */
+.input-premium {
+  @apply w-full px-4 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-black transition;
+}

@@ -17,14 +17,14 @@ const {
 // ======================
 
 router.post(
-  "/",
+  "/create-package",
   adminProtect,
   upload.array("images", 6),
   createPackage
 );
 
 router.put(
-  "/:id",
+  "/update-package/:id",
   adminProtect,
   upload.array("images", 6),
   updatePackage

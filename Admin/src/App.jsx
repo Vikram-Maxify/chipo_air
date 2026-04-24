@@ -9,6 +9,7 @@ import AdminPrivateRoute from './Component/AdminPrivateRoute'
 import AdminLogin from './page/AdminLogin'
 import { useDispatch } from 'react-redux'
 import { fetchAdminProfile } from './reducer/slice/adminSlice'
+import Package from './page/Package'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +32,7 @@ useEffect(() => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="package" element={<Package />} />
         </Route>
         </Route>
       </Routes>
