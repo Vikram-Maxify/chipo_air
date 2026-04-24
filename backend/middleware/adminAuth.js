@@ -4,7 +4,6 @@ const User = require("../models/userModel");
 const adminProtect = async (req, res, next) => {
   try {
     let token = req.cookies.admintoken;
-    console.log(token,"qwertyuiop");
     
     if (!token) {
       return res.status(401).json({ message: "Not authorized, no token" });
