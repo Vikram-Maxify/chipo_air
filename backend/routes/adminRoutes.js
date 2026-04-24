@@ -12,21 +12,18 @@ const {
 
 const { adminProtect } = require("../middleware/adminAuth.js");
 
-// LOGIN
+// =======================
+// AUTH ROUTES
+// =======================
 router.post("/login", adminLogin);
-
-// PROFILE
 router.get("/profile", adminProtect, adminProfile);
-
-// LOGOUT
 router.post("/logout", adminProtect, adminLogout);
 
-router.get("/", adminProtect, getAllUsers);
-
-// Update user
+// =======================
+// USER MANAGEMENT
+// =======================
+router.get("/users", adminProtect, getAllUsers);
 router.put("/users/:id", adminProtect, updateUser);
-
-// Delete user
-router.delete("/user/:id", adminProtect, deleteUser);
+router.delete("/users/:id", adminProtect, deleteUser);
 
 module.exports = router;
