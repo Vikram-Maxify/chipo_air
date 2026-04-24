@@ -1,5 +1,6 @@
 const Package = require("../models/Package");
 const uploadToImgBB = require("../utils/uploadToImgBB");
+const slugify = require("slugify");
 
 // =========================
 // CREATE PACKAGE (ADMIN)
@@ -14,7 +15,6 @@ const createPackage = async (req, res) => {
       metaTitle,
       metaDescription,
       metaKeywords,
-      seoSlug,
     } = req.body;
 
     if (!req.files || req.files.length === 0) {
@@ -25,17 +25,30 @@ const createPackage = async (req, res) => {
       return res.status(400).json({ message: "Max 6 images allowed" });
     }
 
-    // Upload images to ImgBB
+    // Upload images
     const uploadPromises = req.files.map((file) =>
       uploadToImgBB(file.buffer)
     );
-
     const images = await Promise.all(uploadPromises);
 
     // keywords convert
     let keywordsArray = metaKeywords;
     if (typeof metaKeywords === "string") {
       keywordsArray = metaKeywords.split(",").map((k) => k.trim());
+    }
+
+    // ✅ slug generate
+    let baseSlug = slugify(name, {
+      lower: true,
+      strict: true,
+      trim: true,
+    });
+
+    let slug = baseSlug;
+    let count = 1;
+
+    while (await Package.findOne({ seoSlug: slug })) {
+      slug = `${baseSlug}-${count++}`;
     }
 
     const newPackage = await Package.create({
@@ -47,7 +60,7 @@ const createPackage = async (req, res) => {
       metaTitle,
       metaDescription,
       metaKeywords: keywordsArray,
-      seoSlug,
+      seoSlug: slug,
     });
 
     res.status(201).json({
@@ -74,7 +87,7 @@ const updatePackage = async (req, res) => {
 
     let updatedImages = pkg.images || [];
 
-    // Upload new images if provided
+    // Upload new images
     if (req.files && req.files.length > 0) {
       if (req.files.length + updatedImages.length > 6) {
         return res.status(400).json({ message: "Max 6 images allowed" });
@@ -96,15 +109,39 @@ const updatePackage = async (req, res) => {
       metaTitle,
       metaDescription,
       metaKeywords,
-      seoSlug,
       isActive,
     } = req.body;
 
+    // keywords convert
     let keywordsArray = metaKeywords;
     if (typeof metaKeywords === "string") {
       keywordsArray = metaKeywords.split(",").map((k) => k.trim());
     }
 
+    // ✅ SLUG AUTO UPDATE (IMPORTANT 🔥)
+    if (name && name !== pkg.name) {
+      let baseSlug = slugify(name, {
+        lower: true,
+        strict: true,
+        trim: true,
+      });
+
+      let slug = baseSlug;
+      let count = 1;
+
+      while (
+        await Package.findOne({
+          seoSlug: slug,
+          _id: { $ne: pkg._id },
+        })
+      ) {
+        slug = `${baseSlug}-${count++}`;
+      }
+
+      pkg.seoSlug = slug;
+    }
+
+    // update fields
     pkg.name = name ?? pkg.name;
     pkg.description = description ?? pkg.description;
     pkg.price = price ?? pkg.price;
@@ -112,7 +149,6 @@ const updatePackage = async (req, res) => {
     pkg.metaTitle = metaTitle ?? pkg.metaTitle;
     pkg.metaDescription = metaDescription ?? pkg.metaDescription;
     pkg.metaKeywords = keywordsArray ?? pkg.metaKeywords;
-    pkg.seoSlug = seoSlug ?? pkg.seoSlug;
     pkg.isActive = isActive ?? pkg.isActive;
     pkg.images = updatedImages;
 
@@ -123,9 +159,12 @@ const updatePackage = async (req, res) => {
       package: pkg,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 // =========================
 // GET ALL PACKAGES (USER)
@@ -167,7 +206,7 @@ const deletepackage = async (req, res) => {
 
     const pkg = await Package.findByIdAndDelete(id);
   }
-  catch(error) {
+  catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 }
