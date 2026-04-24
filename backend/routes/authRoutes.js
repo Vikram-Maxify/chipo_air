@@ -7,12 +7,23 @@ const {
   sendOtp,
   verifyOtp,
   setPassword,
+  login,
+  getProfile,
+  logout,
 } = require("../controllers/authController");
+const { isAuthenticated } = require("../middleware/authMiddleware");
 
 // ===== OTP ROUTES =====
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 router.post("/set-password", setPassword);
+
+router.get("/profile", isAuthenticated, getProfile);
+
+
+router.post("/login", login);
+router.get("/logout", logout);
+
 
 // ===== GOOGLE OAUTH =====
 router.get(
@@ -32,12 +43,21 @@ router.get(
     }
 
     const token = jwt.sign(
-      { id: req.user._id },
+      { id: req.user._id, email: req.user.email },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    res.redirect(`http://localhost:5173?token=${token}`);
+    // 🍪 secure cookie set
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // production me true (HTTPS)
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    // redirect WITHOUT token
+    return res.redirect("http://localhost:5173/dashboard");
   }
 );
 
