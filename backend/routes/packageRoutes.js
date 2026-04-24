@@ -9,6 +9,7 @@ const {
   updatePackage,
   getPackages,
   getSinglePackage,
+  deletepackage,
 } = require("../controllers/packageController");
 
 // ======================
@@ -35,5 +36,7 @@ router.put(
 
 router.get("/", getPackages);
 router.get("/:slug", getSinglePackage);
+router.delete("/:id", adminProtect, deletepackage);
+
 
 module.exports = router;

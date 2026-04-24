@@ -161,9 +161,22 @@ const getSinglePackage = async (req, res) => {
   }
 };
 
+const deletepackage = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const pkg = await Package.findByIdAndDelete(id);
+  }
+  catch(error) {
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 module.exports = {
   createPackage,
   updatePackage,
   getPackages,
   getSinglePackage,
+  deletepackage,
+
 };
