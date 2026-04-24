@@ -10,6 +10,11 @@ require("./config/passport");
 
 const authRoutes = require("./routes/authRoutes");
 const flightRoutes = require("./routes/flightroutes");
+const adminRoutes = require("./routes/adminRoutes");
+const pageRoutes = require("./routes/pageRoutes");
+const bannerRoutes = require("./routes/bannerRoutes");
+const packageRoutes = require("./routes/packageRoutes");
+
 
 
 // Fix DNS issue
@@ -32,6 +37,12 @@ app.use(passport.initialize());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/flights", flightRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/pages", pageRoutes);
+app.use("/api/banners", bannerRoutes);
+app.use("/api/packages", packageRoutes);
+
+
 
 // Test route (optional)
 app.get("/", (req, res) => {
