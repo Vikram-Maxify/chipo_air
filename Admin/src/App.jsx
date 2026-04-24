@@ -14,9 +14,11 @@ function App() {
   const [count, setCount] = useState(0)
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchAdminProfile()); // 🔥 AUTO LOGIN FIX
-  }, [dispatch]);
+useEffect(() => {
+  setTimeout(() => {
+    dispatch(fetchAdminProfile());
+  }, 100);
+}, []);
 
   return (
     <>
