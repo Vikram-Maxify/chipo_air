@@ -12,7 +12,7 @@ const bannerSchema = new mongoose.Schema(
     },
 
     image: {
-      type: String, // 👈 image URL (Cloudinary / local / S3)
+      type: String, 
       required: true,
     },
 

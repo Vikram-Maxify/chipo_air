@@ -4,6 +4,9 @@ const connectDB = require("./config/connectdb");
 const cors = require("cors");
 const dns = require("dns");
 const passport = require("passport");
+const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
+
 
 // Load passport config
 require("./config/passport");
@@ -25,6 +28,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 
 app.use(cors({
     origin: ["http://localhost:5173", "http://localhost:5174"],
@@ -41,6 +46,9 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/packages", packageRoutes);
+
+
+
 
 
 

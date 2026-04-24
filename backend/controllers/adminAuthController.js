@@ -57,6 +57,7 @@ const adminLogin = async (req, res) => {
 // =======================
 const adminProfile = async (req, res) => {
   try {
+    
     const admin = await User.findById(req.user.id).select("-password");
     res.json(admin);
   } catch (error) {
