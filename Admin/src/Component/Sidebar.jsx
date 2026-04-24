@@ -19,6 +19,8 @@ const navLinks = [
 
     { label: "Manage Bookings", icon: <Ticket />, path: "/bookings" },
 
+    { label: "Manage Packages", icon: <Ticket />, path: "/package" },
+
     { label: "Manage About", icon: <Info />, path: "/manage_about" },
 
     { label: "Manage Privacy", icon: <Shield />, path: "/manage_privacy" },
