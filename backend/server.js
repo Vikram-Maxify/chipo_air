@@ -4,6 +4,8 @@ const connectDB = require("./config/connectdb");
 const cors = require("cors");
 const dns = require("dns");
 const passport = require("passport");
+const bcrypt = require("bcryptjs");
+
 
 // Load passport config
 require("./config/passport");
@@ -41,6 +43,9 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/packages", packageRoutes);
+
+
+
 
 
 
