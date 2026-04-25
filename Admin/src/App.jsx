@@ -10,6 +10,8 @@ import AdminLogin from './page/AdminLogin'
 import { useDispatch } from 'react-redux'
 import { fetchAdminProfile } from './reducer/slice/adminSlice'
 import Package from './page/Package'
+import PrivacyPageEditor from './page/PrivacyPageEditor'
+import AboutPageEditor from './page/AboutPageEditor'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -33,6 +35,8 @@ useEffect(() => {
           <Route path="users" element={<Users />} />
           <Route path="settings" element={<Settings />} />
           <Route path="package" element={<Package />} />
+          <Route path="manage_about" element={<AboutPageEditor />} />
+          <Route path="/manage_privacy" element={<PrivacyPageEditor />} />
         </Route>
         </Route>
       </Routes>

@@ -1,5 +1,5 @@
 import React from 'react'
-import  Header  from '../component/Header'
+import Header from '../component/Header'
 import Hero from '../component/Hero'
 import Packages from '../component/Packages'
 import PopularDestinations from '../component/PopularDestinations'
@@ -11,14 +11,12 @@ import StatsSection from '../StatsSection'
 const Home = () => {
   return (
     <>
-    <Header />
-    <Hero />
-    <Packages />
-    <PopularDestinations />
-    <WhyChooseUs />
-    <StatsSection />
-    <CTASection />
-    <Footer />
+      <Hero />
+      <Packages />
+      <PopularDestinations />
+      <WhyChooseUs />
+      <StatsSection />
+
     </>
   )
 }

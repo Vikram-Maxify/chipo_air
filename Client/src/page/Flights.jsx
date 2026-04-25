@@ -43,7 +43,6 @@ const Flights = () => {
 
     return (
         <>
-            <Header />
 
             <div className="bg-gray-50 min-h-screen py-6 px-3 md:px-6">
                 <div className="max-w-6xl mx-auto">
