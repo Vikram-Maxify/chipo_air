@@ -73,16 +73,77 @@ export const mockPackages = [
 
 // src/data/mockData.js
 
+// mockData.js
 export const popularDestinations = [
-  { name: "Mumbai", code: "BOM", country: "India", image: "https://images.unsplash.com/photo-1529257414771-1960c7f0b2f4" },
-  { name: "Delhi", code: "DEL", country: "India", image: "https://images.unsplash.com/photo-1587474260584-136574528ed5" },
-  { name: "Bangalore", code: "BLR", country: "India", image: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2" },
-  { name: "Goa", code: "GOI", country: "India", image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e" },
-  { name: "Jaipur", code: "JAI", country: "India", image: "https://images.unsplash.com/photo-1599661046289-e31897846e41" },
-
-  { name: "Dubai", code: "DXB", country: "UAE", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c" },
-  { name: "Singapore", code: "SIN", country: "Singapore", image: "https://images.unsplash.com/photo-1508964942454-1a56651d54ac" },
-  { name: "Bangkok", code: "BKK", country: "Thailand", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365" },
-  { name: "Paris", code: "CDG", country: "France", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34" },
-  { name: "New York", code: "JFK", country: "USA", image: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59" },
+  {
+    name: "New Delhi",
+    country: "India",
+    code: "DEL",
+    popular: true,
+    category: "Heritage"
+  },
+  {
+    name: "Mumbai",
+    country: "India",
+    code: "BOM",
+    popular: true,
+    category: "City"
+  },
+  {
+    name: "Goa",
+    country: "India",
+    code: "GOI",
+    popular: true,
+    category: "Beach"
+  },
+  {
+    name: "Dubai",
+    country: "UAE",
+    code: "DXB",
+    popular: true,
+    category: "City"
+  },
+  {
+    name: "Singapore",
+    country: "Singapore",
+    code: "SIN",
+    popular: true,
+    category: "City"
+  },
+  {
+    name: "Bangkok",
+    country: "Thailand",
+    code: "BKK",
+    popular: false,
+    category: "City"
+  },
+  {
+    name: "London",
+    country: "UK",
+    code: "LHR",
+    popular: true,
+    category: "Heritage"
+  },
+  {
+    name: "Paris",
+    country: "France",
+    code: "CDG",
+    popular: true,
+    category: "Heritage"
+  },
+  {
+    name: "Maldives",
+    country: "Maldives",
+    code: "MLE",
+    popular: false,
+    category: "Island"
+  },
+  {
+    name: "Bali",
+    country: "Indonesia",
+    code: "DPS",
+    popular: true,
+    category: "Island"
+  },
+  // Add more destinations as needed
 ];

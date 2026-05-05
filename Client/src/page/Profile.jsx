@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../reducer/slice/authslice";
+import { logoutUser } from "../reducer/slice/authslice";
 import { User, Mail, LogOut, ArrowLeft } from "lucide-react";
 
 const Profile = () => {
@@ -10,7 +10,7 @@ const Profile = () => {
     const { user, isAuthenticated } = useSelector((state) => state.auth);
 
     const handleLogout = () => {
-        dispatch(logout());
+        dispatch(logoutUser());
         navigate("/");
     };
 
