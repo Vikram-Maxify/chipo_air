@@ -141,12 +141,12 @@ const toQuery = params.get("to");
   const filteredFlights = flights
   .filter((f) => {
     const matchFrom = fromQuery
-      ? f.route.from.code.toLowerCase().includes(fromQuery.toLowerCase())
-      : true;
+  ? f.route.from.code.toLowerCase() === fromQuery.toLowerCase()
+  : true;
 
-    const matchTo = toQuery
-      ? f.route.to.code.toLowerCase().includes(toQuery.toLowerCase())
-      : true;
+const matchTo = toQuery
+  ? f.route.to.code.toLowerCase() === toQuery.toLowerCase()
+  : true;
 
     const matchAirline =
       filterAirline === "all" || f.airline === filterAirline;

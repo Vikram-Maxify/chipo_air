@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Header from '../component/Header'
 import Hero from '../component/Hero'
 import Packages from '../component/Packages'
