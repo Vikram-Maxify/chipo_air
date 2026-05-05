@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { 
   Plane, 
@@ -20,8 +20,16 @@ import {
   Timer,
   Navigation
 } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Flights = () => {
+
+  const location = useLocation();
+const params = new URLSearchParams(location.search);
+
+const fromQuery = params.get("from");
+const toQuery = params.get("to");
+
   const [expandedFlight, setExpandedFlight] = useState(null);
   const [sortBy, setSortBy] = useState("price");
   const [filterAirline, setFilterAirline] = useState("all");
@@ -88,6 +96,13 @@ const Flights = () => {
     return amenitiesMap[airline] || [Coffee, Luggage];
   };
 
+  const convertToINR = (price) => {
+  if (!price) return "N/A";
+  const value = parseFloat(price);
+  return `₹${Math.round(value * 55)}`; // approx AUD → INR
+};
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
@@ -124,12 +139,24 @@ const Flights = () => {
   const uniqueAirlines = [...new Set(flights.map(f => f.airline))];
   
   const filteredFlights = flights
-    .filter(f => filterAirline === "all" || f.airline === filterAirline)
-    .sort((a, b) => {
-      if (sortBy === "price") return (Math.floor(Math.random() * 4000) + 2500) - (Math.floor(Math.random() * 4000) + 2500);
-      if (sortBy === "duration") return new Date(a.timing.arrival.scheduled) - new Date(a.timing.departure.scheduled) - (new Date(b.timing.arrival.scheduled) - new Date(b.timing.departure.scheduled));
-      return 0;
-    });
+  .filter((f) => {
+    const matchFrom = fromQuery
+      ? f.route.from.code.toLowerCase().includes(fromQuery.toLowerCase())
+      : true;
+
+    const matchTo = toQuery
+      ? f.route.to.code.toLowerCase().includes(toQuery.toLowerCase())
+      : true;
+
+    const matchAirline =
+      filterAirline === "all" || f.airline === filterAirline;
+
+    return matchFrom && matchTo && matchAirline;
+  })
+
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
@@ -222,7 +249,7 @@ const Flights = () => {
         ) : (
           <div className="space-y-4">
             {filteredFlights.map((f, index) => {
-              const price = Math.floor(Math.random() * 4000) + 2500;
+              const price = f.price || "N/A";
               const duration = getDuration(f.timing.departure.scheduled, f.timing.arrival.scheduled);
               const amenities = getAmenities(f.airline);
               const isExpanded = expandedFlight === index;
@@ -342,7 +369,7 @@ const Flights = () => {
                             )}
                             <p className="text-xs text-gray-500">Starting from</p>
                             <p className="text-2xl md:text-3xl font-bold text-gray-900">
-                              ₹{price.toLocaleString()}
+                              {convertToINR(f.price)}
                             </p>
                             <p className="text-xs text-gray-400">per adult</p>
                           </div>

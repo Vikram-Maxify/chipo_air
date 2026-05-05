@@ -47,6 +47,12 @@ app.use("/api/pages", pageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/packages", packageRoutes);
 
+(async () => {
+  const hash = await bcrypt.hash("admin@1234", 10);
+  console.log(hash);
+})();
+
+
 
 
 

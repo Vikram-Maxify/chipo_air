@@ -65,10 +65,10 @@ const Login = () => {
 
         // Uncomment when Redux action is ready
         try {
-          const result = await dispatch(loginUser(form)).unwrap();
-          navigate("/");
+            const result = await dispatch(loginUser(form)).unwrap();
+            navigate("/");
         } catch (err) {
-          console.error("Login failed:", err);
+            console.error("Login failed:", err);
         }
     };
 
@@ -86,6 +86,11 @@ const Login = () => {
         });
         setErrors({});
     };
+
+    useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
 
     return (
         <div className="min-h-screen flex bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -216,8 +221,8 @@ const Login = () => {
                                         onKeyPress={handleKeyPress}
                                         placeholder="Enter your email"
                                         className={`w-full pl-12 pr-4 py-3.5 border-2 rounded-xl outline-none transition-all duration-300 text-sm ${errors.email
-                                                ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                                                : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                            ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                                            : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                             }`}
                                     />
                                     {form.email && !errors.email && (
@@ -250,8 +255,8 @@ const Login = () => {
                                         onKeyPress={handleKeyPress}
                                         placeholder="Enter your password"
                                         className={`w-full pl-12 pr-12 py-3.5 border-2 rounded-xl outline-none transition-all duration-300 text-sm ${errors.password
-                                                ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
-                                                : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                            ? "border-red-300 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                                            : "border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                                             }`}
                                     />
                                     <button

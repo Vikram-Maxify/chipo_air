@@ -159,6 +159,11 @@ const Register = () => {
         { number: 4, label: "Done", icon: CheckCircle },
     ];
 
+    useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
+
     return (
         <div className="min-h-screen flex bg-gradient-to-br from-blue-50 via-white to-purple-50">
 

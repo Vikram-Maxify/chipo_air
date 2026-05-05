@@ -8,6 +8,9 @@ import Footer from '../component/Footer'
 import StatsSection from '../StatsSection'
 
 const Home = () => {
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   return (
     <>
       <Hero />

@@ -14,6 +14,10 @@ const Profile = () => {
         navigate("/");
     };
 
+    useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
     if (!isAuthenticated || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
