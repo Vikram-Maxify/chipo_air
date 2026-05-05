@@ -73,7 +73,6 @@ exports.getFlights = async (req, res) => {
       };
     });
 
-    console.log(flights);
 
 
     res.json({

@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 // =======================
 // ADMIN LOGIN
 // =======================
+
 const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
