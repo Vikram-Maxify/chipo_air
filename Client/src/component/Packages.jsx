@@ -125,7 +125,7 @@ const Packages = () => {
             </p>
 
             {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+            <div className="flex flex-wrap justify-center gap-6 md:gap-10 pb-2">
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white">{packages.length}+</div>
                 <div className="text-xs md:text-sm text-blue-200">Packages</div>

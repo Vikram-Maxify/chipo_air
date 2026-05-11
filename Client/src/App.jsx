@@ -18,6 +18,7 @@ import WhyChooseUs from './component/WhyChooseUs'
 import StatsSection from './StatsSection'
 import CTASection from './component/CTASection'
 import Footer from './component/Footer'
+import FlightBooking from './page/FlightBooking'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -31,6 +32,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/flights" element={<Flights />} />
+        <Route path="/flights/booking/:id" element={<FlightBooking />} />
         <Route path="/profile" element={<Profile />} />
         <Route path='/about' element={<AboutPage />} />
         <Route path='/privacy' element={<PrivacyPage />} />

@@ -17,6 +17,8 @@ const adminRoutes = require("./routes/adminRoutes");
 const pageRoutes = require("./routes/pageRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
 const packageRoutes = require("./routes/packageRoutes");
+const flightBookingRoutes = require("./routes/flightBookingRoutes");
+
 
 
 
@@ -46,6 +48,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/pages", pageRoutes);
 app.use("/api/banners", bannerRoutes);
 app.use("/api/packages", packageRoutes);
+app.use(
+  "/api/flight-bookings",
+  flightBookingRoutes
+);
 
 (async () => {
   const hash = await bcrypt.hash("admin@1234", 10);
