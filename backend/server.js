@@ -18,6 +18,7 @@ const pageRoutes = require("./routes/pageRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
 const packageRoutes = require("./routes/packageRoutes");
 const flightBookingRoutes = require("./routes/flightBookingRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 
 
@@ -52,6 +53,8 @@ app.use(
   "/api/flight-bookings",
   flightBookingRoutes
 );
+app.use("/api/payment", paymentRoutes);
+
 
 (async () => {
   const hash = await bcrypt.hash("user@1234", 10);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import {
     useDispatch,
     useSelector,
@@ -24,6 +25,12 @@ import {
 
 import { createFlightBookingThunk } from "../reducer/slice/flightBookingSlice";
 
+import {
+    createPayment,
+    verifyPayment,
+    paymentFailed,
+} from "../reducer/slice/paymentSlice";
+
 const FlightBooking = () => {
     const dispatch = useDispatch();
 
@@ -31,22 +38,27 @@ const FlightBooking = () => {
 
     const location = useLocation();
 
-    // ✅ URL PARAM
     const { id } = useParams();
 
-    // ✅ AUTH
+
+
+    // AUTH
     const { user } = useSelector(
         (state) => state.auth
     );
 
-    // ✅ FLIGHTS
+
+
+    // FLIGHTS
     const { flights } = useSelector(
         (state) => state.flights
     );
 
-    // ✅ BOOKING STORE
+
+
+    // BOOKING STORE
     const {
-        loading,
+        loading: bookingLoading,
         success,
         error,
         bookingDetails,
@@ -54,7 +66,18 @@ const FlightBooking = () => {
         (state) => state.flightBooking
     );
 
-    // ✅ GET CURRENT FLIGHT
+
+
+    // PAYMENT STORE
+    const {
+        loading: paymentLoading,
+    } = useSelector(
+        (state) => state.payment
+    );
+
+
+
+    // CURRENT FLIGHT
     const flight =
         location.state?.flight ||
         flights.find(
@@ -62,7 +85,9 @@ const FlightBooking = () => {
                 f.offerId === id
         );
 
-    // ✅ FORM STATE
+
+
+    // FORM STATE
     const [formData, setFormData] =
         useState({
             title: "mr",
@@ -81,7 +106,9 @@ const FlightBooking = () => {
             born_on: "",
         });
 
-    // ✅ NO FLIGHT
+
+
+    // NO FLIGHT
     if (!flight) {
         return (
             <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
@@ -106,7 +133,9 @@ const FlightBooking = () => {
         );
     }
 
-    // ✅ INPUT CHANGE
+
+
+    // INPUT CHANGE
     const handleChange = (e) => {
         setFormData((prev) => ({
             ...prev,
@@ -116,72 +145,71 @@ const FlightBooking = () => {
         }));
     };
 
-    // ✅ HANDLE BOOKING
+
+
+    // HANDLE BOOKING
     const handleBooking = async () => {
-        console.log(
-            "FULL FLIGHT:",
-            flight
-        );
+        try {
+            // VALIDATION
+            if (
+                !formData.firstName?.trim() ||
+                !formData.lastName?.trim() ||
+                !formData.email?.trim() ||
+                !formData.phone?.trim() ||
+                !formData.born_on
+            ) {
+                alert(
+                    "Please fill all fields"
+                );
 
-        console.log(
-            "PASSENGER ID:",
-            flight?.passengerId
-        );
+                return;
+            }
 
-        // ✅ VALIDATION
-        if (
-            !formData.firstName?.trim() ||
-            !formData.lastName?.trim() ||
-            !formData.email?.trim() ||
-            !formData.phone?.trim() ||
-            !formData.born_on
-        ) {
-            alert(
-                "Please fill all fields"
+
+
+            // VALID PASSENGER ID
+            if (
+                !flight?.passengerId ||
+                !flight?.passengerId.startsWith(
+                    "pas_"
+                )
+            ) {
+                alert(
+                    "Invalid Duffel passenger ID"
+                );
+
+                return;
+            }
+
+
+
+            // PRICE
+            const priceParts =
+                flight.price?.split(" ") || [];
+
+            // ORIGINAL PRICE
+            const originalAmount =
+                parseFloat(priceParts?.[0]) || 0;
+
+            const originalCurrency =
+                priceParts?.[1] || "USD";
+
+            // USD -> INR CONVERSION
+            const usdToInrRate = 83;
+
+            // FINAL INR AMOUNT
+            const amountInr = Math.round(
+                originalAmount * usdToInrRate
             );
 
-            return;
-        }
+            // RAZORPAY AMOUNT (PAISE)
+            const razorpayAmount =
+                amountInr * 100;
 
-        // ✅ VALID DUFFEL PASSENGER ID
-        if (
-            !flight?.passengerId ||
-            !flight?.passengerId.startsWith(
-                "pas_"
-            )
-        ) {
-            alert(
-                "Invalid Duffel passenger ID"
-            );
 
-            return;
-        }
 
-        // ✅ PRICE
-        const priceParts =
-            flight.price?.split(
-                " "
-            ) || [];
-
-        const amount =
-            priceParts?.[0] ||
-            "0";
-
-        const currency =
-            priceParts?.[1] ||
-            "INR";
-
-        // ✅ FINAL PAYLOAD
-        const bookingPayload = {
-            // ✅ OFFER ID
-            offerId:
-                flight.offerId,
-
-            // ✅ REAL DUFFEL PASSENGER ID
-            passengerId:
-                flight.passengerId,
-
-            passenger: {
+            // PAYMENT PAYLOAD
+            const paymentPayload = {
                 title:
                     formData.title,
 
@@ -195,96 +223,156 @@ const FlightBooking = () => {
                     formData.email,
 
                 phone:
-                    formData.phone.startsWith(
-                        "+91"
-                    )
-                        ? formData.phone
-                        : `+91${formData.phone}`,
+                    formData.phone,
+
+                dob:
+                    formData.born_on,
 
                 gender:
-                    formData.gender,
+                    formData.gender ===
+                        "m"
+                        ? "Male"
+                        : "Female",
 
-                born_on:
-                    formData.born_on,
-            },
-
-            flight: {
                 airline:
                     flight.airline,
 
                 flightNumber:
                     flight.flightNumber,
 
-                from: {
-                    city:
-                        flight.route
-                            .from.city,
+                from:
+                    flight.route.from
+                        .code,
 
-                    code:
-                        flight.route
-                            .from.code,
-                },
+                to: flight.route.to.code,
 
-                to: {
-                    city:
-                        flight.route
-                            .to.city,
+                amount: amountInr,
+                currency: "INR",
+            };
 
-                    code:
-                        flight.route
-                            .to.code,
-                },
 
-                departureAt:
-                    flight.timing
-                        .departure
-                        .scheduled,
 
-                arrivalAt:
-                    flight.timing
-                        .arrival
-                        .scheduled,
+            // STEP 1 CREATE PAYMENT
+            const paymentResult =
+                await dispatch(
+                    createPayment(
+                        paymentPayload
+                    )
+                );
 
-                price:
-                    flight.price,
-            },
 
-            payment: {
-                amount,
 
-                currency,
-            },
-        };
-
-        console.log(
-            "BOOKING PAYLOAD:",
-            bookingPayload
-        );
-
-        // ✅ API CALL
-        const resultAction =
-            await dispatch(
-                createFlightBookingThunk(
-                    bookingPayload
+            // PAYMENT FAILED
+            if (
+                !createPayment.fulfilled.match(
+                    paymentResult
                 )
-            );
+            ) {
+                alert(
+                    paymentResult.payload ||
+                    "Payment creation failed"
+                );
 
-        console.log(
-            "BOOKING RESPONSE:",
-            resultAction
-        );
+                return;
+            }
 
-        // ✅ SUCCESS
-        if (
-            createFlightBookingThunk.fulfilled.match(
-                resultAction
-            )
-        ) {
+
+
+            const order =
+                paymentResult.payload
+                    .order;
+
+
+
+            // STEP 2 OPEN RAZORPAY
+            const options = {
+                key:
+                    paymentResult.payload.key,
+
+                amount: razorpayAmount,
+                currency: "INR",
+
+                name:
+                    "Flight Booking",
+
+                description:
+                    "Flight Ticket Payment",
+
+                order_id:
+                    order.id,
+
+
+
+                prefill: {
+                    name: `${formData.firstName} ${formData.lastName}`,
+
+                    email: formData.email,
+
+                    contact: formData.phone.startsWith("+91")
+                        ? formData.phone
+                        : `+91${formData.phone}`,
+                },
+
+
+
+                handler:
+                    async function (
+                        response
+                    ) {
+                        // your verify logic
+                    },
+
+
+
+                modal: {
+                    ondismiss:
+                        async function () {
+                            await dispatch(
+                                paymentFailed({
+                                    razorpayOrderId:
+                                        order.id,
+
+                                    errorMessage:
+                                        "User closed payment popup",
+                                })
+                            );
+                        },
+                },
+
+
+
+                theme: {
+                    color: "#2563eb",
+                },
+            };
+
+
+
+            if (!window.Razorpay) {
+                alert(
+                    "Razorpay SDK failed to load"
+                );
+
+                return;
+            }
+
+            const razorpay =
+                new window.Razorpay(
+                    options
+                );
+
+            razorpay.open();
+        } catch (error) {
+            console.log(error);
+
             alert(
-                "Flight booked successfully"
+                error.message ||
+                "Something went wrong"
             );
         }
     };
+
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 py-10 px-4 text-white">
@@ -299,14 +387,11 @@ const FlightBooking = () => {
 
                         <div>
                             <h1 className="text-3xl font-bold">
-                                Passenger
-                                Details
+                                Passenger Details
                             </h1>
 
                             <p className="text-slate-300 text-sm mt-1">
-                                Complete
-                                your booking
-                                information
+                                Complete your booking information
                             </p>
                         </div>
                     </div>
@@ -442,8 +527,7 @@ const FlightBooking = () => {
                         {/* DOB */}
                         <div>
                             <label className="block text-sm text-slate-300 mb-2">
-                                Date of
-                                Birth
+                                Date of Birth
                             </label>
 
                             <div className="relative">
@@ -510,21 +594,21 @@ const FlightBooking = () => {
                             handleBooking
                         }
                         disabled={
-                            loading
+                            paymentLoading ||
+                            bookingLoading
                         }
                         className="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 disabled:opacity-70"
                     >
-                        {loading ? (
+                        {paymentLoading ||
+                            bookingLoading ? (
                             <>
                                 <Loader2 className="w-6 h-6 animate-spin" />
-                                Booking
-                                Flight...
+                                Processing...
                             </>
                         ) : (
                             <>
                                 <CreditCard className="w-6 h-6" />
-                                Confirm
-                                Booking
+                                Confirm Booking
                             </>
                         )}
                     </button>
@@ -604,8 +688,7 @@ const FlightBooking = () => {
                         {/* PRICE */}
                         <div className="bg-gradient-to-r from-blue-600/20 to-indigo-700/20 rounded-2xl p-5 border border-blue-500/20">
                             <p className="text-sm text-slate-300 mb-2">
-                                Total
-                                Amount
+                                Total Amount
                             </p>
 
                             <h3 className="text-4xl font-extrabold text-white">
@@ -623,14 +706,12 @@ const FlightBooking = () => {
                                         <CheckCircle className="text-emerald-400" />
 
                                         <h3 className="font-bold text-emerald-300">
-                                            Booking
-                                            Confirmed
+                                            Booking Confirmed
                                         </h3>
                                     </div>
 
                                     <p className="text-sm text-slate-300">
-                                        Booking
-                                        Reference
+                                        Booking Reference
                                     </p>
 
                                     <p className="font-bold text-lg mt-1">
