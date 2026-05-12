@@ -1,12 +1,8 @@
 const Razorpay = require("razorpay");
-
 const crypto = require("crypto");
-
 const Payment = require("../models/Payment");
 
-
-
-// RAZORPAY INSTANCE
+// ✅ RAZORPAY INSTANCE
 const razorpay = new Razorpay({
     key_id:
         process.env
@@ -17,26 +13,15 @@ const razorpay = new Razorpay({
             .RAZORPAY_KEY_SECRET,
 });
 
+// ======================================================
+// ✅ CREATE PAYMENT WITH SEATS
+// ======================================================
 
-
-// ================= CREATE PAYMENT =================
 exports.createPayment =
     async (req, res) => {
         try {
             const {
-                title,
-
-                firstName,
-
-                lastName,
-
-                email,
-
-                phone,
-
-                dob,
-
-                gender,
+                passengers,
 
                 airline,
 
@@ -47,17 +32,32 @@ exports.createPayment =
                 to,
 
                 amount,
+
+                selectedSeats,
+
+                offerId,
             } = req.body;
 
+            console.log(
+                "CREATE PAYMENT BODY:",
+                JSON.stringify(
+                    req.body,
+                    null,
+                    2
+                )
+            );
 
+            // ==================================================
+            // ✅ VALIDATION
+            // ==================================================
 
-            // VALIDATION
             if (
-                !firstName ||
-                !lastName ||
-                !email ||
-                !phone ||
-                !amount
+                !passengers ||
+                !Array.isArray(
+                    passengers
+                ) ||
+                passengers.length ===
+                    0
             ) {
                 return res
                     .status(400)
@@ -65,53 +65,171 @@ exports.createPayment =
                         success: false,
 
                         message:
-                            "Please fill all required fields",
+                            "Passengers are required",
                     });
             }
 
+            if (
+                !airline ||
+                !flightNumber ||
+                !from ||
+                !to
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
 
+                        message:
+                            "Flight details are required",
+                    });
+            }
 
-            // CREATE ORDER
+            if (
+                !amount ||
+                isNaN(amount)
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+
+                        message:
+                            "Valid amount is required",
+                    });
+            }
+
+            // ==================================================
+            // ✅ VALIDATE PASSENGERS
+            // ==================================================
+
+            for (const p of passengers) {
+                if (
+                    !p.firstName ||
+                    !p.lastName ||
+                    !p.email ||
+                    !p.phone ||
+                    !p.born_on
+                ) {
+                    return res
+                        .status(400)
+                        .json({
+                            success: false,
+
+                            message:
+                                "Passenger details are incomplete",
+                        });
+                }
+            }
+
+            // ==================================================
+            // ✅ SEAT PRICE
+            // ==================================================
+
+            let seatAmount = 0;
+
+            if (
+                selectedSeats &&
+                Array.isArray(
+                    selectedSeats
+                )
+            ) {
+                selectedSeats.forEach(
+                    (seat) => {
+                        seatAmount +=
+                            Number(
+                                seat.price ||
+                                    0
+                            );
+                    }
+                );
+            }
+
+            // ==================================================
+            // ✅ TOTAL AMOUNT
+            // ==================================================
+
+            const finalAmount =
+                Number(amount) +
+                Number(seatAmount);
+
+            console.log(
+                "BASE FLIGHT:",
+                amount
+            );
+
+            console.log(
+                "SEAT PRICE:",
+                seatAmount
+            );
+
+            console.log(
+                "FINAL PRICE:",
+                finalAmount
+            );
+
+            // ==================================================
+            // ✅ RAZORPAY LIMIT FIX
+            // ==================================================
+
+            if (
+                finalAmount >
+                500000
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
+
+                        message:
+                            "Amount exceeds Razorpay limit",
+                    });
+            }
+
+            // ==================================================
+            // ✅ CREATE ORDER
+            // ==================================================
+
             const options = {
                 amount:
                     Math.round(
-                        Number(
-                            amount
-                        ) * 100
+                        finalAmount *
+                            100
                     ),
 
                 currency:
-                    "USD",
+                    "INR",
 
                 receipt: `receipt_${Date.now()}`,
+
+                notes: {
+                    airline,
+                    flightNumber,
+                    offerId:
+                        offerId ||
+                        "N/A",
+                },
             };
-
-
 
             const order =
                 await razorpay.orders.create(
                     options
                 );
 
+            // ==================================================
+            // ✅ SAVE PAYMENT
+            // ==================================================
 
-
-            // SAVE PAYMENT
             const payment =
                 await Payment.create(
                     {
-                        title,
+                        offerId,
 
-                        firstName,
+                        passengers,
 
-                        lastName,
-
-                        email,
-
-                        phone,
-
-                        dob,
-
-                        gender,
+                        selectedSeats:
+                            selectedSeats ||
+                            [],
 
                         airline,
 
@@ -121,10 +239,18 @@ exports.createPayment =
 
                         to,
 
-                        amount,
+                        baseAmount:
+                            Number(
+                                amount
+                            ),
+
+                        seatAmount,
+
+                        amount:
+                            finalAmount,
 
                         currency:
-                            "USD",
+                            "INR",
 
                         razorpayOrderId:
                             order.id,
@@ -137,14 +263,18 @@ exports.createPayment =
                     }
                 );
 
-
+            // ==================================================
+            // ✅ SUCCESS
+            // ==================================================
 
             return res
                 .status(200)
                 .json({
                     success: true,
 
-                    // SEND PUBLIC KEY
+                    message:
+                        "Payment order created",
+
                     key:
                         process
                             .env
@@ -153,6 +283,20 @@ exports.createPayment =
                     order,
 
                     payment,
+
+                    priceBreakup:
+                        {
+                            flight:
+                                Number(
+                                    amount
+                                ),
+
+                            seats:
+                                seatAmount,
+
+                            total:
+                                finalAmount,
+                        },
                 });
         } catch (error) {
             console.log(
@@ -166,14 +310,17 @@ exports.createPayment =
                     success: false,
 
                     message:
+                        error?.error
+                            ?.description ||
                         error.message,
                 });
         }
     };
 
+// ======================================================
+// ✅ VERIFY PAYMENT
+// ======================================================
 
-
-// ================= VERIFY PAYMENT =================
 exports.verifyPayment =
     async (req, res) => {
         try {
@@ -185,9 +332,10 @@ exports.verifyPayment =
                 razorpay_signature,
             } = req.body;
 
+            // ==================================================
+            // ✅ VALIDATION
+            // ==================================================
 
-
-            // VALIDATION
             if (
                 !razorpay_order_id ||
                 !razorpay_payment_id ||
@@ -203,9 +351,10 @@ exports.verifyPayment =
                     });
             }
 
+            // ==================================================
+            // ✅ GENERATE SIGNATURE
+            // ==================================================
 
-
-            // GENERATE SIGNATURE
             const generatedSignature =
                 crypto
                     .createHmac(
@@ -221,9 +370,10 @@ exports.verifyPayment =
                         "hex"
                     );
 
+            // ==================================================
+            // ✅ FIND PAYMENT
+            // ==================================================
 
-
-            // FIND PAYMENT
             const payment =
                 await Payment.findOne(
                     {
@@ -231,8 +381,6 @@ exports.verifyPayment =
                             razorpay_order_id,
                     }
                 );
-
-
 
             if (!payment) {
                 return res
@@ -245,9 +393,10 @@ exports.verifyPayment =
                     });
             }
 
+            // ==================================================
+            // ✅ VERIFY
+            // ==================================================
 
-
-            // VERIFY SIGNATURE
             if (
                 generatedSignature ===
                 razorpay_signature
@@ -266,8 +415,6 @@ exports.verifyPayment =
 
                 await payment.save();
 
-
-
                 return res
                     .status(200)
                     .json({
@@ -280,9 +427,10 @@ exports.verifyPayment =
                     });
             }
 
+            // ==================================================
+            // ✅ FAILED
+            // ==================================================
 
-
-            // FAILED
             payment.paymentStatus =
                 "failed";
 
@@ -293,8 +441,6 @@ exports.verifyPayment =
                 "Signature verification failed";
 
             await payment.save();
-
-
 
             return res
                 .status(400)
@@ -321,9 +467,10 @@ exports.verifyPayment =
         }
     };
 
+// ======================================================
+// ✅ PAYMENT FAILED
+// ======================================================
 
-
-// ================= PAYMENT FAILED =================
 exports.paymentFailed =
     async (req, res) => {
         try {
@@ -333,7 +480,18 @@ exports.paymentFailed =
                 errorMessage,
             } = req.body;
 
+            if (
+                !razorpayOrderId
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        success: false,
 
+                        message:
+                            "Razorpay Order ID is required",
+                    });
+            }
 
             const payment =
                 await Payment.findOne(
@@ -341,8 +499,6 @@ exports.paymentFailed =
                         razorpayOrderId,
                     }
                 );
-
-
 
             if (payment) {
                 payment.paymentStatus =
@@ -357,8 +513,6 @@ exports.paymentFailed =
 
                 await payment.save();
             }
-
-
 
             return res
                 .status(200)

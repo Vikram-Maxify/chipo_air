@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../reducer/slice/authslice";
 import { User, Mail, LogOut, ArrowLeft } from "lucide-react";
-import { useEffect } from "react";
 
 const Profile = () => {
     const dispatch = useDispatch();

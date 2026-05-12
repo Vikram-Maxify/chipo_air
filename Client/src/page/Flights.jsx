@@ -121,12 +121,12 @@ const Flights = () => {
       startDate:
         departureDateQuery
           ? new Date(
-              departureDateQuery
-            )
+            departureDateQuery
+          )
           : addDays(
-              new Date(),
-              1
-            ),
+            new Date(),
+            1
+          ),
 
       endDate: addDays(
         new Date(),
@@ -184,7 +184,7 @@ const Flights = () => {
 
                 return_date:
                   tripType ===
-                  "roundtrip"
+                    "roundtrip"
                     ? endDate
                     : null,
 
@@ -218,17 +218,68 @@ const Flights = () => {
       }
     };
 
-  const handleBookFlight =
-    (flight) => {
-      navigate(
-        `/flights/booking/${flight.offerId}`,
-        {
-          state: {
-            flight,
-          },
-        }
-      );
-    };
+  const handleBookFlight = (
+    flight
+  ) => {
+
+    // ✅ PASSENGER IDS
+    const passengerIds =
+      flight?.passengers?.map(
+        (p) => ({
+          passengerId:
+            p.passengerId,
+
+          type: p.type,
+
+          passengerNo:
+            p.passengerNo,
+        })
+      ) || [];
+
+    // ✅ ALL AVAILABLE SEATS
+    const availableSeats =
+      flight?.seats || [];
+
+    console.log(
+      "PASSENGERS:",
+      passengerIds
+    );
+
+    console.log(
+      "SEATS:",
+      availableSeats
+    );
+
+    navigate(
+      `/flights/booking/${flight.offerId}`,
+      {
+        state: {
+          // ✅ FULL FLIGHT
+          flight,
+
+          // ✅ OFFER ID
+          offerId:
+            flight.offerId,
+
+          // ✅ PASSENGER COUNT
+          passengersCount:
+            passengers,
+
+          // ✅ REAL PASSENGERS
+          passengers:
+            passengerIds,
+
+          // ✅ AVAILABLE SEATS
+          availableSeats,
+
+          // ✅ SEAT SERVICES
+          seatServices:
+            flight?.seatServices ||
+            [],
+        },
+      }
+    );
+  };
 
   const formatTime = (
     date
@@ -287,9 +338,9 @@ const Flights = () => {
     const hours =
       Math.floor(
         diff /
-          (1000 *
-            60 *
-            60)
+        (1000 *
+          60 *
+          60)
       );
 
     const minutes =
@@ -298,7 +349,7 @@ const Flights = () => {
           (1000 *
             60 *
             60)) /
-          (1000 * 60)
+        (1000 * 60)
       );
 
     return `${hours}h ${minutes}m`;
@@ -348,9 +399,9 @@ const Flights = () => {
       (f) => {
         const matchAirline =
           filterAirline ===
-            "all" ||
+          "all" ||
           f.airline ===
-            filterAirline;
+          filterAirline;
 
         const durationMinutes =
           (new Date(
@@ -372,7 +423,7 @@ const Flights = () => {
         const matchAirport =
           selectedAirports
             .length ===
-            0 ||
+          0 ||
           selectedAirports.includes(
             f.route.to
               .code
@@ -386,35 +437,35 @@ const Flights = () => {
       }
     );
 
-if (
-  loading ||
-  isSearchLoading
-) {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+  if (
+    loading ||
+    isSearchLoading
+  ) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
 
-      <div className="text-center">
+        <div className="text-center">
 
-        <div className="relative">
+          <div className="relative">
 
-          {/* SPINNER */}
-          <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
+            {/* SPINNER */}
+            <div className="w-20 h-20 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div>
 
-          {/* FLIGHT ICON */}
-          <Plane className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 w-8 h-8 animate-pulse" />
+            {/* FLIGHT ICON */}
+            <Plane className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-blue-600 w-8 h-8 animate-pulse" />
+          </div>
+
+          <p className="mt-4 text-gray-700 font-semibold text-lg">
+            Searching Flights...
+          </p>
+
+          <p className="text-sm text-gray-500 mt-1">
+            Finding best deals for you
+          </p>
         </div>
-
-        <p className="mt-4 text-gray-700 font-semibold text-lg">
-          Searching Flights...
-        </p>
-
-        <p className="text-sm text-gray-500 mt-1">
-          Finding best deals for you
-        </p>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   // ERROR
   if (error) {
@@ -457,12 +508,11 @@ if (
                     "roundtrip"
                   )
                 }
-                className={`px-5 py-2 rounded-lg font-semibold ${
-                  tripType ===
+                className={`px-5 py-2 rounded-lg font-semibold ${tripType ===
                   "roundtrip"
-                    ? "bg-white text-black"
-                    : "text-white"
-                }`}
+                  ? "bg-white text-black"
+                  : "text-white"
+                  }`}
               >
                 Round Trip
               </button>
@@ -473,12 +523,11 @@ if (
                     "oneway"
                   )
                 }
-                className={`px-5 py-2 rounded-lg font-semibold ${
-                  tripType ===
+                className={`px-5 py-2 rounded-lg font-semibold ${tripType ===
                   "oneway"
-                    ? "bg-white text-black"
-                    : "text-white"
-                }`}
+                  ? "bg-white text-black"
+                  : "text-white"
+                  }`}
               >
                 One Way
               </button>
@@ -487,226 +536,226 @@ if (
 
           {/* SEARCH BOX */}
           {/* SEARCH BOX */}
-<div className="bg-white rounded-3xl p-4 md:p-6 shadow-2xl">
-  <div className="flex flex-col gap-4">
+          <div className="bg-white rounded-3xl p-4 md:p-6 shadow-2xl">
+            <div className="flex flex-col gap-4">
 
-    {/* TOP ROW */}
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 items-end">
+              {/* TOP ROW */}
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 items-end">
 
-      {/* FROM */}
-      <div className="xl:col-span-3">
-        <label className="text-sm font-semibold text-gray-700 mb-2 block">
-          From
-        </label>
+                {/* FROM */}
+                <div className="xl:col-span-3">
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    From
+                  </label>
 
-        <input
-          value={from}
-          onChange={(e) =>
-            setFrom(
-              e.target.value.toUpperCase()
-            )
-          }
-          placeholder="Delhi"
-          className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
-        />
-      </div>
+                  <input
+                    value={from}
+                    onChange={(e) =>
+                      setFrom(
+                        e.target.value.toUpperCase()
+                      )
+                    }
+                    placeholder="Delhi"
+                    className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
+                  />
+                </div>
 
-      {/* SWAP */}
-      <div className="xl:col-span-1 flex justify-center items-end">
-        <button
-          onClick={swapLocations}
-          className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-all mt-auto"
-        >
-          <ArrowLeftRight size={18} />
-        </button>
-      </div>
+                {/* SWAP */}
+                <div className="xl:col-span-1 flex justify-center items-end">
+                  <button
+                    onClick={swapLocations}
+                    className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-all mt-auto"
+                  >
+                    <ArrowLeftRight size={18} />
+                  </button>
+                </div>
 
-      {/* TO */}
-      <div className="xl:col-span-3">
-        <label className="text-sm font-semibold text-gray-700 mb-2 block">
-          To
-        </label>
+                {/* TO */}
+                <div className="xl:col-span-3">
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    To
+                  </label>
 
-        <input
-          value={to}
-          onChange={(e) =>
-            setTo(
-              e.target.value.toUpperCase()
-            )
-          }
-          placeholder="Mumbai"
-          className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
-        />
-      </div>
+                  <input
+                    value={to}
+                    onChange={(e) =>
+                      setTo(
+                        e.target.value.toUpperCase()
+                      )
+                    }
+                    placeholder="Mumbai"
+                    className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
+                  />
+                </div>
 
-      {/* DATE RANGE */}
-      <div className="xl:col-span-3 relative">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Departure & Return
-        </label>
+                {/* DATE RANGE */}
+                <div className="xl:col-span-3 relative">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Departure & Return
+                  </label>
 
-        <button
-          onClick={() =>
-            setShowCalendar(
-              !showCalendar
-            )
-          }
-          className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 text-left hover:border-blue-500 transition-all bg-white"
-        >
-          <div className="flex items-center justify-between gap-3">
+                  <button
+                    onClick={() =>
+                      setShowCalendar(
+                        !showCalendar
+                      )
+                    }
+                    className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 text-left hover:border-blue-500 transition-all bg-white"
+                  >
+                    <div className="flex items-center justify-between gap-3">
 
-            {/* Departure */}
-            <div>
-              <p className="text-[11px] text-gray-500">
-                Departure
-              </p>
+                      {/* Departure */}
+                      <div>
+                        <p className="text-[11px] text-gray-500">
+                          Departure
+                        </p>
 
-              <p className="font-bold text-sm md:text-base text-gray-900 whitespace-nowrap">
-                {format(
-                  dateRange[0]
-                    .startDate,
-                  "dd MMM"
-                )}
-              </p>
-            </div>
+                        <p className="font-bold text-sm md:text-base text-gray-900 whitespace-nowrap">
+                          {format(
+                            dateRange[0]
+                              .startDate,
+                            "dd MMM"
+                          )}
+                        </p>
+                      </div>
 
-            {/* Divider */}
-            {tripType ===
-              "roundtrip" && (
-              <div className="h-8 w-px bg-gray-200"></div>
-            )}
+                      {/* Divider */}
+                      {tripType ===
+                        "roundtrip" && (
+                          <div className="h-8 w-px bg-gray-200"></div>
+                        )}
 
-            {/* Return */}
-            {tripType ===
-              "roundtrip" && (
-              <div className="text-right">
-                <p className="text-[11px] text-gray-500">
-                  Return
-                </p>
+                      {/* Return */}
+                      {tripType ===
+                        "roundtrip" && (
+                          <div className="text-right">
+                            <p className="text-[11px] text-gray-500">
+                              Return
+                            </p>
 
-                <p className="font-bold text-sm md:text-base text-gray-900 whitespace-nowrap">
-                  {format(
-                    dateRange[0]
-                      .endDate,
-                    "dd MMM"
+                            <p className="font-bold text-sm md:text-base text-gray-900 whitespace-nowrap">
+                              {format(
+                                dateRange[0]
+                                  .endDate,
+                                "dd MMM"
+                              )}
+                            </p>
+                          </div>
+                        )}
+                    </div>
+                  </button>
+
+                  {/* CALENDAR */}
+                  {showCalendar && (
+                    <div className="absolute left-1/2 xl:left-auto -translate-x-1/2 xl:translate-x-0 xl:right-0 z-50 mt-3 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-w-[95vw]">
+
+                      <div className="overflow-auto">
+                        <DateRange
+                          editableDateInputs={
+                            true
+                          }
+                          onChange={(item) =>
+                            setDateRange([
+                              item.selection,
+                            ])
+                          }
+                          moveRangeOnFirstSelection={
+                            false
+                          }
+                          ranges={
+                            dateRange
+                          }
+                          months={
+                            window.innerWidth <
+                              768
+                              ? 1
+                              : 2
+                          }
+                          direction="horizontal"
+                          minDate={addDays(
+                            new Date(),
+                            1
+                          )}
+                          rangeColors={[
+                            "#2563eb",
+                          ]}
+                        />
+                      </div>
+
+                      <div className="p-4 border-t flex justify-end">
+                        <button
+                          onClick={() =>
+                            setShowCalendar(
+                              false
+                            )
+                          }
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    </div>
                   )}
-                </p>
+                </div>
+
+                {/* PASSENGERS */}
+                <div className="xl:col-span-1">
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Travellers
+                  </label>
+
+                  <select
+                    value={passengers}
+                    onChange={(e) =>
+                      setPassengers(
+                        Number(
+                          e.target.value
+                        )
+                      )
+                    }
+                    className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
+                  >
+                    {[1, 2, 3, 4, 5].map(
+                      (n) => (
+                        <option
+                          key={n}
+                        >
+                          {n}
+                        </option>
+                      )
+                    )}
+                  </select>
+                </div>
+
+                {/* SEARCH BUTTON */}
+                <div className="xl:col-span-1 flex items-end">
+                  <button
+                    onClick={handleSearch}
+                    className="w-full h-[58px] bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Search size={20} />
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
-        </button>
 
-        {/* CALENDAR */}
-        {showCalendar && (
-          <div className="absolute left-1/2 xl:left-auto -translate-x-1/2 xl:translate-x-0 xl:right-0 z-50 mt-3 bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-w-[95vw]">
-
-            <div className="overflow-auto">
-              <DateRange
-                editableDateInputs={
-                  true
-                }
-                onChange={(item) =>
-                  setDateRange([
-                    item.selection,
-                  ])
-                }
-                moveRangeOnFirstSelection={
-                  false
-                }
-                ranges={
-                  dateRange
-                }
-                months={
-                  window.innerWidth <
-                  768
-                    ? 1
-                    : 2
-                }
-                direction="horizontal"
-                minDate={addDays(
-                  new Date(),
-                  1
-                )}
-                rangeColors={[
-                  "#2563eb",
-                ]}
-              />
-            </div>
-
-            <div className="p-4 border-t flex justify-end">
-              <button
-                onClick={() =>
-                  setShowCalendar(
-                    false
+              {/* POPULAR CITIES */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {popularCities.map(
+                  (city) => (
+                    <button
+                      key={city.code}
+                      onClick={() =>
+                        setTo(city.code)
+                      }
+                      className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-blue-50 hover:text-blue-700 text-sm font-medium transition-all"
+                    >
+                      {city.name}
+                    </button>
                   )
-                }
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold"
-              >
-                Apply
-              </button>
+                )}
+              </div>
             </div>
           </div>
-        )}
-      </div>
-
-      {/* PASSENGERS */}
-      <div className="xl:col-span-1">
-        <label className="text-sm font-semibold text-gray-700 mb-2 block">
-          Travellers
-        </label>
-
-        <select
-          value={passengers}
-          onChange={(e) =>
-            setPassengers(
-              Number(
-                e.target.value
-              )
-            )
-          }
-          className="w-full h-[58px] border-2 border-gray-200 rounded-2xl px-4 outline-none focus:border-blue-500 transition-all"
-        >
-          {[1, 2, 3, 4, 5].map(
-            (n) => (
-              <option
-                key={n}
-              >
-                {n}
-              </option>
-            )
-          )}
-        </select>
-      </div>
-
-      {/* SEARCH BUTTON */}
-      <div className="xl:col-span-1 flex items-end">
-        <button
-          onClick={handleSearch}
-          className="w-full h-[58px] bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold flex items-center justify-center gap-2 transition-all"
-        >
-          <Search size={20} />
-        </button>
-      </div>
-    </div>
-
-    {/* POPULAR CITIES */}
-    <div className="flex flex-wrap gap-2 pt-2">
-      {popularCities.map(
-        (city) => (
-          <button
-            key={city.code}
-            onClick={() =>
-              setTo(city.code)
-            }
-            className="px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-blue-50 hover:text-blue-700 text-sm font-medium transition-all"
-          >
-            {city.name}
-          </button>
-        )
-      )}
-    </div>
-  </div>
-</div>
         </div>
       </div>
 
@@ -870,7 +919,7 @@ if (
                   <span className="text-sm text-gray-500">
                     {Math.floor(
                       maxDuration /
-                        60
+                      60
                     )}
                     h{" "}
                     {maxDuration %
@@ -906,7 +955,7 @@ if (
           <div className="lg:col-span-9">
 
             {filteredFlights.length ===
-            0 ? (
+              0 ? (
               <div className="bg-white rounded-3xl p-10 text-center">
 
                 <Navigation className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -944,7 +993,7 @@ if (
                     const discount =
                       Math.floor(
                         Math.random() *
-                          25
+                        25
                       ) + 5;
 
                     return (
@@ -1057,16 +1106,16 @@ if (
 
                               {discount >
                                 15 && (
-                                <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full text-xs font-bold mb-2">
+                                  <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full text-xs font-bold mb-2">
 
-                                  <TrendingDown className="w-3 h-3" />
+                                    <TrendingDown className="w-3 h-3" />
 
-                                  {
-                                    discount
-                                  }
-                                  % OFF
-                                </div>
-                              )}
+                                    {
+                                      discount
+                                    }
+                                    % OFF
+                                  </div>
+                                )}
 
                               <p className="text-3xl font-bold">
                                 {f.price ||

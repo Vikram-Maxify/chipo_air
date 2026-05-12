@@ -17,30 +17,65 @@ const flightBookingSchema = new mongoose.Schema(
                     .toUpperCase(),
         },
 
+        // ✅ SINGLE PASSENGER SUPPORT
         passenger: {
+            passengerId: String,
+
+            title: String,
+
             firstName: String,
+
             lastName: String,
+
             email: String,
+
             phone: String,
+
             gender: String,
+
             born_on: String,
         },
 
+        // ✅ MULTIPLE PASSENGERS SUPPORT
+        passengers: [
+            {
+                passengerId: String,
+
+                title: String,
+
+                firstName: String,
+
+                lastName: String,
+
+                email: String,
+
+                phone: String,
+
+                gender: String,
+
+                born_on: String,
+            },
+        ],
+
         flight: {
             airline: String,
+
             flightNumber: String,
 
             from: {
                 city: String,
+
                 code: String,
             },
 
             to: {
                 city: String,
+
                 code: String,
             },
 
             departureAt: String,
+
             arrivalAt: String,
 
             price: String,
@@ -48,7 +83,9 @@ const flightBookingSchema = new mongoose.Schema(
 
         payment: {
             amount: String,
+
             currency: String,
+
             status: {
                 type: String,
                 default: "paid",

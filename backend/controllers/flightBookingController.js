@@ -1,28 +1,32 @@
 const axios = require("axios");
 const FlightBooking = require("../models/FlightBooking");
 
-// ✅ BOOK FLIGHT
+// ✅ BOOK FLIGHT WITH SEAT SELECTION
 exports.bookFlight = async (req, res) => {
     try {
         const {
             offerId,
             passenger,
+            passengers,
             flight,
             payment,
             passengerId,
+            selectedSeats,
         } = req.body;
 
         console.log(
             "REQ BODY:",
-            req.body
+            JSON.stringify(
+                req.body,
+                null,
+                2
+            )
         );
 
-        console.log(
-            "PASSENGER ID:",
-            passengerId
-        );
+        // ==================================================
+        // ✅ VALIDATION
+        // ==================================================
 
-        // ✅ OFFER VALIDATION
         if (!offerId) {
             return res.status(400).json({
                 success: false,
@@ -31,24 +35,32 @@ exports.bookFlight = async (req, res) => {
             });
         }
 
-        // ✅ DUFFEL PASSENGER VALIDATION
+        // ==================================================
+        // ✅ PASSENGERS
+        // ==================================================
+
+        let passengerList = [];
+
+        // ✅ MULTIPLE PASSENGERS
         if (
-            !passengerId ||
-            typeof passengerId !==
-                "string" ||
-            !passengerId.startsWith(
-                "pas_"
-            )
+            passengers &&
+            Array.isArray(passengers) &&
+            passengers.length > 0
         ) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "Valid Duffel passenger ID is required",
-            });
+            passengerList = passengers;
         }
 
-        // ✅ PASSENGER VALIDATION
-        if (!passenger) {
+        // ✅ SINGLE PASSENGER
+        else if (passenger) {
+            passengerList = [
+                {
+                    ...passenger,
+                    id: passengerId,
+                },
+            ];
+        }
+
+        else {
             return res.status(400).json({
                 success: false,
                 message:
@@ -56,88 +68,155 @@ exports.bookFlight = async (req, res) => {
             });
         }
 
-        // ✅ REQUIRED FIELDS
-        if (
-            !passenger.firstName ||
-            !passenger.lastName ||
-            !passenger.email ||
-            !passenger.phone ||
-            !passenger.gender ||
-            !passenger.born_on
-        ) {
-            return res.status(400).json({
-                success: false,
-                message:
-                    "All passenger fields are required",
-            });
+        // ==================================================
+        // ✅ VALIDATE PASSENGERS
+        // ==================================================
+
+        for (const p of passengerList) {
+            if (
+                !p.id ||
+                typeof p.id !== "string" ||
+                !p.id.startsWith("pas_")
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "Valid Duffel passenger ID is required",
+                });
+            }
+
+            if (
+                !p.firstName ||
+                !p.lastName ||
+                !p.email ||
+                !p.phone ||
+                !p.gender ||
+                !p.born_on
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message:
+                        "All passenger fields are required",
+                });
+            }
         }
 
-        // ✅ TITLE
-        const passengerTitle =
-            passenger.title || "mr";
+        // ==================================================
+        // ✅ FORMAT PASSENGERS
+        // ==================================================
 
-        // ✅ FORMAT PHONE
-        const formattedPhone =
-            passenger.phone.startsWith(
-                "+"
+        const duffelPassengers =
+            passengerList.map((p) => {
+                const formattedPhone =
+                    p.phone.startsWith("+")
+                        ? p.phone
+                        : `+91${p.phone}`;
+
+                return {
+                    id: p.id,
+
+                    title:
+                        p.title || "mr",
+
+                    given_name:
+                        p.firstName,
+
+                    family_name:
+                        p.lastName,
+
+                    born_on:
+                        p.born_on,
+
+                    gender:
+                        p.gender,
+
+                    email:
+                        p.email,
+
+                    phone_number:
+                        formattedPhone,
+                };
+            });
+
+        // ==================================================
+        // ✅ SEAT SELECTION SERVICES
+        // ==================================================
+
+        const services = [];
+
+        if (
+            selectedSeats &&
+            Array.isArray(selectedSeats) &&
+            selectedSeats.length > 0
+        ) {
+            selectedSeats.forEach(
+                (seat) => {
+                    services.push({
+                        id: seat.seatServiceId,
+                        quantity: 1,
+                    });
+                }
+            );
+        }
+
+        console.log(
+            "SELECTED SEATS:",
+            services
+        );
+
+        // ==================================================
+        // ✅ CREATE DUFFEL ORDER
+        // ==================================================
+
+        const orderPayload = {
+            data: {
+                type: "instant",
+
+                selected_offers: [
+                    offerId,
+                ],
+
+                passengers:
+                    duffelPassengers,
+
+                payments: [
+                    {
+                        type: "balance",
+
+                        amount:
+                            payment?.amount ||
+                            "0",
+
+                        currency:
+                            payment?.currency ||
+                            "INR",
+                    },
+                ],
+            },
+        };
+
+        // ✅ ADD SEAT SERVICES
+        if (services.length > 0) {
+            orderPayload.data.services =
+                services;
+        }
+
+        console.log(
+            "ORDER PAYLOAD:",
+            JSON.stringify(
+                orderPayload,
+                null,
+                2
             )
-                ? passenger.phone
-                : `+91${passenger.phone}`;
+        );
 
-        // ✅ DUFFEL ORDER CREATE
+        // ==================================================
+        // ✅ DUFFEL API
+        // ==================================================
+
         const response = await axios.post(
             "https://api.duffel.com/air/orders",
-            {
-                data: {
-                    type: "instant",
-
-                    selected_offers: [
-                        offerId,
-                    ],
-
-                    passengers: [
-                        {
-                            // ✅ IMPORTANT
-                            id: passengerId,
-
-                            title:
-                                passengerTitle,
-
-                            given_name:
-                                passenger.firstName,
-
-                            family_name:
-                                passenger.lastName,
-
-                            born_on:
-                                passenger.born_on,
-
-                            gender:
-                                passenger.gender,
-
-                            email:
-                                passenger.email,
-
-                            phone_number:
-                                formattedPhone,
-                        },
-                    ],
-
-                    payments: [
-                        {
-                            type: "balance",
-
-                            amount:
-                                payment?.amount ||
-                                "0",
-
-                            currency:
-                                payment?.currency ||
-                                "INR",
-                        },
-                    ],
-                },
-            },
+            orderPayload,
             {
                 headers: {
                     Authorization: `Bearer ${process.env.DUFFEL_API_KEY}`,
@@ -153,41 +232,74 @@ exports.bookFlight = async (req, res) => {
 
         console.log(
             "DUFFEL RESPONSE:",
-            response.data
+            JSON.stringify(
+                response.data,
+                null,
+                2
+            )
         );
 
         const order =
             response.data?.data;
 
-        // ✅ SAVE BOOKING
-        const savedBooking =
-            await FlightBooking.create({
-                offerId,
+        // ==================================================
+        // ✅ SAVE PASSENGERS
+        // ==================================================
 
-                passengerId,
+        const savedPassengers =
+            passengerList.map((p) => {
+                const formattedPhone =
+                    p.phone.startsWith("+")
+                        ? p.phone
+                        : `+91${p.phone}`;
 
-                passenger: {
+                return {
+                    passengerId: p.id,
+
                     title:
-                        passengerTitle,
+                        p.title || "mr",
 
                     firstName:
-                        passenger.firstName,
+                        p.firstName,
 
                     lastName:
-                        passenger.lastName,
+                        p.lastName,
 
                     email:
-                        passenger.email,
+                        p.email,
 
                     phone:
                         formattedPhone,
 
                     gender:
-                        passenger.gender,
+                        p.gender,
 
                     born_on:
-                        passenger.born_on,
-                },
+                        p.born_on,
+                };
+            });
+
+        // ==================================================
+        // ✅ SAVE BOOKING
+        // ==================================================
+
+        const savedBooking =
+            await FlightBooking.create({
+                offerId,
+
+                passengerId:
+                    passengerList?.[0]
+                        ?.id || null,
+
+                passengers:
+                    savedPassengers,
+
+                passenger:
+                    savedPassengers?.[0] ||
+                    null,
+
+                selectedSeats:
+                    selectedSeats || [],
 
                 flight: {
                     airline:
@@ -273,7 +385,10 @@ exports.bookFlight = async (req, res) => {
                     "confirmed",
             });
 
+        // ==================================================
         // ✅ SUCCESS
+        // ==================================================
+
         return res.status(201).json({
             success: true,
 
@@ -282,6 +397,9 @@ exports.bookFlight = async (req, res) => {
 
             booking:
                 savedBooking,
+
+            selectedSeats:
+                selectedSeats || [],
 
             duffel: order,
         });
@@ -300,6 +418,71 @@ exports.bookFlight = async (req, res) => {
                     ?.errors?.[0]
                     ?.message ||
                 "Flight booking failed",
+
+            error:
+                err.response?.data ||
+                err.message,
+        });
+    }
+};
+
+// ✅ GET ALL BOOKINGS
+exports.getBookings = async (
+    req,
+    res
+) => {
+    try {
+        const bookings =
+            await FlightBooking.find().sort({
+                createdAt: -1,
+            });
+
+        return res.status(200).json({
+            success: true,
+
+            count: bookings.length,
+
+            bookings,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+
+            message: err.message,
+        });
+    }
+};
+
+// ✅ GET SINGLE BOOKING
+exports.getSingleBooking = async (
+    req,
+    res
+) => {
+    try {
+        const booking =
+            await FlightBooking.findById(
+                req.params.id
+            );
+
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+
+                message:
+                    "Booking not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+
+            booking,
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+
+            message: err.message,
         });
     }
 };

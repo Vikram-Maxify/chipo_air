@@ -6,39 +6,69 @@ exports.getFlights = async (req, res) => {
             from,
             to,
             date,
+            passengers = 1,
         } = req.query;
 
+        console.log(
+            "REQ QUERY:",
+            req.query
+        );
+
+        // ==================================================
         // ✅ VALIDATION
+        // ==================================================
+
         if (!from || !to) {
             return res.status(400).json({
                 success: false,
+
                 message:
                     "From and To airport codes are required",
             });
         }
 
+        const passengerCount =
+            Number(passengers);
+
+        if (
+            isNaN(passengerCount) ||
+            passengerCount < 1
+        ) {
+            return res.status(400).json({
+                success: false,
+
+                message:
+                    "Passengers must be greater than 0",
+            });
+        }
+
+        // ==================================================
         // ✅ TOMORROW DATE
-        const getTomorrowDate =
-            () => {
-                const tomorrow =
-                    new Date();
+        // ==================================================
 
-                tomorrow.setDate(
-                    tomorrow.getDate() +
-                        1
-                );
+        const getTomorrowDate = () => {
 
-                return tomorrow
-                    .toISOString()
-                    .split("T")[0];
-            };
+            const tomorrow =
+                new Date();
 
+            tomorrow.setDate(
+                tomorrow.getDate() +
+                1
+            );
+
+            return tomorrow
+                .toISOString()
+                .split("T")[0];
+        };
+
+        // ==================================================
         // ✅ DATE
+        // ==================================================
+
         const departureDate =
             date ||
             getTomorrowDate();
 
-        // ✅ PREVENT PAST DATE
         const today =
             new Date();
 
@@ -55,14 +85,39 @@ exports.getFlights = async (req, res) => {
             );
 
         if (
-            selectedDate <= today
+            selectedDate <=
+            today
         ) {
             return res.status(400).json({
                 success: false,
+
                 message:
                     "Departure date must be in the future",
             });
         }
+
+        // ==================================================
+        // ✅ CREATE PASSENGERS
+        // ==================================================
+
+        const passengersData =
+            [];
+
+        for (
+            let i = 0;
+            i <
+            passengerCount;
+            i++
+        ) {
+            passengersData.push({
+                type: "adult",
+            });
+        }
+
+        console.log(
+            "PASSENGERS SENT:",
+            passengersData
+        );
 
         // ==================================================
         // ✅ CREATE OFFER REQUEST
@@ -86,17 +141,14 @@ exports.getFlights = async (req, res) => {
                             },
                         ],
 
-                        // ✅ IMPORTANT
-                        // DO NOT ADD id HERE
                         passengers:
-                            [
-                                {
-                                    type: "adult",
-                                },
-                            ],
+                            passengersData,
 
                         cabin_class:
                             "economy",
+
+                        return_offers:
+                            true,
                     },
                 },
                 {
@@ -114,171 +166,489 @@ exports.getFlights = async (req, res) => {
 
         console.log(
             "DUFFEL RESPONSE:",
-            response.data
+            JSON.stringify(
+                response.data,
+                null,
+                2
+            )
         );
-
-        // ==================================================
-        // ✅ GET REAL PASSENGER ID
-        // ==================================================
-
 
         // ==================================================
         // ✅ OFFERS
         // ==================================================
 
         const offers =
-            response.data?.data
+            response.data
+                ?.data
                 ?.offers || [];
 
         // ==================================================
-        // ✅ CLEAN DATA
+        // ✅ FORMAT FLIGHTS
         // ==================================================
 
         const flights =
-            offers.map(
-                (offer) => {
-                    const segment =
+            await Promise.all(
+                offers.map(
+                    async (
                         offer
-                            ?.slices?.[0]
-                            ?.segments?.[0];
+                    ) => {
 
-                    return {
-                        // ✅ OFFER ID
-                        offerId:
-                            offer?.id ||
-                            null,
+                        // ==========================================
+                        // ✅ ALL SEGMENTS
+                        // ==========================================
 
-                        // ✅ REAL DUFFEL PASSENGER ID
-passengerId:
-    offer?.passengers?.[0]
-        ?.id || null,
-                        route: {
-                            from: {
-                                city:
-                                    segment
-                                        ?.origin
-                                        ?.city_name ||
-                                    "N/A",
+                        const segments =
+                            offer?.slices?.[0]
+                                ?.segments || [];
 
-                                code:
-                                    segment
-                                        ?.origin
-                                        ?.iata_code ||
-                                    "N/A",
+                        // ==========================================
+                        // ✅ FIRST SEGMENT
+                        // ==========================================
 
-                                terminal:
-                                    segment?.departing_terminal ||
-                                    "N/A",
+                        const firstSegment =
+                            segments?.[0];
 
-                                gate: "N/A",
-                            },
+                        // ==========================================
+                        // ✅ LAST SEGMENT
+                        // ==========================================
 
-                            to: {
-                                city:
-                                    segment
-                                        ?.destination
-                                        ?.city_name ||
-                                    "N/A",
+                        const lastSegment =
+                            segments?.[
+                                segments.length -
+                                1
+                            ];
 
-                                code:
-                                    segment
-                                        ?.destination
-                                        ?.iata_code ||
-                                    "N/A",
+                        // ==========================================
+                        // ✅ ALL AIRLINES
+                        // ==========================================
 
-                                terminal:
-                                    segment?.arriving_terminal ||
-                                    "N/A",
+                        const airlines =
+                            [
+                                ...new Set(
+                                    segments.map(
+                                        (
+                                            s
+                                        ) =>
+                                            s
+                                                ?.operating_carrier
+                                                ?.name
+                                    )
+                                ),
+                            ];
 
-                                gate: "N/A",
-                            },
-                        },
+                        // ==========================================
+                        // ✅ ALL FLIGHT NUMBERS
+                        // ==========================================
 
-                        airline:
-                            segment
-                                ?.operating_carrier
-                                ?.name ||
-                            "Unknown Airline",
+                        const flightNumbers =
+                            segments.map(
+                                (
+                                    s
+                                ) =>
+                                    s?.operating_carrier_flight_number
+                            );
 
-                        flightNumber:
-                            segment?.operating_carrier_flight_number ||
-                            "N/A",
+                        // ==========================================
+                        // ✅ STOPS
+                        // ==========================================
 
-                        timing: {
-                            departure:
-                                {
-                                    scheduled:
-                                        segment?.departing_at ||
-                                        null,
+                        const stops =
+                            segments.length -
+                            1;
 
-                                    actual:
-                                        segment?.departing_at ||
-                                        null,
+                        // ==========================================
+                        // ✅ PASSENGERS
+                        // ==========================================
 
-                                    delay:
-                                        "On Time",
+                        const realPassengers =
+                            offer?.passengers?.map(
+                                (
+                                    passenger,
+                                    index
+                                ) => ({
+                                    passengerNo:
+                                        index +
+                                        1,
+
+                                    passengerId:
+                                        passenger?.id,
+
+                                    type:
+                                        passenger?.type,
+                                })
+                            ) ||
+                            [];
+
+                        // ==========================================
+                        // ✅ SEAT SERVICES
+                        // ==========================================
+
+                        const seatServices =
+                            offer?.available_services
+                                ?.filter(
+                                    (
+                                        service
+                                    ) =>
+                                        service?.type ===
+                                        "seat"
+                                )
+                                ?.map(
+                                    (
+                                        seat,
+                                        index
+                                    ) => ({
+                                        seatNo:
+                                            index +
+                                            1,
+
+                                        seatServiceId:
+                                            seat?.id ||
+                                            null,
+
+                                        amount:
+                                            Number(
+                                                seat?.total_amount ||
+                                                0
+                                            ),
+
+                                        currency:
+                                            seat?.total_currency ||
+                                            "USD",
+                                    })
+                                ) ||
+                            [];
+
+                        // ==========================================
+                        // ✅ SEAT MAP
+                        // ==========================================
+
+                        let seatMapData =
+                            [];
+
+                        try {
+
+                            const seatMapResponse =
+                                await axios.post(
+                                    "https://api.duffel.com/air/seat_maps",
+                                    {
+                                        data: {
+                                            offer_id:
+                                                offer.id,
+                                        },
+                                    },
+                                    {
+                                        headers:
+                                            {
+                                                Authorization: `Bearer ${process.env.DUFFEL_API_KEY}`,
+
+                                                "Duffel-Version":
+                                                    "v2",
+
+                                                "Content-Type":
+                                                    "application/json",
+                                            },
+                                    }
+                                );
+
+                            console.log(
+                                "SEAT MAP RESPONSE:",
+                                JSON.stringify(
+                                    seatMapResponse.data,
+                                    null,
+                                    2
+                                )
+                            );
+
+                            const seatMaps =
+                                seatMapResponse
+                                    ?.data
+                                    ?.data ||
+                                [];
+
+                            // ======================================
+                            // ✅ LOOP CABINS
+                            // ======================================
+
+                            seatMaps.forEach(
+                                (
+                                    seatMap
+                                ) => {
+
+                                    seatMap?.cabins?.forEach(
+                                        (
+                                            cabin
+                                        ) => {
+
+                                            cabin?.rows?.forEach(
+                                                (
+                                                    row
+                                                ) => {
+
+                                                    row?.sections?.forEach(
+                                                        (
+                                                            section
+                                                        ) => {
+
+                                                            section?.elements?.forEach(
+                                                                (
+                                                                    element
+                                                                ) => {
+
+                                                                    if (
+                                                                        element?.type ===
+                                                                        "seat"
+                                                                    ) {
+
+                                                                        const service =
+                                                                            offer?.available_services?.find(
+                                                                                (
+                                                                                    s
+                                                                                ) =>
+                                                                                    s?.id ===
+                                                                                    element?.available_services?.[0]
+                                                                            );
+
+                                                                        seatMapData.push(
+                                                                            {
+                                                                                seatId:
+                                                                                    element?.id,
+
+                                                                                seatNumber:
+                                                                                    element?.designator,
+
+                                                                                available:
+                                                                                    element?.available,
+
+                                                                                seatServiceId:
+                                                                                    service?.id ||
+                                                                                    null,
+
+                                                                                price:
+                                                                                    Number(
+                                                                                        service?.total_amount ||
+                                                                                        0
+                                                                                    ),
+
+                                                                                currency:
+                                                                                    service?.total_currency ||
+                                                                                    "USD",
+
+                                                                                cabin:
+                                                                                    cabin?.cabin_class ||
+                                                                                    "economy",
+                                                                            }
+                                                                        );
+                                                                    }
+                                                                }
+                                                            );
+                                                        }
+                                                    );
+                                                }
+                                            );
+                                        }
+                                    );
+                                }
+                            );
+
+                            console.log(
+                                "FINAL SEATS:",
+                                seatMapData
+                            );
+
+                        } catch (
+                            seatErr
+                        ) {
+
+                            console.log(
+                                "SEAT MAP ERROR:",
+                                seatErr
+                                    ?.response
+                                    ?.data ||
+                                seatErr.message
+                            );
+                        }
+
+                        // ==========================================
+                        // ✅ RETURN FLIGHT
+                        // ==========================================
+
+                        return {
+
+                            // OFFER
+                            offerId:
+                                offer?.id ||
+                                null,
+
+                            // PASSENGERS
+                            passengers:
+                                realPassengers,
+
+                            totalPassengers:
+                                realPassengers.length,
+
+                            // ROUTE
+                            route: {
+                                from: {
+                                    city:
+                                        firstSegment
+                                            ?.origin
+                                            ?.city_name ||
+                                        "N/A",
+
+                                    code:
+                                        firstSegment
+                                            ?.origin
+                                            ?.iata_code ||
+                                        "N/A",
+
+                                    terminal:
+                                        firstSegment?.departing_terminal ||
+                                        "N/A",
                                 },
 
-                            arrival:
+                                to: {
+                                    city:
+                                        lastSegment
+                                            ?.destination
+                                            ?.city_name ||
+                                        "N/A",
+
+                                    code:
+                                        lastSegment
+                                            ?.destination
+                                            ?.iata_code ||
+                                        "N/A",
+
+                                    terminal:
+                                        lastSegment?.arriving_terminal ||
+                                        "N/A",
+                                },
+                            },
+
+                            // AIRLINES
+                            airline:
+                                airlines.join(
+                                    " + "
+                                ) ||
+                                "Unknown Airline",
+
+                            airlines,
+
+                            // FLIGHT NUMBERS
+                            flightNumber:
+                                flightNumbers.join(
+                                    ", "
+                                ) ||
+                                "N/A",
+
+                            flightNumbers,
+
+                            // STOPS
+                            stops,
+
+                            // SEGMENTS
+                            segments,
+
+                            // TIMING
+                            timing: {
+                                departure:
                                 {
                                     scheduled:
-                                        segment?.arriving_at ||
+                                        firstSegment?.departing_at ||
                                         null,
-
-                                    actual:
-                                        segment?.arriving_at ||
-                                        null,
-
-                                    delay:
-                                        "On Time",
                                 },
-                        },
 
-                        price: `${offer?.total_amount} ${offer?.total_currency}`,
+                                arrival:
+                                {
+                                    scheduled:
+                                        lastSegment?.arriving_at ||
+                                        null,
+                                },
+                            },
 
-                        rawPrice:
-                            offer?.total_amount ||
-                            0,
+                            // PRICE
+                            totalAmount:
+                                offer?.total_amount ||
+                                0,
 
-                        currency:
-                            offer?.total_currency ||
-                            "INR",
+                            currency:
+                                offer?.total_currency ||
+                                "USD",
 
-                        status:
-                            "scheduled",
-                    };
-                }
+                            price:
+                                `${offer?.total_amount} ${offer?.total_currency}`,
+
+                            // SEATS
+                            seatServices,
+
+                            totalSeats:
+                                seatMapData.length,
+
+                            seats:
+                                seatMapData,
+
+                            // STATUS
+                            status:
+                                "scheduled",
+                        };
+                    }
+                )
             );
 
         // ==================================================
-        // ✅ RESPONSE
+        // ✅ FINAL LOG
+        // ==================================================
+
+        console.log(
+            "FINAL FLIGHTS:",
+            JSON.stringify(
+                flights,
+                null,
+                2
+            )
+        );
+
+        // ==================================================
+        // ✅ SUCCESS
         // ==================================================
 
         return res.status(200).json({
             success: true,
 
-            count:
+            requestedPassengers:
+                passengerCount,
+
+            totalFlights:
                 flights.length,
 
             flights,
 
             raw: offers,
         });
+
     } catch (err) {
+
         console.log(
             "DUFFEL ERROR:",
-            err.response?.data ||
-                err.message
+            err.response
+                ?.data ||
+            err.message
         );
 
         return res.status(500).json({
             success: false,
 
             message:
-                err.response?.data
+                err.response
+                    ?.data
                     ?.errors?.[0]
                     ?.message ||
                 "Error fetching flights from Duffel",
+
+            error:
+                err.response
+                    ?.data ||
+                err.message,
         });
     }
 };
