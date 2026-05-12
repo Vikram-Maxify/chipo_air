@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nwpr/airport-codes": "^3.0.3",
     "@reduxjs/toolkit": "^2.11.2",
+    "airports-list": "^1.0.2",
     "axios": "^1.15.2",
     "date-fns": "^4.1.0",
+    "iata-airports": "^1.0.4",
     "lucide-react": "^1.14.0",
     "react": "^19.2.5",
     "react-date-range": "^2.0.1",

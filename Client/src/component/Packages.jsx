@@ -76,7 +76,7 @@ const Packages = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen -z-10">
       {/* SEO */}
       <Helmet>
         <title>Travel Packages | Best Deals & Tours 2024</title>

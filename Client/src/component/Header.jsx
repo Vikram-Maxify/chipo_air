@@ -56,7 +56,7 @@ const Header = () => {
 
     return (
         <header
-            className={`sticky top-0 z-50 transition-all duration-300 ${scrolled
+            className={`sticky top-0 z-[999999] transition-all duration-300 ${scrolled
                     ? "bg-white/95 backdrop-blur-md shadow-lg"
                     : "bg-white border-b border-gray-100"
                 }`}
@@ -72,7 +72,7 @@ const Header = () => {
                             </div>
                             <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
                         </div>
-                        <div className="hidden sm:block">
+                        <div className="">
                             <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                                 Flight
                             </span>

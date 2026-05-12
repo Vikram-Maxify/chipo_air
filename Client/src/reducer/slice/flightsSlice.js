@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// 🔥 Async thunk
+// 🔥 Async thunk - Direct API call without session storage
 export const getFlightsThunk = createAsyncThunk(
     "flights/getFlights",
     async (
@@ -11,6 +11,7 @@ export const getFlightsThunk = createAsyncThunk(
             departure_date,
             return_date,
             passengers,
+            travelClass,
         },
         { rejectWithValue }
     ) => {
@@ -31,17 +32,18 @@ export const getFlightsThunk = createAsyncThunk(
                 params.append("passengers", passengers);
             }
 
+            if (travelClass) {
+                params.append("class", travelClass);
+            }
+
             const res = await axios.get(
                 `http://localhost:5004/api/flights/search?${params.toString()}`
             );
 
             const flights = res.data?.flights || [];
 
-            // ✅ SAVE TO SESSION STORAGE
-            sessionStorage.setItem(
-                "flights",
-                JSON.stringify(flights)
-            );
+            // ❌ REMOVED session storage save
+            // sessionStorage.setItem("flights", JSON.stringify(flights));
 
             return flights;
         } catch (err) {
@@ -53,12 +55,9 @@ export const getFlightsThunk = createAsyncThunk(
     }
 );
 
-// ✅ LOAD FROM SESSION STORAGE
-const savedFlights =
-    JSON.parse(sessionStorage.getItem("flights")) || [];
-
+// ✅ Initial state - No saved flights from session storage
 const initialState = {
-    flights: savedFlights,
+    flights: [], // Start with empty array
     loading: false,
     error: null,
 };
@@ -71,9 +70,7 @@ const flightSlice = createSlice({
         clearFlights: (state) => {
             state.flights = [];
             state.error = null;
-
-            // ❌ clear from storage
-            sessionStorage.removeItem("flights");
+            // ❌ Removed session storage removal
         },
     },
 
@@ -89,12 +86,7 @@ const flightSlice = createSlice({
                 (state, action) => {
                     state.loading = false;
                     state.flights = action.payload;
-
-                    // ✅ update storage
-                    sessionStorage.setItem(
-                        "flights",
-                        JSON.stringify(action.payload)
-                    );
+                    // ❌ REMOVED session storage save
                 }
             )
 
