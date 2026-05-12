@@ -54,7 +54,7 @@ app.use(
 );
 
 (async () => {
-  const hash = await bcrypt.hash("admin@1234", 10);
+  const hash = await bcrypt.hash("user@1234", 10);
   console.log(hash);
 })();
 

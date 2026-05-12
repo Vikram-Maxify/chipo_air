@@ -71,7 +71,7 @@ export const logoutUser = createAsyncThunk(
     "auth/logoutUser",
     async (_, { rejectWithValue }) => {
         try {
-            const res = await API.post("/auth/logout");
+            const res = await API.get("/auth/logout");
             return res.data;
         } catch (err) {
             return rejectWithValue(err.response?.data?.message);
@@ -165,6 +165,22 @@ const authSlice = createSlice({
             .addCase(getProfile.fulfilled, (state, action) => {
                 state.user = action.payload.user;
                 state.isAuthenticated = true;
+            })
+
+            .addCase(getProfile.pending, (state) => {
+                state.loading = true;
+            })
+
+            .addCase(getProfile.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload.user;
+                state.isAuthenticated = true;
+            })
+
+            .addCase(getProfile.rejected, (state) => {
+                state.loading = false;
+                state.user = null;
+                state.isAuthenticated = false;
             })
 
             // LOGOUT
