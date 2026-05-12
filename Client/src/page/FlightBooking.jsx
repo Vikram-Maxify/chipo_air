@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {
+    useDispatch,
+    useSelector,
+} from "react-redux";
 
 import {
     useLocation,
@@ -28,10 +31,15 @@ const FlightBooking = () => {
 
     const location = useLocation();
 
-    // ✅ GET OFFER ID FROM URL
+    // ✅ URL PARAM
     const { id } = useParams();
 
-    // ✅ GET FLIGHTS FROM REDUX
+    // ✅ AUTH
+    const { user } = useSelector(
+        (state) => state.auth
+    );
+
+    // ✅ FLIGHTS
     const { flights } = useSelector(
         (state) => state.flights
     );
@@ -46,11 +54,12 @@ const FlightBooking = () => {
         (state) => state.flightBooking
     );
 
-    // ✅ GET FLIGHT
+    // ✅ GET CURRENT FLIGHT
     const flight =
         location.state?.flight ||
         flights.find(
-            (f) => f.offerId === id
+            (f) =>
+                f.offerId === id
         );
 
     // ✅ FORM STATE
@@ -62,7 +71,8 @@ const FlightBooking = () => {
 
             lastName: "",
 
-            email: "",
+            email:
+                user?.email || "",
 
             phone: "",
 
@@ -77,12 +87,15 @@ const FlightBooking = () => {
             <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
                 <div className="text-center">
                     <h1 className="text-3xl font-bold mb-3">
-                        No Flight Selected
+                        No Flight
+                        Selected
                     </h1>
 
                     <button
                         onClick={() =>
-                            navigate("/flights")
+                            navigate(
+                                "/flights"
+                            )
                         }
                         className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-2xl font-semibold transition"
                     >
@@ -93,15 +106,8 @@ const FlightBooking = () => {
         );
     }
 
-    // ✅ HANDLE INPUT
+    // ✅ INPUT CHANGE
     const handleChange = (e) => {
-        console.log(
-            "FIELD:",
-            e.target.name,
-            "VALUE:",
-            e.target.value
-        );
-
         setFormData((prev) => ({
             ...prev,
 
@@ -113,13 +119,13 @@ const FlightBooking = () => {
     // ✅ HANDLE BOOKING
     const handleBooking = async () => {
         console.log(
-            "FORM DATA:",
-            formData
+            "FULL FLIGHT:",
+            flight
         );
 
         console.log(
-            "FLIGHT:",
-            flight
+            "PASSENGER ID:",
+            flight?.passengerId
         );
 
         // ✅ VALIDATION
@@ -130,31 +136,54 @@ const FlightBooking = () => {
             !formData.phone?.trim() ||
             !formData.born_on
         ) {
-            alert("Please fill all fields");
+            alert(
+                "Please fill all fields"
+            );
 
             return;
         }
 
+        // ✅ VALID DUFFEL PASSENGER ID
+        if (
+            !flight?.passengerId ||
+            !flight?.passengerId.startsWith(
+                "pas_"
+            )
+        ) {
+            alert(
+                "Invalid Duffel passenger ID"
+            );
+
+            return;
+        }
+
+        // ✅ PRICE
         const priceParts =
-            flight.price?.split(" ");
+            flight.price?.split(
+                " "
+            ) || [];
 
         const amount =
-            priceParts?.[0] || "0";
+            priceParts?.[0] ||
+            "0";
 
         const currency =
-            priceParts?.[1] || "INR";
+            priceParts?.[1] ||
+            "INR";
 
-        // ✅ PAYLOAD
+        // ✅ FINAL PAYLOAD
         const bookingPayload = {
-            // ✅ IMPORTANT
-            offerId: flight.offerId,
+            // ✅ OFFER ID
+            offerId:
+                flight.offerId,
 
-            // ✅ IMPORTANT
+            // ✅ REAL DUFFEL PASSENGER ID
             passengerId:
                 flight.passengerId,
 
             passenger: {
-                title: formData.title,
+                title:
+                    formData.title,
 
                 firstName:
                     formData.firstName,
@@ -162,13 +191,18 @@ const FlightBooking = () => {
                 lastName:
                     formData.lastName,
 
-                email: formData.email,
+                email:
+                    formData.email,
 
-                phone: formData.phone.startsWith("+91")
-                    ? formData.phone
-                    : `+91${formData.phone}`,
+                phone:
+                    formData.phone.startsWith(
+                        "+91"
+                    )
+                        ? formData.phone
+                        : `+91${formData.phone}`,
 
-                gender: formData.gender,
+                gender:
+                    formData.gender,
 
                 born_on:
                     formData.born_on,
@@ -183,29 +217,36 @@ const FlightBooking = () => {
 
                 from: {
                     city:
-                        flight.route.from.city,
+                        flight.route
+                            .from.city,
 
                     code:
-                        flight.route.from.code,
+                        flight.route
+                            .from.code,
                 },
 
                 to: {
                     city:
-                        flight.route.to.city,
+                        flight.route
+                            .to.city,
 
                     code:
-                        flight.route.to.code,
+                        flight.route
+                            .to.code,
                 },
 
                 departureAt:
-                    flight.timing.departure
+                    flight.timing
+                        .departure
                         .scheduled,
 
                 arrivalAt:
-                    flight.timing.arrival
+                    flight.timing
+                        .arrival
                         .scheduled,
 
-                price: flight.price,
+                price:
+                    flight.price,
             },
 
             payment: {
@@ -250,7 +291,7 @@ const FlightBooking = () => {
             <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-6">
                 {/* LEFT */}
                 <div className="lg:col-span-2 bg-white/10 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl">
-                    {/* HEADING */}
+                    {/* HEADER */}
                     <div className="flex items-center gap-3 mb-8">
                         <div className="bg-blue-500/20 p-3 rounded-2xl">
                             <Plane className="w-7 h-7 text-blue-300" />
@@ -258,11 +299,13 @@ const FlightBooking = () => {
 
                         <div>
                             <h1 className="text-3xl font-bold">
-                                Passenger Details
+                                Passenger
+                                Details
                             </h1>
 
                             <p className="text-slate-300 text-sm mt-1">
-                                Complete your booking
+                                Complete
+                                your booking
                                 information
                             </p>
                         </div>
@@ -278,9 +321,13 @@ const FlightBooking = () => {
 
                             <select
                                 name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                value={
+                                    formData.title
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                             >
                                 <option value="mr">
                                     Mr
@@ -311,9 +358,11 @@ const FlightBooking = () => {
                                     value={
                                         formData.firstName
                                     }
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
                                     placeholder="Enter first name"
-                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                                 />
                             </div>
                         </div>
@@ -333,9 +382,11 @@ const FlightBooking = () => {
                                     value={
                                         formData.lastName
                                     }
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
                                     placeholder="Enter last name"
-                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                                 />
                             </div>
                         </div>
@@ -352,10 +403,14 @@ const FlightBooking = () => {
                                 <input
                                     type="email"
                                     name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.email
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
                                     placeholder="Enter email"
-                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                                 />
                             </div>
                         </div>
@@ -372,10 +427,14 @@ const FlightBooking = () => {
                                 <input
                                     type="text"
                                     name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
+                                    value={
+                                        formData.phone
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
                                     placeholder="Enter phone number"
-                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                                 />
                             </div>
                         </div>
@@ -383,7 +442,8 @@ const FlightBooking = () => {
                         {/* DOB */}
                         <div>
                             <label className="block text-sm text-slate-300 mb-2">
-                                Date of Birth
+                                Date of
+                                Birth
                             </label>
 
                             <div className="relative">
@@ -395,13 +455,17 @@ const FlightBooking = () => {
                                     value={
                                         formData.born_on
                                     }
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
                                     max={
                                         new Date()
                                             .toISOString()
-                                            .split("T")[0]
+                                            .split(
+                                                "T"
+                                            )[0]
                                     }
-                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                    className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                                 />
                             </div>
                         </div>
@@ -414,9 +478,13 @@ const FlightBooking = () => {
 
                             <select
                                 name="gender"
-                                value={formData.gender}
-                                onChange={handleChange}
-                                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 focus:border-blue-400 outline-none"
+                                value={
+                                    formData.gender
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/10 outline-none"
                             >
                                 <option value="m">
                                     Male
@@ -438,19 +506,25 @@ const FlightBooking = () => {
 
                     {/* BUTTON */}
                     <button
-                        onClick={handleBooking}
-                        disabled={loading}
-                        className="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-2xl hover:scale-[1.01] disabled:opacity-70"
+                        onClick={
+                            handleBooking
+                        }
+                        disabled={
+                            loading
+                        }
+                        className="w-full mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 disabled:opacity-70"
                     >
                         {loading ? (
                             <>
                                 <Loader2 className="w-6 h-6 animate-spin" />
-                                Booking Flight...
+                                Booking
+                                Flight...
                             </>
                         ) : (
                             <>
                                 <CreditCard className="w-6 h-6" />
-                                Confirm Booking
+                                Confirm
+                                Booking
                             </>
                         )}
                     </button>
@@ -467,7 +541,9 @@ const FlightBooking = () => {
                             <div className="flex items-center justify-between mb-5">
                                 <div>
                                     <p className="text-lg font-bold">
-                                        {flight.airline}
+                                        {
+                                            flight.airline
+                                        }
                                     </p>
 
                                     <p className="text-sm text-slate-400">
@@ -484,14 +560,18 @@ const FlightBooking = () => {
                                 <div>
                                     <p className="text-2xl font-bold">
                                         {
-                                            flight.route.from
+                                            flight
+                                                .route
+                                                .from
                                                 .code
                                         }
                                     </p>
 
                                     <p className="text-sm text-slate-400">
                                         {
-                                            flight.route.from
+                                            flight
+                                                .route
+                                                .from
                                                 .city
                                         }
                                     </p>
@@ -502,14 +582,18 @@ const FlightBooking = () => {
                                 <div className="text-right">
                                     <p className="text-2xl font-bold">
                                         {
-                                            flight.route.to
+                                            flight
+                                                .route
+                                                .to
                                                 .code
                                         }
                                     </p>
 
                                     <p className="text-sm text-slate-400">
                                         {
-                                            flight.route.to
+                                            flight
+                                                .route
+                                                .to
                                                 .city
                                         }
                                     </p>
@@ -520,11 +604,14 @@ const FlightBooking = () => {
                         {/* PRICE */}
                         <div className="bg-gradient-to-r from-blue-600/20 to-indigo-700/20 rounded-2xl p-5 border border-blue-500/20">
                             <p className="text-sm text-slate-300 mb-2">
-                                Total Amount
+                                Total
+                                Amount
                             </p>
 
                             <h3 className="text-4xl font-extrabold text-white">
-                                {flight.price}
+                                {
+                                    flight.price
+                                }
                             </h3>
                         </div>
 
@@ -536,12 +623,14 @@ const FlightBooking = () => {
                                         <CheckCircle className="text-emerald-400" />
 
                                         <h3 className="font-bold text-emerald-300">
-                                            Booking Confirmed
+                                            Booking
+                                            Confirmed
                                         </h3>
                                     </div>
 
                                     <p className="text-sm text-slate-300">
-                                        Booking Reference
+                                        Booking
+                                        Reference
                                     </p>
 
                                     <p className="font-bold text-lg mt-1">
@@ -557,4 +646,5 @@ const FlightBooking = () => {
         </div>
     );
 };
+
 export default FlightBooking;

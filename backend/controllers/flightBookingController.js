@@ -9,25 +9,45 @@ exports.bookFlight = async (req, res) => {
             passenger,
             flight,
             payment,
-            passengerId = "69e9e1839a7e932677d9e803"
+            passengerId,
         } = req.body;
 
-        // ✅ VALIDATION
+        console.log(
+            "REQ BODY:",
+            req.body
+        );
+
+        console.log(
+            "PASSENGER ID:",
+            passengerId
+        );
+
+        // ✅ OFFER VALIDATION
         if (!offerId) {
             return res.status(400).json({
                 success: false,
-                message: "Offer ID is required",
+                message:
+                    "Offer ID is required",
             });
         }
 
-        if (!passengerId) {
+        // ✅ DUFFEL PASSENGER VALIDATION
+        if (
+            !passengerId ||
+            typeof passengerId !==
+                "string" ||
+            !passengerId.startsWith(
+                "pas_"
+            )
+        ) {
             return res.status(400).json({
                 success: false,
                 message:
-                    "Passenger ID is required",
+                    "Valid Duffel passenger ID is required",
             });
         }
 
+        // ✅ PASSENGER VALIDATION
         if (!passenger) {
             return res.status(400).json({
                 success: false,
@@ -36,6 +56,7 @@ exports.bookFlight = async (req, res) => {
             });
         }
 
+        // ✅ REQUIRED FIELDS
         if (
             !passenger.firstName ||
             !passenger.lastName ||
@@ -51,26 +72,36 @@ exports.bookFlight = async (req, res) => {
             });
         }
 
-        // ✅ DEFAULT TITLE
+        // ✅ TITLE
         const passengerTitle =
             passenger.title || "mr";
 
-        // ✅ CREATE DUFFEL ORDER
+        // ✅ FORMAT PHONE
+        const formattedPhone =
+            passenger.phone.startsWith(
+                "+"
+            )
+                ? passenger.phone
+                : `+91${passenger.phone}`;
+
+        // ✅ DUFFEL ORDER CREATE
         const response = await axios.post(
             "https://api.duffel.com/air/orders",
             {
                 data: {
                     type: "instant",
 
-                    // ✅ IMPORTANT
-                    selected_offers: [offerId],
+                    selected_offers: [
+                        offerId,
+                    ],
 
                     passengers: [
                         {
                             // ✅ IMPORTANT
                             id: passengerId,
 
-                            title: passengerTitle,
+                            title:
+                                passengerTitle,
 
                             given_name:
                                 passenger.firstName,
@@ -84,10 +115,11 @@ exports.bookFlight = async (req, res) => {
                             gender:
                                 passenger.gender,
 
-                            email: passenger.email,
+                            email:
+                                passenger.email,
 
                             phone_number:
-                                passenger.phone,
+                                formattedPhone,
                         },
                     ],
 
@@ -96,7 +128,8 @@ exports.bookFlight = async (req, res) => {
                             type: "balance",
 
                             amount:
-                                payment?.amount || "0",
+                                payment?.amount ||
+                                "0",
 
                             currency:
                                 payment?.currency ||
@@ -109,7 +142,8 @@ exports.bookFlight = async (req, res) => {
                 headers: {
                     Authorization: `Bearer ${process.env.DUFFEL_API_KEY}`,
 
-                    "Duffel-Version": "v2",
+                    "Duffel-Version":
+                        "v2",
 
                     "Content-Type":
                         "application/json",
@@ -117,7 +151,13 @@ exports.bookFlight = async (req, res) => {
             }
         );
 
-        const order = response.data?.data;
+        console.log(
+            "DUFFEL RESPONSE:",
+            response.data
+        );
+
+        const order =
+            response.data?.data;
 
         // ✅ SAVE BOOKING
         const savedBooking =
@@ -127,7 +167,8 @@ exports.bookFlight = async (req, res) => {
                 passengerId,
 
                 passenger: {
-                    title: passengerTitle,
+                    title:
+                        passengerTitle,
 
                     firstName:
                         passenger.firstName,
@@ -135,9 +176,11 @@ exports.bookFlight = async (req, res) => {
                     lastName:
                         passenger.lastName,
 
-                    email: passenger.email,
+                    email:
+                        passenger.email,
 
-                    phone: passenger.phone,
+                    phone:
+                        formattedPhone,
 
                     gender:
                         passenger.gender,
@@ -148,7 +191,8 @@ exports.bookFlight = async (req, res) => {
 
                 flight: {
                     airline:
-                        flight?.airline || "N/A",
+                        flight?.airline ||
+                        "N/A",
 
                     flightNumber:
                         flight?.flightNumber ||
@@ -156,51 +200,63 @@ exports.bookFlight = async (req, res) => {
 
                     from: {
                         city:
-                            flight?.from?.city ||
-                            flight?.route?.from
+                            flight?.from
+                                ?.city ||
+                            flight?.route
+                                ?.from
                                 ?.city ||
                             "N/A",
 
                         code:
-                            flight?.from?.code ||
-                            flight?.route?.from
+                            flight?.from
+                                ?.code ||
+                            flight?.route
+                                ?.from
                                 ?.code ||
                             "N/A",
                     },
 
                     to: {
                         city:
-                            flight?.to?.city ||
-                            flight?.route?.to
+                            flight?.to
+                                ?.city ||
+                            flight?.route
+                                ?.to
                                 ?.city ||
                             "N/A",
 
                         code:
-                            flight?.to?.code ||
-                            flight?.route?.to
+                            flight?.to
+                                ?.code ||
+                            flight?.route
+                                ?.to
                                 ?.code ||
                             "N/A",
                     },
 
                     departureAt:
                         flight?.departureAt ||
-                        flight?.timing?.departure
+                        flight?.timing
+                            ?.departure
                             ?.scheduled ||
                         null,
 
                     arrivalAt:
                         flight?.arrivalAt ||
-                        flight?.timing?.arrival
+                        flight?.timing
+                            ?.arrival
                             ?.scheduled ||
                         null,
 
                     price:
-                        flight?.price || "N/A",
+                        flight?.price ||
+                        "N/A",
                 },
 
                 payment: {
                     amount:
-                        payment?.amount || "0",
+                        payment?.amount ||
+                        "0",
 
                     currency:
                         payment?.currency ||
@@ -224,7 +280,8 @@ exports.bookFlight = async (req, res) => {
             message:
                 "Flight booked successfully",
 
-            booking: savedBooking,
+            booking:
+                savedBooking,
 
             duffel: order,
         });
@@ -232,14 +289,15 @@ exports.bookFlight = async (req, res) => {
         console.log(
             "BOOKING ERROR:",
             err.response?.data ||
-            err.message
+                err.message
         );
 
         return res.status(500).json({
             success: false,
 
             message:
-                err.response?.data?.errors?.[0]
+                err.response?.data
+                    ?.errors?.[0]
                     ?.message ||
                 "Flight booking failed",
         });
