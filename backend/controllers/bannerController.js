@@ -22,7 +22,7 @@ const createBanner = async (req, res) => {
       });
     }
 
-    // Upload all images
+    // ✅ Upload all images
     const uploadedImages = await Promise.all(
       req.files.map((file) => uploadToImgBB(file.buffer))
     );
@@ -30,7 +30,7 @@ const createBanner = async (req, res) => {
     const banner = await Banner.create({
       title,
       description,
-      images: uploadedImages, // ✅ array save hoga
+      images: uploadedImages,
       link,
       isActive,
     });
@@ -50,34 +50,61 @@ const createBanner = async (req, res) => {
   }
 };
 
-
 // =========================
-// ADMIN: UPDATE BANNER
+// UPDATE BANNER WITH IMAGE
 // =========================
 const updateBanner = async (req, res) => {
   try {
     const { id } = req.params;
+    const { title, description, link, isActive } = req.body;
 
-    if (req.body.images && req.body.images.length > 6) {
-      return res.status(400).json({
-        message: "Max 6 images allowed",
+    const banner = await Banner.findById(id);
+
+    if (!banner) {
+      return res.status(404).json({
+        success: false,
+        message: "Banner not found",
       });
     }
 
-    const banner = await Banner.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    let updatedImages = banner.images;
 
-    if (!banner) {
-      return res.status(404).json({ message: "Banner not found" });
+    // ✅ Agar new images aayi hain to upload karo
+    if (req.files && req.files.length > 0) {
+      if (req.files.length > 6) {
+        return res.status(400).json({
+          success: false,
+          message: "Maximum 6 images allowed",
+        });
+      }
+
+      updatedImages = await Promise.all(
+        req.files.map((file) => uploadToImgBB(file.buffer))
+      );
     }
 
-    res.json({
+    banner.title = title || banner.title;
+    banner.description = description || banner.description;
+    banner.link = link || banner.link;
+    banner.isActive =
+      isActive !== undefined ? isActive : banner.isActive;
+
+    banner.images = updatedImages;
+
+    await banner.save();
+
+    return res.status(200).json({
+      success: true,
       message: "Banner updated successfully",
       banner,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.log("UPDATE BANNER ERROR =>", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
