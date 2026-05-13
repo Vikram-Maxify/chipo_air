@@ -9,10 +9,20 @@ const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 
-// Passport Config
+// ====================== EXPRESS APP ======================
+
+const app = express();
+
+// ====================== DNS FIX ======================
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
+// ====================== PASSPORT CONFIG ======================
+
 require("./config/passport");
 
-// Routes
+// ====================== ROUTES ======================
+
 const authRoutes = require("./routes/authRoutes");
 const flightRoutes = require("./routes/flightroutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -22,28 +32,26 @@ const packageRoutes = require("./routes/packageRoutes");
 const flightBookingRoutes = require("./routes/flightBookingRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
-// DNS Fix
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
-
-const app = express();
-
 // ====================== MIDDLEWARE ======================
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ====================== CORS ======================
+
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
+      "http://localhost:5173", // CLIENT
+      "http://localhost:5174", // ADMIN
     ],
     credentials: true,
   })
 );
 
-// Passport
+// ====================== PASSPORT ======================
+
 app.use(passport.initialize());
 
 // ====================== API ROUTES ======================
@@ -59,13 +67,13 @@ app.use("/api/payment", paymentRoutes);
 
 // ====================== BUILD PATHS ======================
 
-// Client Build
+// CLIENT BUILD PATH
 const clientBuildPath = path.join(
   __dirname,
   "../Client/dist"
 );
 
-// Admin Build
+// ADMIN BUILD PATH
 const adminBuildPath = path.join(
   __dirname,
   "../Admin/dist"
@@ -73,30 +81,16 @@ const adminBuildPath = path.join(
 
 // ====================== STATIC FILES ======================
 
-// Client Static Files
-app.use(express.static(clientBuildPath));
+// CLIENT STATIC FILES
+app.use(
+  express.static(clientBuildPath)
+);
 
-// Admin Static Files
+// ADMIN STATIC FILES
 app.use(
   "/admin",
   express.static(adminBuildPath)
 );
-
-// ====================== REACT ROUTES ======================
-
-// Admin Panel React Routes
-app.get(/^\/admin(\/.*)?$/, (req, res) => {
-  res.sendFile(
-    path.join(adminBuildPath, "index.html")
-  );
-});
-
-// Client React Routes
-app.use((req, res) => {
-  res.sendFile(
-    path.join(clientBuildPath, "index.html")
-  );
-});
 
 // ====================== TEST ROUTE ======================
 
@@ -104,11 +98,29 @@ app.get("/test", (req, res) => {
   res.send("API Running ✅");
 });
 
-// ====================== DB CONNECT ======================
+// ====================== ADMIN REACT ROUTES ======================
+
+// ADMIN PANEL ALL ROUTES
+app.get(/^\/admin(\/.*)?$/, (req, res) => {
+  res.sendFile(
+    path.join(adminBuildPath, "index.html")
+  );
+});
+
+// ====================== CLIENT REACT ROUTES ======================
+
+// CLIENT ALL REACT ROUTES
+app.get(/^(?!\/api|\/admin).*/, (req, res) => {
+  res.sendFile(
+    path.join(clientBuildPath, "index.html")
+  );
+});
+
+// ====================== DATABASE CONNECTION ======================
 
 connectDB();
 
-// ====================== HASH TEST ======================
+// ====================== BCRYPT TEST ======================
 
 (async () => {
   try {
