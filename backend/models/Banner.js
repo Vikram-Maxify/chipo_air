@@ -5,19 +5,29 @@ const bannerSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      trim: true,
     },
 
     description: {
       type: String,
+      trim: true,
     },
 
-    image: {
-      type: String, 
+    images: {
+      type: [String], // ✅ array of strings
       required: true,
+
+      validate: {
+        validator: function (value) {
+          return value.length <= 6;
+        },
+        message: "Maximum 6 images allowed",
+      },
     },
 
     link: {
-      type: String, // optional: redirect URL
+      type: String,
+      trim: true,
     },
 
     isActive: {
@@ -28,6 +38,4 @@ const bannerSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Banner = mongoose.model("Banner", bannerSchema);
-
-module.exports = Banner;
+module.exports = mongoose.model("Banner", bannerSchema);

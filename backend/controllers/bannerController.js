@@ -9,35 +9,44 @@ const createBanner = async (req, res) => {
     const { title, description, link, isActive } = req.body;
 
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ message: "Images required" });
+      return res.status(400).json({
+        success: false,
+        message: "Images required",
+      });
     }
 
     if (req.files.length > 6) {
-      return res.status(400).json({ message: "Max 6 images allowed" });
+      return res.status(400).json({
+        success: false,
+        message: "Maximum 6 images allowed",
+      });
     }
 
-    // Upload all images to imgbb
-    const imageUploadPromises = req.files.map((file) =>
-      uploadToImgBB(file.buffer)
+    // Upload all images
+    const uploadedImages = await Promise.all(
+      req.files.map((file) => uploadToImgBB(file.buffer))
     );
-
-    const images = await Promise.all(imageUploadPromises);
 
     const banner = await Banner.create({
       title,
       description,
-      images,
+      images: uploadedImages, // ✅ array save hoga
       link,
       isActive,
     });
 
-    res.status(201).json({
+    return res.status(201).json({
+      success: true,
       message: "Banner created successfully",
       banner,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    console.log("BANNER CREATE ERROR =>", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

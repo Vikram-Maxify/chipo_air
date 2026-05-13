@@ -30,7 +30,6 @@ const travelOfferSchema =
 
       redirectUrl: {
         type: String,
-        required: true,
       },
 
       validTill: {

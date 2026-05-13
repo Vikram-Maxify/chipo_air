@@ -22,6 +22,8 @@ import AboutPageEditor from "./page/AboutPageEditor";
 // ====================== PRIVATE ROUTE ======================
 
 import AdminPrivateRoute from "./Component/AdminPrivateRoute";
+import TravelOffers from "./page/TravelOffers";
+import AdminBanners from "./page/AdminBanners";
 
 function App() {
   const dispatch = useDispatch();
@@ -73,6 +75,15 @@ function App() {
           <Route
             path="package"
             element={<Package />}
+          />
+          <Route
+            path="offers"
+            element={<TravelOffers />}
+          />
+
+          <Route
+            path="banners"
+            element={<AdminBanners />}
           />
 
           {/* ABOUT PAGE */}

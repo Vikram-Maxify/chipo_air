@@ -64,6 +64,7 @@ app.use("/api/banners", bannerRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/flight-bookings", flightBookingRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
 
 // ====================== BUILD PATHS ======================
 
@@ -125,7 +126,7 @@ connectDB();
 (async () => {
   try {
     const hash = await bcrypt.hash(
-      "user@1234",
+      "admin@1234",
       10
     );
 

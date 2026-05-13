@@ -6,6 +6,8 @@ import PopularDestinations from '../component/PopularDestinations'
 import WhyChooseUs from '../component/WhyChooseUs'
 import Footer from '../component/Footer'
 import StatsSection from '../StatsSection'
+import Offers from '../component/Offers'
+import Banners from '../component/Banners'
 
 const Home = () => {
   useEffect(() => {
@@ -14,7 +16,9 @@ const Home = () => {
   return (
     <>
       <Hero />
+      <Banners />
       <Packages />
+      <Offers />
       <PopularDestinations />
       <WhyChooseUs />
       <StatsSection />
