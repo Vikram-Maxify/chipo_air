@@ -9,10 +9,7 @@ exports.getFlights = async (req, res) => {
             passengers = 1,
         } = req.query;
 
-        console.log(
-            "REQ QUERY:",
-            req.query
-        );
+
 
         // ==================================================
         // ✅ VALIDATION
@@ -114,10 +111,7 @@ exports.getFlights = async (req, res) => {
             });
         }
 
-        console.log(
-            "PASSENGERS SENT:",
-            passengersData
-        );
+
 
         // ==================================================
         // ✅ CREATE OFFER REQUEST
@@ -164,14 +158,6 @@ exports.getFlights = async (req, res) => {
                 }
             );
 
-        console.log(
-            "DUFFEL RESPONSE:",
-            JSON.stringify(
-                response.data,
-                null,
-                2
-            )
-        );
 
         // ==================================================
         // ✅ OFFERS
@@ -350,14 +336,6 @@ exports.getFlights = async (req, res) => {
                                     }
                                 );
 
-                            console.log(
-                                "SEAT MAP RESPONSE:",
-                                JSON.stringify(
-                                    seatMapResponse.data,
-                                    null,
-                                    2
-                                )
-                            );
 
                             const seatMaps =
                                 seatMapResponse
@@ -450,10 +428,6 @@ exports.getFlights = async (req, res) => {
                                 }
                             );
 
-                            console.log(
-                                "FINAL SEATS:",
-                                seatMapData
-                            );
 
                         } catch (
                             seatErr
@@ -599,14 +573,6 @@ exports.getFlights = async (req, res) => {
         // ✅ FINAL LOG
         // ==================================================
 
-        console.log(
-            "FINAL FLIGHTS:",
-            JSON.stringify(
-                flights,
-                null,
-                2
-            )
-        );
 
         // ==================================================
         // ✅ SUCCESS

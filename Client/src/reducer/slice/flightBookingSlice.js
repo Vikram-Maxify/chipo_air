@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../axios";
 
 // ✅ CREATE BOOKING
 export const createFlightBookingThunk =
@@ -8,8 +8,8 @@ export const createFlightBookingThunk =
 
         async (bookingData, { rejectWithValue }) => {
             try {
-                const res = await axios.post(
-                    "http://localhost:5004/api/flight-bookings/book",
+                const res = await API.post(
+                    "/flight-bookings/book",
                     bookingData
                 );
 
@@ -30,8 +30,8 @@ export const getFlightBookingsThunk =
 
         async (_, { rejectWithValue }) => {
             try {
-                const res = await axios.get(
-                    "http://localhost:5004/api/flight-bookings"
+                const res = await API.get(
+                    "/flight-bookings"
                 );
 
                 return res.data.bookings;
@@ -51,8 +51,8 @@ export const getSingleFlightBookingThunk =
 
         async (id, { rejectWithValue }) => {
             try {
-                const res = await axios.get(
-                    `http://localhost:5004/api/flight-bookings/${id}`
+                const res = await API.get(
+                    `/flight-bookings/${id}`
                 );
 
                 return res.data.booking;

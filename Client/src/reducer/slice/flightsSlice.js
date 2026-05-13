@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import API from "../axios";
 
 // 🔥 Async thunk - Direct API call without session storage
 export const getFlightsThunk = createAsyncThunk(
@@ -36,8 +36,8 @@ export const getFlightsThunk = createAsyncThunk(
                 params.append("class", travelClass);
             }
 
-            const res = await axios.get(
-                `http://localhost:5004/api/flights/search?${params.toString()}`
+            const res = await API.get(
+                `/flights/search?${params.toString()}`
             );
 
             const flights = res.data?.flights || [];
