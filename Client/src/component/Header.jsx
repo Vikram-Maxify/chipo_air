@@ -50,7 +50,7 @@ const Header = () => {
     const navLinks = [
         { to: "/flights", label: "Flights", icon: Plane },
         { to: "/packages", label: "Packages", icon: Gift },
-        { to: "/deals", label: "Deals", icon: Calendar },
+        { to: "/all_offers", label: "Deals", icon: Calendar },
         { to: "/my-trips", label: "My Trips", icon: MapPin },
     ];
 
@@ -155,7 +155,7 @@ const Header = () => {
                                                 My Profile
                                             </Link>
                                             <Link
-                                                to="/bookings"
+                                                to="/my-trips"
                                                 onClick={() => setProfileDropdown(false)}
                                                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                                             >

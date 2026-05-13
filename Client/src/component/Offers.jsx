@@ -18,6 +18,7 @@ import {
 import {
     getAllTravelOffers,
 } from "../reducer/slice/userOfferslice";
+import { Link } from "react-router-dom";
 
 const Offers = () => {
 
@@ -82,130 +83,169 @@ const Offers = () => {
     }
 
     return (
-        <div className="w-full bg-[#f5f5f5] py-10 px-4">
+        <div className="w-full bg-[#f5f7fb] py-4 px-3">
 
-            <div className="max-w-7xl mx-auto bg-white rounded-[30px] shadow-sm border border-gray-200 p-7">
+    <div className="max-w-7xl mx-auto">
 
-                {/* HEADER */}
+        {/* HEADER */}
 
-                <div className="flex items-center justify-center relative mb-10">
+        <div className="flex items-center justify-between mb-5">
 
-                    <h2 className="text-4xl font-bold text-[#1f1f1f]">
-                        Offers For
-                        You
+            <h2 className="text-2xl md:text-3xl font-bold text-[#1f1f1f]">
+                Offers For You
+            </h2>
+
+            <Link to={"/all_offers"} className="flex items-center gap-1 text-[#2276e3] font-semibold text-sm md:text-base">
+
+                View All
+
+                <ChevronRight
+                    size={
+                        18
+                    }
+                />
+            </Link>
+        </div>
+
+        {/* OFFERS */}
+
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+
+            {filteredOffers &&
+            filteredOffers.length >
+                0 ? (
+
+                filteredOffers.map(
+                    (
+                        offer
+                    ) => (
+
+                        <a
+                            href={
+                                offer.redirectUrl
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            key={
+                                offer._id
+                            }
+                            className="min-w-[320px] md:min-w-[360px] bg-white rounded-[20px] overflow-hidden border border-gray-200 hover:shadow-lg transition duration-300"
+                        >
+
+                            {/* IMAGE */}
+
+                            <div className="relative">
+
+                                <img
+                                    src={
+                                        offer.image
+                                    }
+                                    alt={
+                                        offer.title
+                                    }
+                                    className="w-full h-[150px] object-cover"
+                                />
+
+                                {/* CATEGORY */}
+
+                                {offer.category && (
+
+                                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-[#2276e3] text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+
+                                        {
+                                            offer.category
+                                        }
+
+                                    </div>
+
+                                )}
+                            </div>
+
+                            {/* CONTENT */}
+
+                            <div className="p-4">
+
+                                {/* TITLE */}
+
+                                <h3 className="text-[20px] leading-[28px] font-bold text-[#1f1f1f] line-clamp-2">
+
+                                    {
+                                        offer.title
+                                    }
+
+                                </h3>
+
+                                {/* DESCRIPTION */}
+
+                                {offer.description && (
+
+                                    <p className="text-gray-500 text-sm mt-2 leading-relaxed line-clamp-2">
+
+                                        {
+                                            offer.description
+                                        }
+
+                                    </p>
+
+                                )}
+
+                                {/* FOOTER */}
+
+                                <div className="flex items-center justify-between mt-4">
+
+                                    {/* DATE */}
+
+                                    <div className="flex items-center gap-2 text-gray-500 text-sm">
+
+                                        <CalendarDays
+                                            size={
+                                                16
+                                            }
+                                        />
+
+                                        <span>
+                                            {offer.validTill
+                                                ? new Date(
+                                                      offer.validTill
+                                                  ).toLocaleDateString(
+                                                      "en-GB",
+                                                      {
+                                                          day: "numeric",
+                                                          month:
+                                                              "short",
+                                                      }
+                                                  )
+                                                : "N/A"}
+                                        </span>
+
+                                    </div>
+
+                                    {/* BUTTON */}
+
+                                    <div className="bg-[#2276e3] text-white text-sm font-semibold px-4 py-2 rounded-xl">
+
+                                        Explore
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    )
+                )
+
+            ) : (
+
+                <div className="w-full flex justify-center items-center py-16">
+
+                    <h2 className="text-lg text-gray-500 font-medium">
+                        No Offers Found
                     </h2>
 
-                    <button className="absolute right-0 flex items-center gap-1 text-[#2563eb] font-semibold text-xl">
-                        View All
-
-                        <ChevronRight
-                            size={
-                                22
-                            }
-                        />
-                    </button>
                 </div>
 
-                {/* OFFERS SCROLL */}
-
-                <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
-
-                    {filteredOffers &&
-                        filteredOffers.length >
-                        0 ? (
-                        filteredOffers.map(
-                            (
-                                offer
-                            ) => (
-                                <a
-                                    href={
-                                        offer.redirectUrl
-                                    }
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    key={
-                                        offer._id
-                                    }
-                                    className="min-w-[420px] bg-white border border-gray-200 rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl transition duration-300"
-                                >
-
-                                    {/* IMAGE */}
-
-                                    <div className="p-4 pb-0">
-                                        <img
-                                            src={
-                                                offer.image
-                                            }
-                                            alt={
-                                                offer.title
-                                            }
-                                            className="w-full h-[210px] object-cover rounded-[18px]"
-                                        />
-                                    </div>
-
-                                    {/* CONTENT */}
-
-                                    <div className="p-4">
-
-                                        {/* CATEGORY */}
-
-                                        <p className="text-gray-500 text-lg mb-2">
-                                            {
-                                                offer.category
-                                            }
-                                        </p>
-
-                                        {/* TITLE */}
-
-                                        <h3 className="text-[28px] leading-[36px] font-bold text-[#1f1f1f] mb-4 line-clamp-2">
-                                            {
-                                                offer.title
-                                            }
-                                        </h3>
-
-                                        {/* VALID DATE */}
-
-                                        <div className="flex items-center gap-2 text-gray-500 text-lg">
-
-                                            <CalendarDays
-                                                size={
-                                                    18
-                                                }
-                                            />
-
-                                            <span>
-                                                Valid
-                                                till{" "}
-                                                {offer.validTill
-                                                    ? new Date(
-                                                        offer.validTill
-                                                    ).toLocaleDateString(
-                                                        "en-GB",
-                                                        {
-                                                            day: "numeric",
-                                                            month:
-                                                                "short",
-                                                            year: "2-digit",
-                                                        }
-                                                    )
-                                                    : "N/A"}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </a>
-                            )
-                        )
-                    ) : (
-                        <div className="w-full flex justify-center items-center py-20">
-                            <h2 className="text-2xl text-gray-500 font-medium">
-                                No Offers
-                                Found
-                            </h2>
-                        </div>
-                    )}
-                </div>
-            </div>
+            )}
         </div>
+    </div>
+</div>
     );
 };
 

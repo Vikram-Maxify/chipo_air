@@ -20,6 +20,8 @@ import FlightBooking from "./page/FlightBooking";
 import PrivateRoute from "./component/PrivateRoute";
 
 import { getProfile } from "./reducer/slice/authslice";
+import AllOffers from "./page/AllOffers";
+import MyTrips from "./page/MyTrips";
 
 function App() {
   const dispatch = useDispatch();
@@ -41,6 +43,8 @@ function App() {
         <Route path="/flights" element={<Flights />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/all_offers" element={<AllOffers />} />
+        <Route path="/my-trips" element={<MyTrips />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/package/:slug" element={<PackageDetail />} />
 

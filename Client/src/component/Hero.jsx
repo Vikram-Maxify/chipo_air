@@ -256,12 +256,12 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-[#f5f5f5] min-h-[850px] md:min-h-[700px] overflow-visible">
+    <section className="relative bg-[#f5f5f5] min-h-[750px] md:min-h-[590px] overflow-visible">
       {/* BACKGROUND */}
       <div className="absolute top-0 left-0 w-full h-[350px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 rounded-b-[70px] md:rounded-b-[110px]" />
 
       {/* CONTENT */}
-      <div className="relative z-[50] max-w-7xl mx-auto px-4 pt-10 overflow-visible pb-5">
+      <div className="relative z-[50] max-w-7xl mx-auto px-4 pt-10 overflow-visible">
         {/* HEADER */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full mb-5">
