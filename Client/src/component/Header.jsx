@@ -50,7 +50,7 @@ const Header = () => {
     const navLinks = [
         { to: "/flights", label: "Flights", icon: Plane },
         { to: "/packages", label: "Packages", icon: Gift },
-        { to: "/deals", label: "Deals", icon: Calendar },
+        { to: "/all_offers", label: "Deals", icon: Calendar },
         { to: "/my-trips", label: "My Trips", icon: MapPin },
     ];
 

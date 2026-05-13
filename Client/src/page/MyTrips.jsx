@@ -1,12 +1,17 @@
 // pages/MyTrips.jsx
 
 import {
+    useState,
+} from "react";
+
+import {
     CalendarDays,
     Plane,
     MapPin,
     Clock3,
     Hotel,
     Ticket,
+    X,
 } from "lucide-react";
 
 const trips = [
@@ -20,6 +25,10 @@ const trips = [
         status: "Upcoming",
         image:
             "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1400&auto=format&fit=crop",
+        traveller: "Vikram Thakur",
+        airline: "Emirates",
+        seat: "12A",
+        terminal: "T3",
     },
 
     {
@@ -32,6 +41,9 @@ const trips = [
         status: "Confirmed",
         image:
             "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1400&auto=format&fit=crop",
+        traveller: "Vikram Thakur",
+        room: "Deluxe Suite",
+        guests: "2 Guests",
     },
 
     {
@@ -44,10 +56,17 @@ const trips = [
         status: "Completed",
         image:
             "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1400&auto=format&fit=crop",
+        traveller: "Vikram Thakur",
+        packageType:
+            "Premium Beach Villa",
     },
 ];
 
 const MyTrips = () => {
+
+    const [selectedTrip,
+        setSelectedTrip] =
+        useState(null);
 
     return (
         <div className="min-h-screen bg-[#f5f7fb] py-8 px-3">
@@ -101,8 +120,6 @@ const MyTrips = () => {
                                             className="w-full h-[240px] lg:h-full object-cover"
                                         />
 
-                                        {/* STATUS */}
-
                                         <div
                                             className={`absolute top-4 left-4 px-4 py-1.5 rounded-full text-sm font-semibold shadow-md ${
                                                 trip.status ===
@@ -130,30 +147,24 @@ const MyTrips = () => {
 
                                             {trip.type ===
                                             "Flight" ? (
-
                                                 <Plane
                                                     size={
                                                         18
                                                     }
                                                 />
-
                                             ) : trip.type ===
                                               "Hotel" ? (
-
                                                 <Hotel
                                                     size={
                                                         18
                                                     }
                                                 />
-
                                             ) : (
-
                                                 <Ticket
                                                     size={
                                                         18
                                                     }
                                                 />
-
                                             )}
 
                                             <span>
@@ -173,7 +184,7 @@ const MyTrips = () => {
 
                                         </h2>
 
-                                        {/* BOOKING ID */}
+                                        {/* BOOKING */}
 
                                         <div className="mt-3 inline-flex items-center bg-[#f3f7ff] text-[#2276e3] px-4 py-2 rounded-xl text-sm font-medium">
 
@@ -197,7 +208,7 @@ const MyTrips = () => {
                                                     }
                                                 />
 
-                                                <span className="text-sm md:text-base">
+                                                <span>
                                                     {
                                                         trip.date
                                                     }
@@ -213,7 +224,7 @@ const MyTrips = () => {
                                                     }
                                                 />
 
-                                                <span className="text-sm md:text-base">
+                                                <span>
                                                     {
                                                         trip.time
                                                     }
@@ -229,7 +240,7 @@ const MyTrips = () => {
                                                     }
                                                 />
 
-                                                <span className="text-sm md:text-base">
+                                                <span>
                                                     India
                                                 </span>
 
@@ -240,16 +251,21 @@ const MyTrips = () => {
 
                                         <div className="flex flex-wrap gap-4 mt-8">
 
-                                            <button className="bg-[#2276e3] text-white px-6 py-3 rounded-2xl font-semibold hover:scale-105 transition duration-300">
-
-                                                View Details
-
+                                            <button
+                                                onClick={() =>
+                                                    setSelectedTrip(
+                                                        trip
+                                                    )
+                                                }
+                                                className="bg-[#2276e3] text-white px-6 py-3 rounded-2xl font-semibold hover:scale-105 transition duration-300"
+                                            >
+                                                View
+                                                Details
                                             </button>
 
                                             <button className="border border-gray-300 text-[#1f1f1f] px-6 py-3 rounded-2xl font-semibold hover:bg-gray-100 transition duration-300">
-
-                                                Download Ticket
-
+                                                Download
+                                                Ticket
                                             </button>
                                         </div>
                                     </div>
@@ -259,6 +275,203 @@ const MyTrips = () => {
                     )}
                 </div>
             </div>
+
+            {/* POPUP */}
+
+            {selectedTrip && (
+
+                <div className="fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4">
+
+                    <div className="bg-white w-full max-w-3xl rounded-[30px] overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+
+                        {/* IMAGE */}
+
+                        <div className="relative">
+
+                            <img
+                                src={
+                                    selectedTrip.image
+                                }
+                                alt={
+                                    selectedTrip.title
+                                }
+                                className="w-full h-[260px] object-cover"
+                            />
+
+                            {/* CLOSE */}
+
+                            <button
+                                onClick={() =>
+                                    setSelectedTrip(
+                                        null
+                                    )
+                                }
+                                className="absolute top-4 right-4 bg-white/90 w-10 h-10 rounded-full flex items-center justify-center shadow-md"
+                            >
+                                <X
+                                    size={
+                                        22
+                                    }
+                                />
+                            </button>
+                        </div>
+
+                        {/* CONTENT */}
+
+                        <div className="p-6 md:p-8">
+
+                            {/* TYPE */}
+
+                            <div className="inline-flex items-center gap-2 bg-[#f3f7ff] text-[#2276e3] px-4 py-2 rounded-xl text-sm font-semibold mb-4">
+
+                                {selectedTrip.type ===
+                                "Flight" ? (
+                                    <Plane
+                                        size={
+                                            18
+                                        }
+                                    />
+                                ) : selectedTrip.type ===
+                                  "Hotel" ? (
+                                    <Hotel
+                                        size={
+                                            18
+                                        }
+                                    />
+                                ) : (
+                                    <Ticket
+                                        size={
+                                            18
+                                        }
+                                    />
+                                )}
+
+                                <span>
+                                    {
+                                        selectedTrip.type
+                                    }
+                                </span>
+                            </div>
+
+                            {/* TITLE */}
+
+                            <h2 className="text-3xl font-bold text-[#1f1f1f]">
+                                {
+                                    selectedTrip.title
+                                }
+                            </h2>
+
+                            {/* GRID */}
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
+
+                                <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                    <p className="text-gray-500 text-sm">
+                                        Booking
+                                        ID
+                                    </p>
+
+                                    <h3 className="text-xl font-bold mt-1">
+                                        {
+                                            selectedTrip.bookingId
+                                        }
+                                    </h3>
+                                </div>
+
+                                <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                    <p className="text-gray-500 text-sm">
+                                        Traveller
+                                    </p>
+
+                                    <h3 className="text-xl font-bold mt-1">
+                                        {
+                                            selectedTrip.traveller
+                                        }
+                                    </h3>
+                                </div>
+
+                                <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                    <p className="text-gray-500 text-sm">
+                                        Date
+                                    </p>
+
+                                    <h3 className="text-xl font-bold mt-1">
+                                        {
+                                            selectedTrip.date
+                                        }
+                                    </h3>
+                                </div>
+
+                                <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                    <p className="text-gray-500 text-sm">
+                                        Time
+                                    </p>
+
+                                    <h3 className="text-xl font-bold mt-1">
+                                        {
+                                            selectedTrip.time
+                                        }
+                                    </h3>
+                                </div>
+
+                                {selectedTrip.airline && (
+
+                                    <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                        <p className="text-gray-500 text-sm">
+                                            Airline
+                                        </p>
+
+                                        <h3 className="text-xl font-bold mt-1">
+                                            {
+                                                selectedTrip.airline
+                                            }
+                                        </h3>
+                                    </div>
+
+                                )}
+
+                                {selectedTrip.seat && (
+
+                                    <div className="bg-[#f8faff] p-5 rounded-2xl">
+
+                                        <p className="text-gray-500 text-sm">
+                                            Seat
+                                        </p>
+
+                                        <h3 className="text-xl font-bold mt-1">
+                                            {
+                                                selectedTrip.seat
+                                            }
+                                        </h3>
+                                    </div>
+
+                                )}
+                            </div>
+
+                            {/* FOOTER */}
+
+                            <div className="flex justify-end mt-8">
+
+                                <button
+                                    onClick={() =>
+                                        setSelectedTrip(
+                                            null
+                                        )
+                                    }
+                                    className="bg-[#2276e3] text-white px-8 py-3 rounded-2xl font-semibold hover:scale-105 transition duration-300"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
