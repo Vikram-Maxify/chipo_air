@@ -40,6 +40,7 @@ router.get(
 // UPDATE
 router.put(
   "/update/:id",
+    upload.single("image"),
   updateTravelOffer
 );
 

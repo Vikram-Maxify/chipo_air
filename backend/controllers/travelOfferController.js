@@ -46,38 +46,57 @@ exports.updateTravelOffer = async (req, res) => {
             });
         }
 
-        // ✅ Existing image
-        let imageUrl = offer.image;
-
-        // ✅ If new image uploaded
+        // ✅ New image upload
         if (req.file) {
-            imageUrl = await uploadToImgBB(req.file.buffer);
+            const imageUrl = await uploadToImgBB(
+                req.file.buffer
+            );
+
+            offer.image = imageUrl;
         }
 
-        // ✅ Update fields
-        offer.title = req.body.title || offer.title;
-        offer.category = req.body.category || offer.category;
-        offer.description =
-            req.body.description || offer.description;
-        offer.redirectUrl =
-            req.body.redirectUrl || offer.redirectUrl;
-        offer.validTill =
-            req.body.validTill || offer.validTill;
+        // ✅ Direct update
+        if (req.body.title !== undefined) {
+            offer.title = req.body.title;
+        }
 
-        // ✅ Update image
-        offer.image = imageUrl;
+        if (req.body.category !== undefined) {
+            offer.category = req.body.category;
+        }
+
+        if (req.body.description !== undefined) {
+            offer.description =
+                req.body.description;
+        }
+
+        if (req.body.redirectUrl !== undefined) {
+            offer.redirectUrl =
+                req.body.redirectUrl;
+        }
+
+        if (req.body.validTill !== undefined) {
+            offer.validTill =
+                req.body.validTill;
+        }
 
         await offer.save();
 
         return res.status(200).json({
             success: true,
-            message: "Offer updated successfully",
+            message:
+                "Offer updated successfully",
             data: offer,
         });
     } catch (error) {
+        console.log(
+            "UPDATE OFFER ERROR =>",
+            error
+        );
+
         return res.status(500).json({
             success: false,
-            message: "Failed to update offer",
+            message:
+                "Failed to update offer",
             error: error.message,
         });
     }
