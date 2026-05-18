@@ -43,7 +43,6 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // CLIENT
       "http://localhost:5174", // ADMIN
     ],
     credentials: true,
@@ -65,31 +64,16 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/flight-bookings", flightBookingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
+// ====================== ADMIN BUILD PATH ======================
 
-// ====================== BUILD PATHS ======================
-
-// CLIENT BUILD PATH
-const clientBuildPath = path.join(
-  __dirname,
-  "../Client/dist"
-);
-
-// ADMIN BUILD PATH
 const adminBuildPath = path.join(
   __dirname,
   "../Admin/dist"
 );
 
-// ====================== STATIC FILES ======================
+// ====================== ADMIN STATIC FILES ======================
 
-// CLIENT STATIC FILES
 app.use(
-  express.static(clientBuildPath)
-);
-
-// ADMIN STATIC FILES
-app.use(
-  "/admin",
   express.static(adminBuildPath)
 );
 
@@ -101,19 +85,10 @@ app.get("/test", (req, res) => {
 
 // ====================== ADMIN REACT ROUTES ======================
 
-// ADMIN PANEL ALL ROUTES
-app.get(/^\/admin(\/.*)?$/, (req, res) => {
+// ALL ADMIN ROUTES
+app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(
     path.join(adminBuildPath, "index.html")
-  );
-});
-
-// ====================== CLIENT REACT ROUTES ======================
-
-// CLIENT ALL REACT ROUTES
-app.get(/^(?!\/api|\/admin).*/, (req, res) => {
-  res.sendFile(
-    path.join(clientBuildPath, "index.html")
   );
 });
 
@@ -126,7 +101,7 @@ connectDB();
 (async () => {
   try {
     const hash = await bcrypt.hash(
-      "admin@1234",
+      "user@1234",
       10
     );
 
@@ -143,7 +118,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`
 ====================================
-🚀 Server Running Successfully
+🚀 Admin Server Running
 🌍 Port: ${PORT}
 ====================================
   `);
