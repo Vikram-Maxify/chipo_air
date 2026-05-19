@@ -65,22 +65,17 @@ const Header = () => {
                 <div className="flex items-center justify-between h-16 md:h-20">
 
                     {/* Logo */}
-                    <Link to="/" className="flex items-center gap-3 group">
-                        <div className="relative">
-                            <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                                <Plane className="h-5 w-5 md:h-6 md:w-6 text-white transform -rotate-45" />
-                            </div>
-                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
-                        </div>
-                        <div className="">
-                            <span className="font-bold text-xl md:text-2xl bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                                Flight
-                            </span>
-                            <span className="font-bold text-xl md:text-2xl text-gray-900">
-                                Booker
-                            </span>
-                        </div>
-                    </Link>
+                   <Link to="/" className="flex items-center gap-3 group">
+    <div className="relative">
+        <img
+            src="https://i.ibb.co/0y65NQpQ/logo-1.png"
+            alt="Flight Booker Logo"
+            className="h-10 md:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+        />
+
+        {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div> */}
+    </div>
+</Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-1">

@@ -44,7 +44,6 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/all_offers" element={<AllOffers />} />
-        <Route path="/my-trips" element={<MyTrips />} />
         <Route path="/packages" element={<Packages />} />
         <Route path="/package/:slug" element={<PackageDetail />} />
 
@@ -59,6 +58,7 @@ function App() {
             path="/profile"
             element={<Profile />}
           />
+        <Route path="/my-trips" element={<MyTrips />} />
         </Route>
       </Routes>
 
