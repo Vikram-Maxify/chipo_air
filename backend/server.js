@@ -31,7 +31,6 @@ const bannerRoutes = require("./routes/bannerRoutes");
 const packageRoutes = require("./routes/packageRoutes");
 const flightBookingRoutes = require("./routes/flightBookingRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
-const destinationRoutes = require("./routes/destinationRoutes");
 
 // ====================== MIDDLEWARE ======================
 
@@ -44,6 +43,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
+      "http://localhost:5173", // CLIENT
       "http://localhost:5174", // ADMIN
     ],
     credentials: true,
@@ -65,20 +65,31 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/flight-bookings", flightBookingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
-app.use("/api/hotels", require("./routes/hotel.routes"));
-app.use("/api/destination", destinationRoutes);
 
+// ====================== BUILD PATHS ======================
 
-// ====================== ADMIN BUILD PATH ======================
+// CLIENT BUILD PATH
+const clientBuildPath = path.join(
+  __dirname,
+  "../Client/dist"
+);
 
+// ADMIN BUILD PATH
 const adminBuildPath = path.join(
   __dirname,
   "../Admin/dist"
 );
 
-// ====================== ADMIN STATIC FILES ======================
+// ====================== STATIC FILES ======================
 
+// CLIENT STATIC FILES
 app.use(
+  express.static(clientBuildPath)
+);
+
+// ADMIN STATIC FILES
+app.use(
+  "/admin",
   express.static(adminBuildPath)
 );
 
@@ -90,10 +101,19 @@ app.get("/test", (req, res) => {
 
 // ====================== ADMIN REACT ROUTES ======================
 
-// ALL ADMIN ROUTES
-app.get(/^(?!\/api).*/, (req, res) => {
+// ADMIN PANEL ALL ROUTES
+app.get(/^\/admin(\/.*)?$/, (req, res) => {
   res.sendFile(
     path.join(adminBuildPath, "index.html")
+  );
+});
+
+// ====================== CLIENT REACT ROUTES ======================
+
+// CLIENT ALL REACT ROUTES
+app.get(/^(?!\/api|\/admin).*/, (req, res) => {
+  res.sendFile(
+    path.join(clientBuildPath, "index.html")
   );
 });
 
@@ -106,7 +126,7 @@ connectDB();
 (async () => {
   try {
     const hash = await bcrypt.hash(
-      "user@1234",
+      "admin@1234",
       10
     );
 
@@ -123,7 +143,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`
 ====================================
-🚀 Admin Server Running
+🚀 Server Running Successfully
 🌍 Port: ${PORT}
 ====================================
   `);
