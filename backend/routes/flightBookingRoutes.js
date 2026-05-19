@@ -6,6 +6,7 @@ const {
     bookFlight,
     getBookings,
     getSingleBooking,
+    getSeatMap,
 } = require("../controllers/flightBookingController");
 
 // ✅ Create Booking
@@ -16,5 +17,10 @@ router.get("/", getBookings);
 
 // ✅ Get Single Booking
 router.get("/:id", getSingleBooking);
+
+router.post(
+  "/seat-map",
+ getSeatMap
+);
 
 module.exports = router;

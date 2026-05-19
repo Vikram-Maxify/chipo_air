@@ -64,6 +64,8 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/flight-bookings", flightBookingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
+app.use("/api/hotels", require("./routes/hotel.routes"));
+
 // ====================== ADMIN BUILD PATH ======================
 
 const adminBuildPath = path.join(
