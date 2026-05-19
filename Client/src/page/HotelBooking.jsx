@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Search, MapPin, CalendarDays, Users, Star, SlidersHorizontal, ChevronDown, Wifi, Car, Coffee, Dumbbell, Waves, Heart, ArrowUpDown, X, FilterX } from "lucide-react";
+import { Search, MapPin, CalendarDays, Users, Star, SlidersHorizontal, ChevronDown, Wifi, Car, Coffee, Dumbbell, Waves, Heart, ArrowUpDown, X, FilterX, Wind, Utensils, Tv, Snowflake, Anchor } from "lucide-react";
 import { DateRange } from "react-date-range";
 import { addDays, differenceInDays, format } from "date-fns";
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { useNavigate } from "react-router-dom";
 
 const HotelBooking = () => {
     const destinationRef = useRef(null);
@@ -19,10 +20,12 @@ const HotelBooking = () => {
 
     const [destinationInput, setDestinationInput] = useState("");
     const [destination, setDestination] = useState("");
-    const [selectedPrice, setSelectedPrice] = useState(25000);
+    const [selectedPrice, setSelectedPrice] = useState(300); // $300 (was ₹25000)
     const [selectedRatings, setSelectedRatings] = useState([]);
     const [selectedAmenities, setSelectedAmenities] = useState([]);
     const [selectedPropertyTypes, setSelectedPropertyTypes] = useState([]);
+    const navigate = useNavigate();
+
 
     const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
 
@@ -30,58 +33,116 @@ const HotelBooking = () => {
         { startDate: addDays(new Date(), 1), endDate: addDays(new Date(), 4), key: "selection" },
     ]);
 
-    const destinations = ["Goa", "Delhi", "Mumbai", "Bangalore", "Jaipur", "Udaipur", "Manali", "Dubai", "Thailand"];
-
-    const amenities = [
-        { name: "Free Wifi", icon: Wifi },
-        { name: "Parking", icon: Car },
-        { name: "Breakfast", icon: Coffee },
-        { name: "Gym", icon: Dumbbell },
-        { name: "Pool", icon: Waves },
+    const destinations = [
+        "New York", "Los Angeles", "Las Vegas", "Miami", "Orlando",
+        "Chicago", "San Francisco", "Seattle", "Boston", "Washington DC",
+        "Austin", "Denver", "Nashville", "New Orleans", "San Diego",
+        "Honolulu", "Phoenix", "Portland", "Atlanta", "Dallas"
     ];
 
-    const propertyTypes = ["Hotels", "Resorts", "Villas", "Apartments", "Hostels"];
+    // Enhanced Amenities for USA hotels
+    const amenities = [
+        { name: "Free WiFi", icon: Wifi },
+        { name: "Free Parking", icon: Car },
+        { name: "Free Breakfast", icon: Coffee },
+        { name: "Fitness Center", icon: Dumbbell },
+        { name: "Outdoor Pool", icon: Waves },
+        { name: "Air Conditioning", icon: Wind },
+        { name: "Restaurant", icon: Utensils },
+        { name: "Flat-screen TV", icon: Tv },
+        { name: "Heating", icon: Snowflake },
+        { name: "Beachfront", icon: Anchor },
+    ];
 
+    const propertyTypes = ["Hotels", "Resorts", "Villas", "Apartments", "Motels", "Bed & Breakfast"];
+
+    // USA Hotels Data
     const hotels = [
-        { id: 1, name: "Grand Luxury Resort", location: "Baga Beach, Goa", price: 12499, rating: 4.8, reviews: 3821, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Free Wifi", "Pool", "Breakfast", "Parking"], discount: 42 },
-        { id: 2, name: "Royal Palace Hotel", location: "Candolim, Goa", price: 7999, rating: 4.4, reviews: 1520, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi", "Breakfast", "Gym"], discount: 25 },
-        { id: 3, name: "Ocean View Villa", location: "Anjuna, Goa", price: 18200, rating: 4.9, reviews: 920, image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Pool", "Parking", "Free Wifi"], discount: 33 },
-        { id: 4, name: "Sea Breeze Residency", location: "Calangute, Goa", price: 6499, rating: 4.1, reviews: 1102, image: "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi", "Breakfast"], discount: 18 },
-        { id: 5, name: "Palm Paradise Resort", location: "Morjim, Goa", price: 13999, rating: 4.7, reviews: 2210, image: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Gym", "Breakfast"], discount: 36 },
-        { id: 6, name: "Elite Stay Suites", location: "Panjim, Goa", price: 5599, rating: 4.0, reviews: 875, image: "https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Parking", "Breakfast"], discount: 15 },
-        { id: 7, name: "Blue Lagoon Villa", location: "Vagator, Goa", price: 19500, rating: 4.9, reviews: 1302, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Pool", "Free Wifi", "Parking"], discount: 39 },
-        { id: 8, name: "Sunset Bay Resort", location: "Colva, Goa", price: 9200, rating: 4.5, reviews: 2033, image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Breakfast", "Gym"], discount: 29 },
-        { id: 9, name: "Urban Boutique Hotel", location: "Mapusa, Goa", price: 4700, rating: 3.9, reviews: 620, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi"], discount: 12 },
-        { id: 10, name: "Crystal Cove Retreat", location: "Palolem, Goa", price: 14800, rating: 4.8, reviews: 1788, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Gym", "Parking"], discount: 41 },
-        { id: 11, name: "Mountain Edge Villa", location: "Manali", price: 9900, rating: 4.6, reviews: 1244, image: "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Breakfast", "Parking"], discount: 24 },
-        { id: 12, name: "Snow Peak Resort", location: "Shimla", price: 8600, rating: 4.3, reviews: 988, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Free Wifi", "Gym"], discount: 22 },
-        { id: 13, name: "Royal Heritage Palace", location: "Jaipur", price: 11200, rating: 4.7, reviews: 1901, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Breakfast", "Pool"], discount: 34 },
-        { id: 14, name: "Lake View Residency", location: "Udaipur", price: 7400, rating: 4.2, reviews: 884, image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi", "Parking"], discount: 19 },
-        { id: 15, name: "Golden Sands Resort", location: "Kerala", price: 13200, rating: 4.8, reviews: 2440, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Breakfast", "Gym"], discount: 38 },
-        { id: 16, name: "City Lights Hotel", location: "Mumbai", price: 6700, rating: 4.1, reviews: 1450, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi", "Breakfast"], discount: 17 },
-        { id: 17, name: "Skyline Premium Stay", location: "Delhi", price: 8300, rating: 4.4, reviews: 1720, image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Gym", "Parking"], discount: 27 },
-        { id: 18, name: "Forest Retreat Villa", location: "Coorg", price: 17600, rating: 4.9, reviews: 812, image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Pool", "Breakfast", "Free Wifi"], discount: 44 },
-        { id: 19, name: "Ocean Pearl Resort", location: "Pondicherry", price: 9500, rating: 4.5, reviews: 1190, image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Parking"], discount: 31 },
-        { id: 20, name: "Paradise Inn", location: "Hyderabad", price: 5800, rating: 4.0, reviews: 710, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free Wifi", "Breakfast"], discount: 14 },
-        { id: 21, name: "Luxury Crown Hotel", location: "Bangalore", price: 12100, rating: 4.7, reviews: 2201, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Gym", "Pool", "Breakfast"], discount: 37 },
-        { id: 22, name: "Palm Grove Villa", location: "Alibaug", price: 16800, rating: 4.8, reviews: 902, image: "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Pool", "Parking", "Free Wifi"], discount: 35 },
-        { id: 23, name: "Moonlight Residency", location: "Chennai", price: 6200, rating: 4.1, reviews: 830, image: "https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Breakfast", "Parking"], discount: 16 },
-        { id: 24, name: "Blue Orchid Resort", location: "Goa", price: 10800, rating: 4.6, reviews: 1660, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Pool", "Free Wifi", "Gym"], discount: 30 },
-        { id: 25, name: "Hilltop Escape Villa", location: "Mussoorie", price: 15400, rating: 4.9, reviews: 680, image: "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=1400&auto=format&fit=crop", type: "Villas", amenities: ["Breakfast", "Pool", "Parking"], discount: 43 },
+        // New York Hotels
+        { id: 1, name: "The Plaza Hotel", location: "Fifth Avenue, New York", price: 895, rating: 4.9, reviews: 5234, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Fitness Center", "Restaurant", "Flat-screen TV"], discount: 15 },
+        { id: 2, name: "The Manhattan Retreat", location: "Times Square, New York", price: 349, rating: 4.6, reviews: 3241, image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Air Conditioning", "Flat-screen TV"], discount: 25 },
+        { id: 3, name: "Brooklyn Luxury Suites", location: "Brooklyn, New York", price: 279, rating: 4.5, reviews: 1892, image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1400&auto=format&fit=crop", type: "Apartments", amenities: ["Free WiFi", "Free Parking", "Kitchen"], discount: 20 },
+
+        // Los Angeles Hotels
+        { id: 4, name: "Beverly Hills Palace", location: "Beverly Hills, Los Angeles", price: 1299, rating: 4.9, reviews: 4321, image: "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Outdoor Pool", "Fitness Center", "Free Breakfast", "Restaurant"], discount: 18 },
+        { id: 5, name: "Santa Monica Beach Resort", location: "Santa Monica, Los Angeles", price: 449, rating: 4.7, reviews: 2876, image: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Beachfront", "Outdoor Pool", "Free WiFi"], discount: 30 },
+        { id: 6, name: "Hollywood Star Hotel", location: "Hollywood, Los Angeles", price: 299, rating: 4.4, reviews: 1987, image: "https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Air Conditioning", "Flat-screen TV"], discount: 22 },
+
+        // Las Vegas Hotels
+        { id: 7, name: "The Venetian Resort", location: "The Strip, Las Vegas", price: 599, rating: 4.8, reviews: 8765, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Outdoor Pool", "Restaurant", "Casino", "Fitness Center"], discount: 35 },
+        { id: 8, name: "Bellagio Luxury Hotel", location: "Las Vegas Strip, Las Vegas", price: 749, rating: 4.9, reviews: 6543, image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Outdoor Pool", "Restaurant", "Free WiFi", "Spa"], discount: 28 },
+
+        // Miami Hotels
+        { id: 9, name: "South Beach Resort", location: "South Beach, Miami", price: 529, rating: 4.7, reviews: 3456, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Beachfront", "Outdoor Pool", "Free Breakfast"], discount: 32 },
+        { id: 10, name: "Miami Downtown Suites", location: "Downtown, Miami", price: 249, rating: 4.3, reviews: 1876, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Parking", "Air Conditioning"], discount: 15 },
+
+        // Orlando Hotels (Disney World)
+        { id: 11, name: "Walt Disney World Resort", location: "Lake Buena Vista, Orlando", price: 689, rating: 4.9, reviews: 9876, image: "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Outdoor Pool", "Free Breakfast", "Shuttle Service", "Kids Club"], discount: 40 },
+        { id: 12, name: "Universal's Cabana Bay", location: "Universal Blvd, Orlando", price: 299, rating: 4.6, reviews: 5432, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Outdoor Pool", "Free WiFi", "Fitness Center"], discount: 25 },
+
+        // Chicago Hotels
+        { id: 13, name: "The Langham Chicago", location: "Michigan Avenue, Chicago", price: 649, rating: 4.9, reviews: 2345, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Indoor Pool", "Spa", "Restaurant", "Fitness Center"], discount: 20 },
+        { id: 14, name: "Chicago Downtown Hotel", location: "The Loop, Chicago", price: 279, rating: 4.5, reviews: 1876, image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Air Conditioning", "Flat-screen TV"], discount: 18 },
+
+        // San Francisco Hotels
+        { id: 15, name: "Fairmont San Francisco", location: "Nob Hill, San Francisco", price: 599, rating: 4.8, reviews: 2987, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Fitness Center", "Restaurant", "Free WiFi", "Spa"], discount: 25 },
+        { id: 16, name: "Fisherman's Wharf Inn", location: "Fisherman's Wharf, San Francisco", price: 249, rating: 4.3, reviews: 1654, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop", type: "Motels", amenities: ["Free Parking", "Free WiFi", "Breakfast"], discount: 12 },
+
+        // Seattle Hotels
+        { id: 17, name: "Edgewater Hotel", location: "Pier 67, Seattle", price: 399, rating: 4.7, reviews: 1876, image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Waterfront", "Restaurant", "Free WiFi"], discount: 22 },
+
+        // Boston Hotels
+        { id: 18, name: "The Liberty Hotel", location: "Beacon Hill, Boston", price: 449, rating: 4.8, reviews: 2341, image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Fitness Center", "Restaurant", "Free WiFi"], discount: 20 },
+
+        // Washington DC Hotels
+        { id: 19, name: "The Watergate Hotel", location: "Foggy Bottom, Washington DC", price: 529, rating: 4.7, reviews: 1987, image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Outdoor Pool", "Spa", "Restaurant"], discount: 28 },
+
+        // Austin Hotels
+        { id: 20, name: "The Driskill Hotel", location: "Downtown, Austin", price: 379, rating: 4.8, reviews: 1876, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Restaurant", "Fitness Center"], discount: 25 },
+
+        // Denver Hotels
+        { id: 21, name: "The Crawford Hotel", location: "Union Station, Denver", price: 349, rating: 4.7, reviews: 1654, image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Restaurant", "Fitness Center"], discount: 20 },
+
+        // Nashville Hotels
+        { id: 22, name: "The Gulch Hotel", location: "The Gulch, Nashville", price: 329, rating: 4.7, reviews: 1987, image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Restaurant", "Rooftop Bar"], discount: 18 },
+
+        // New Orleans Hotels
+        { id: 23, name: "The Roosevelt Hotel", location: "French Quarter, New Orleans", price: 399, rating: 4.8, reviews: 2345, image: "https://images.unsplash.com/photo-1505692952047-1a78307da8f2?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Outdoor Pool", "Spa", "Restaurant"], discount: 30 },
+
+        // San Diego Hotels
+        { id: 24, name: "Hotel Del Coronado", location: "Coronado, San Diego", price: 699, rating: 4.9, reviews: 3456, image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Beachfront", "Outdoor Pool", "Spa", "Restaurant"], discount: 35 },
+
+        // Honolulu Hotels (Hawaii)
+        { id: 25, name: "Waikiki Beach Resort", location: "Waikiki, Honolulu", price: 549, rating: 4.8, reviews: 4321, image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Beachfront", "Outdoor Pool", "Free Breakfast", "Spa"], discount: 28 },
+
+        // Phoenix Hotels
+        { id: 26, name: "Arizona Biltmore", location: "Phoenix, Arizona", price: 399, rating: 4.7, reviews: 1876, image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Outdoor Pool", "Golf Course", "Spa"], discount: 25 },
+
+        // Portland Hotels
+        { id: 27, name: "The Nines Hotel", location: "Downtown, Portland", price: 329, rating: 4.7, reviews: 1654, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Free WiFi", "Restaurant", "Fitness Center"], discount: 22 },
+
+        // Atlanta Hotels
+        { id: 28, name: "The Whitley Hotel", location: "Buckhead, Atlanta", price: 359, rating: 4.7, reviews: 1987, image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Outdoor Pool", "Restaurant", "Spa"], discount: 20 },
+
+        // Dallas Hotels
+        { id: 29, name: "The Joule Hotel", location: "Downtown, Dallas", price: 389, rating: 4.8, reviews: 1765, image: "https://images.unsplash.com/photo-1496417263034-38ec4f0b665a?q=80&w=1400&auto=format&fit=crop", type: "Hotels", amenities: ["Rooftop Pool", "Restaurant", "Spa"], discount: 25 },
+
+        // Luxury Mountain Resort
+        { id: 30, name: "Aspen Mountain Lodge", location: "Aspen, Colorado", price: 899, rating: 4.9, reviews: 2341, image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?q=80&w=1400&auto=format&fit=crop", type: "Resorts", amenities: ["Ski-in/Ski-out", "Heating", "Spa", "Restaurant"], discount: 30 },
     ];
 
     const nights = differenceInDays(dateRange[0].endDate, dateRange[0].startDate);
 
     // Check if any filter is active
-    const isAnyFilterActive = 
-        selectedPrice !== 25000 || 
-        selectedRatings.length > 0 || 
-        selectedAmenities.length > 0 || 
+    const isAnyFilterActive =
+        selectedPrice !== 300 ||
+        selectedRatings.length > 0 ||
+        selectedAmenities.length > 0 ||
         selectedPropertyTypes.length > 0;
 
     // Clear all filters function
     const clearAllFilters = () => {
-        setSelectedPrice(25000);
+        setSelectedPrice(300);
         setSelectedRatings([]);
         setSelectedAmenities([]);
         setSelectedPropertyTypes([]);
@@ -175,7 +236,7 @@ const HotelBooking = () => {
                 <h2 className="font-black text-xl">Filters</h2>
                 <div className="flex items-center gap-2">
                     {isAnyFilterActive && (
-                        <button 
+                        <button
                             onClick={clearAllFilters}
                             className="px-3 py-2 rounded-xl bg-red-50 text-red-600 text-sm font-semibold flex items-center gap-2 hover:bg-red-100 transition-all"
                         >
@@ -184,7 +245,7 @@ const HotelBooking = () => {
                         </button>
                     )}
                     {onClose && (
-                        <button 
+                        <button
                             onClick={onClose}
                             className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-all"
                         >
@@ -198,16 +259,16 @@ const HotelBooking = () => {
             <div className="mb-7">
                 <div className="flex justify-between mb-3">
                     <p className="font-semibold">Price Per Night</p>
-                    <p className="font-bold text-blue-600">₹{selectedPrice.toLocaleString()}</p>
+                    <p className="font-bold text-blue-600">${selectedPrice.toLocaleString()}</p>
                 </div>
 
-                <input 
-                    type="range" 
-                    min="1000" 
-                    max="50000" 
-                    value={selectedPrice} 
-                    onChange={(e) => setSelectedPrice(Number(e.target.value))} 
-                    className="w-full accent-blue-600" 
+                <input
+                    type="range"
+                    min="10"
+                    max="600"
+                    value={selectedPrice}
+                    onChange={(e) => setSelectedPrice(Number(e.target.value))}
+                    className="w-full accent-blue-600"
                 />
             </div>
 
@@ -350,7 +411,7 @@ const HotelBooking = () => {
                                                     className="w-full text-left px-5 py-4 hover:bg-gray-50 border-b"
                                                 >
                                                     <p className="font-semibold">{city}</p>
-                                                    <p className="text-sm text-gray-500">India</p>
+                                                    <p className="text-sm text-gray-500">USA</p>
                                                 </button>
                                             ))}
                                     </div>
@@ -503,17 +564,17 @@ const HotelBooking = () => {
                     {/* MOBILE FILTERS MODAL */}
                     {showMobileFilters && (
                         <>
-                            <div 
+                            <div
                                 className="fixed inset-0 bg-black/50 z-[1000] transition-opacity duration-300"
                                 onClick={() => setShowMobileFilters(false)}
                             />
-                            <div 
+                            <div
                                 ref={mobileFilterRef}
                                 className="fixed right-0 top-10 h-full w-full max-w-[400px] bg-white z-[1001] shadow-2xl overflow-y-auto transition-transform duration-300 transform translate-x-0 rounded-l-3xl"
                             >
                                 <div className="p-5">
                                     <FilterContent onClose={() => setShowMobileFilters(false)} />
-                                    
+
                                     {/* Apply Button for Mobile */}
                                     <button
                                         onClick={() => setShowMobileFilters(false)}
@@ -600,7 +661,7 @@ const HotelBooking = () => {
                                                     <p className="text-sm text-gray-400">Per night</p>
 
                                                     <div className="flex items-end gap-2">
-                                                        <h2 className="text-4xl font-black text-black">₹{hotel.price.toLocaleString()}</h2>
+                                                        <h2 className="text-4xl font-black text-black">${hotel.price.toLocaleString()}</h2>
                                                         <span className="text-green-600 font-semibold mb-1">+ taxes</span>
                                                     </div>
                                                 </div>
@@ -610,7 +671,20 @@ const HotelBooking = () => {
                                                         View Details
                                                     </button>
 
-                                                    <button className="h-14 px-8 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold shadow-xl hover:scale-[1.02] transition-all">
+                                                    <button
+                                                        onClick={() => navigate("/hotel-booking", {
+                                                            state: {
+                                                                hotel: hotel,
+                                                                searchParams: {
+                                                                    checkIn: dateRange[0].startDate,
+                                                                    checkOut: dateRange[0].endDate,
+                                                                    guests: guests,
+                                                                    rooms: guests.rooms
+                                                                }
+                                                            }
+                                                        })}
+                                                        className="h-14 px-8 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold shadow-xl hover:scale-[1.02] transition-all"
+                                                    >
                                                         Book Now
                                                     </button>
                                                 </div>
@@ -624,7 +698,7 @@ const HotelBooking = () => {
                         {filteredHotels.length === 0 && (
                             <div className="text-center py-20 bg-white rounded-3xl">
                                 <p className="text-gray-500 text-lg">No hotels found matching your criteria</p>
-                                <button 
+                                <button
                                     onClick={clearAllFilters}
                                     className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all"
                                 >
