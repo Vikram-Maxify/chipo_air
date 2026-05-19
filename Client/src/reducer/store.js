@@ -7,6 +7,7 @@ import bookingReducer from "./slice/flightBookingSlice";
 import paymentReducer from "./slice/paymentSlice";
 import userOfferReducer from "./slice/userOfferSlice";
 import bannerSliceReducer from "./slice/userBannerSlice";
+import destinationReducer from "./slice/destinationSlice";
 
 
 const store = configureStore({
@@ -18,7 +19,8 @@ const store = configureStore({
     flightBooking: bookingReducer,
     payment: paymentReducer,
     userOffer: userOfferReducer,
-    userBanner: bannerSliceReducer
+    userBanner: bannerSliceReducer,
+    destination: destinationReducer,
   },
 });
 

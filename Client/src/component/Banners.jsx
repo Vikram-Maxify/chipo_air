@@ -33,9 +33,6 @@ const Banners = () => {
             state.userBanner
     );
 
-    console.log(banners);
-    
-
     const [currentIndex,
         setCurrentIndex] =
         useState(0);

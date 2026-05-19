@@ -49,6 +49,7 @@ const Header = () => {
 
     const navLinks = [
         { to: "/flights", label: "Flights", icon: Plane },
+        { to: "/hotels", label: "Hotels", icon: MapPin },
         { to: "/packages", label: "Packages", icon: Gift },
         { to: "/all_offers", label: "Deals", icon: Calendar },
         { to: "/my-trips", label: "My Trips", icon: MapPin },
