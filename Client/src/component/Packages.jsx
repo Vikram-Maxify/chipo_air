@@ -107,7 +107,7 @@ const Packages = () => {
 
         <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-20">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 mb-6">
               <Sparkles className="w-4 h-4 text-yellow-300" />
               <span className="text-sm text-blue-100">Exclusive Travel Deals</span>
             </div>
@@ -270,14 +270,14 @@ const Packages = () => {
                   
                   {/* Badges */}
                   <div className="absolute top-3 left-3 flex gap-2">
-                    <span className="bg-white/95 backdrop-blur-sm text-purple-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                    <span className="bg-white/95 text-purple-700 text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
                       <Tag size={12} />
                       Best Seller
                     </span>
                   </div>
                   
                   {/* Rating */}
-                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
+                  <div className="absolute top-3 right-3 bg-white/95  text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1">
                     <Star className="w-3 h-3 text-yellow-400 fill-current" />
                     {getRating(pkg._id)}
                   </div>
@@ -318,7 +318,7 @@ const Packages = () => {
                     <div>
                       <p className="text-xs text-gray-500">Starting from</p>
                       <p className="text-2xl font-bold text-purple-600">
-                        ₹{pkg.price?.toLocaleString()}
+                        ${pkg.price?.toLocaleString()}
                         <span className="text-sm text-gray-400 font-normal">
                           /person
                         </span>

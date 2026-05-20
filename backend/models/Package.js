@@ -29,6 +29,69 @@ const packageSchema = new mongoose.Schema(
       },
     },
 
+    // ✅ INCLUDED FEATURES
+    includes: {
+      flight: {
+        type: Boolean,
+        default: false,
+      },
+
+      hotel: {
+        type: Boolean,
+        default: false,
+      },
+
+      meal: {
+        type: Boolean,
+        default: false,
+      },
+
+      vehicle: {
+        type: Boolean,
+        default: false,
+      },
+
+      sightseeing: {
+        type: Boolean,
+        default: false,
+      },
+
+      airportTransfer: {
+        type: Boolean,
+        default: false,
+      },
+
+      guide: {
+        type: Boolean,
+        default: false,
+      },
+
+      insurance: {
+        type: Boolean,
+        default: false,
+      },
+
+      wifi: {
+        type: Boolean,
+        default: false,
+      },
+
+      breakfast: {
+        type: Boolean,
+        default: false,
+      },
+
+      dinner: {
+        type: Boolean,
+        default: false,
+      },
+
+      lunch: {
+        type: Boolean,
+        default: false,
+      },
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -36,8 +99,11 @@ const packageSchema = new mongoose.Schema(
 
     // 🔍 SEO FIELDS
     metaTitle: String,
+
     metaDescription: String,
+
     metaKeywords: [String],
+
     seoSlug: {
       type: String,
       unique: true,
