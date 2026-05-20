@@ -2,193 +2,397 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {
   FaPlane,
-  FaEnvelope,
-  FaPhone,
-  FaMapMarkerAlt,
-  FaGlobe,
+  FaHotel,
+  FaUmbrellaBeach,
   FaTwitter,
   FaInstagram,
   FaYoutube,
-  FaArrowRight,
+  FaFacebookF,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
   FaShieldAlt,
   FaCreditCard,
+  FaHeadset,
+  FaArrowRight,
 } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = {
+  const footerData = {
     company: [
-      { label: "About Us", to: "/about" },
-      { label: "Careers", to: "/careers" },
-      { label: "Privacy", to: "/privacy" },
-      { label: "Blog", to: "/blog" },
-      { label: "Press", to: "/press" },
+      "About Us",
+      "Careers",
+      "Investor Relations",
+      "Press Releases",
+      "Gift Cards",
     ],
+
     support: [
-      { label: "Help Center", to: "/help" },
-      { label: "Contact Us", to: "/contact" },
-      { label: "FAQs", to: "/faqs" },
-      { label: "Cancellation", to: "/cancellation" },
+      "Customer Support",
+      "FAQs",
+      "Cancellation Policy",
+      "Refund Status",
+      "Travel Guidelines",
     ],
-    legal: [
-      { label: "Privacy Policy", to: "/privacy" },
-      { label: "Terms of Service", to: "/terms" },
-      { label: "Cookie Policy", to: "/cookies" },
+
+    popularFlights: [
+      "Delhi to Dubai",
+      "Mumbai to Bangkok",
+      "Delhi to Goa",
+      "Bangalore to Singapore",
+      "Hyderabad to Maldives",
     ],
-    quickLinks: [
-      { label: "Flights", to: "/flights" },
-      { label: "Packages", to: "/packages" },
-      { label: "Deals", to: "/deals" },
+
+    popularHotels: [
+      "Hotels in Goa",
+      "Hotels in Dubai",
+      "Hotels in Manali",
+      "Hotels in Bali",
+      "Hotels in Shimla",
     ],
   };
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-          
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1 lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <FaPlane className="w-5 h-5 text-white -rotate-45" />
-              </div>
-              <span className="text-white font-bold text-lg">
-                FlightBooker
-              </span>
-            </Link>
+    <footer className="bg-[#0B1220] text-white">
+      
+      {/* TOP CTA */}
+      <div className="border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-10">
+          <div className="bg-gradient-to-r from-[#2276FF] to-[#0057D9] rounded-[32px] p-8 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            
+            <div>
+              <h2 className="text-3xl md:text-4xl font-black mb-3">
+                Download Our Travel App
+              </h2>
 
-            <p className="text-sm text-gray-400 mb-6 max-w-sm">
-              Book flights easily and travel smarter. Compare hundreds of airlines 
-              to find the best deals for your next adventure.
-            </p>
-
-            {/* Contact */}
-            <div className="space-y-2 mb-6">
-              <a href="mailto:support@flightbooker.com" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white">
-                <FaEnvelope className="w-4 h-4" />
-                support@flightbooker.com
-              </a>
-
-              <a href="tel:+911800123456" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white">
-                <FaPhone className="w-4 h-4" />
-                1800-123-456
-              </a>
-
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <FaMapMarkerAlt className="w-4 h-4" />
-                Mumbai, India
-              </div>
+              <p className="text-blue-100 text-lg leading-7 max-w-2xl">
+                Book flights, hotels, and holiday packages
+                faster with exclusive app-only deals and
+                instant notifications.
+              </p>
             </div>
 
-            {/* Social */}
-            <div className="flex gap-3">
-              {[
-                { icon: FaGlobe },
-                { icon: FaTwitter },
-                { icon: FaInstagram },
-                { icon: FaYoutube },
-              ].map((social, idx) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={idx}
-                    href="#"
-                    className="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-blue-600"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                );
-              })}
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              <input
+                type="text"
+                placeholder="Enter mobile number"
+                className="bg-white text-gray-900 px-5 py-4 rounded-2xl outline-none min-w-[260px]"
+              />
+
+              <button className="bg-[#0B1220] hover:bg-black px-7 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all">
+                Get App Link
+
+                <FaArrowRight />
+              </button>
             </div>
-          </div>
-
-          {/* Links */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.quickLinks.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="text-sm text-gray-400 hover:text-white">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-4">Company</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.company.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="text-sm text-gray-400 hover:text-white">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-semibold mb-4">Support</h4>
-            <ul className="space-y-2.5">
-              {footerLinks.support.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="text-sm text-gray-400 hover:text-white">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* Newsletter */}
-        <div className="mt-10 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between gap-4">
-          <div>
-            <h4 className="text-white font-semibold">Get travel deals & offers</h4>
-            <p className="text-sm text-gray-400">
-              Subscribe to our newsletter
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-  <input
-    type="email"
-    placeholder="Enter email"
-    className="w-full sm:w-auto flex-1 min-w-0 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white outline-none"
-  />
-
-  <button className="w-full sm:w-auto bg-blue-600 px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-white whitespace-nowrap">
-    Subscribe <FaArrowRight />
-  </button>
-</div>
-        </div>
-
-        {/* Trust */}
-        <div className="mt-8 pt-8 border-t border-gray-800 flex justify-between flex-wrap gap-4">
-          <div className="flex gap-4 text-xs text-gray-400">
-            <div className="flex items-center gap-2">
-              <FaShieldAlt className="text-green-500" />
-              Secure Payment
-            </div>
-            <div className="flex items-center gap-2">
-              <FaCreditCard className="text-blue-500" />
-              Multiple Payment Options
-            </div>
-          </div>
-
-          <div className="text-xs text-gray-500">
-            Visa • Mastercard • UPI • Net Banking
           </div>
         </div>
       </div>
 
-      {/* Bottom */}
-      <div className="border-t border-gray-800 text-center py-4 text-sm text-gray-500">
-        © {currentYear} FlightBooker. All rights reserved.
+      {/* MAIN FOOTER */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        
+        {/* TOP GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-14 border-b border-white/10">
+          
+          {/* BRAND */}
+          <div className="lg:col-span-2">
+            <Link
+              to="/"
+              className="flex items-center gap-3 mb-6"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-[#2276FF] flex items-center justify-center">
+                <FaPlane className="text-white text-lg -rotate-45" />
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-black">
+                  FlightBooker
+                </h2>
+
+                <p className="text-sm text-gray-400">
+                  Flights • Hotels • Packages
+                </p>
+              </div>
+            </Link>
+
+            <p className="text-gray-400 leading-8 max-w-md mb-8">
+              Discover the best flight deals, luxury hotels,
+              and unforgettable holiday packages at amazing
+              prices with secure and hassle-free booking.
+            </p>
+
+            {/* CONTACT */}
+            <div className="space-y-4">
+              
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                  <FaPhoneAlt className="text-[#2276FF]" />
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-400">
+                    Customer Support
+                  </p>
+
+                  <p className="font-semibold">
+                    +91 1800-123-456
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                  <FaEnvelope className="text-[#2276FF]" />
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-400">
+                    Email Support
+                  </p>
+
+                  <p className="font-semibold">
+                    support@flightbooker.com
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                  <FaMapMarkerAlt className="text-[#2276FF]" />
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-400">
+                    Office
+                  </p>
+
+                  <p className="font-semibold">
+                    Mumbai, India
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* COMPANY */}
+          <div>
+            <h3 className="text-xl font-bold mb-6">
+              Company
+            </h3>
+
+            <ul className="space-y-4">
+              {footerData.company.map((item) => (
+                <li key={item}>
+                  <Link
+                    to="/"
+                    className="text-gray-400 hover:text-white transition-all"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* SUPPORT */}
+          <div>
+            <h3 className="text-xl font-bold mb-6">
+              Support
+            </h3>
+
+            <ul className="space-y-4">
+              {footerData.support.map((item) => (
+                <li key={item}>
+                  <Link
+                    to="/"
+                    className="text-gray-400 hover:text-white transition-all"
+                  >
+                    {item}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* SERVICES */}
+          <div>
+            <h3 className="text-xl font-bold mb-6">
+              Services
+            </h3>
+
+            <div className="space-y-5">
+              
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
+                  <FaPlane className="text-[#2276FF]" />
+                </div>
+
+                <div>
+                  <p className="font-semibold">
+                    Flight Booking
+                  </p>
+
+                  <p className="text-sm text-gray-400">
+                    Domestic & International
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                  <FaHotel className="text-orange-400" />
+                </div>
+
+                <div>
+                  <p className="font-semibold">
+                    Hotel Booking
+                  </p>
+
+                  <p className="text-sm text-gray-400">
+                    Luxury & Budget Hotels
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center">
+                  <FaUmbrellaBeach className="text-purple-400" />
+                </div>
+
+                <div>
+                  <p className="font-semibold">
+                    Holiday Packages
+                  </p>
+
+                  <p className="text-sm text-gray-400">
+                    Family & Honeymoon Trips
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* POPULAR ROUTES */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-14 border-b border-white/10">
+          
+          <div>
+            <h3 className="text-2xl font-bold mb-6">
+              Popular Flight Routes
+            </h3>
+
+            <div className="flex flex-wrap gap-3">
+              {footerData.popularFlights.map((item) => (
+                <Link
+                  key={item}
+                  to="/flights"
+                  className="bg-white/5 hover:bg-[#2276FF] px-4 py-2 rounded-full text-sm transition-all"
+                >
+                  {item}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-2xl font-bold mb-6">
+              Popular Hotel Destinations
+            </h3>
+
+            <div className="flex flex-wrap gap-3">
+              {footerData.popularHotels.map((item) => (
+                <Link
+                  key={item}
+                  to="/hotels"
+                  className="bg-white/5 hover:bg-[#2276FF] px-4 py-2 rounded-full text-sm transition-all"
+                >
+                  {item}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* NEWSLETTER */}
+        <div className="py-14 border-b border-white/10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            
+            <div>
+              <h3 className="text-3xl font-black mb-3">
+                Get Travel Deals & Updates
+              </h3>
+
+              <p className="text-gray-400 text-lg">
+                Subscribe for exclusive flight offers and
+                holiday package discounts.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="bg-white/5 border border-white/10 text-white px-5 py-4 rounded-2xl outline-none min-w-[320px]"
+              />
+
+              <button className="bg-[#2276FF] hover:bg-[#0057D9] px-8 py-4 rounded-2xl font-semibold transition-all">
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM */}
+        <div className="pt-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+          
+          {/* SOCIAL */}
+          <div className="flex items-center gap-4">
+            {[
+              FaFacebookF,
+              FaTwitter,
+              FaInstagram,
+              FaYoutube,
+            ].map((Icon, index) => (
+              <a
+                key={index}
+                href="/"
+                className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-[#2276FF] flex items-center justify-center transition-all"
+              >
+                <Icon />
+              </a>
+            ))}
+          </div>
+
+          {/* TRUST */}
+          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
+            
+            <div className="flex items-center gap-2">
+              <FaShieldAlt className="text-green-400" />
+
+              Secure Payments
+            </div>
+
+            <div className="flex items-center gap-2">
+              <FaCreditCard className="text-blue-400" />
+
+              Visa • Mastercard • UPI
+            </div>
+
+            <div className="flex items-center gap-2">
+              <FaHeadset className="text-orange-400" />
+
+              24×7 Support
+            </div>
+          </div>
+
+          {/* COPYRIGHT */}
+          <div className="text-sm text-gray-500">
+            © {currentYear} FlightBooker. All Rights Reserved.
+          </div>
+        </div>
       </div>
     </footer>
   );

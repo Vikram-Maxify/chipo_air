@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 
 const Packages = () => {
   const dispatch = useDispatch();
-  const { packages, loading, error } = useSelector((state) => state.package);
+const { packages = [], loading, error } = useSelector((state) => state.package);
 
   const [sortBy, setSortBy] = useState("latest");
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,16 +34,16 @@ const Packages = () => {
 
   // Sort and filter logic
   const filteredPackages = useMemo(() => {
-    let data = [...packages];
+    let data = Array.isArray(packages) ? [...packages] : [];
 
     // Search filter
     if (searchTerm) {
-      data = data.filter(
-        (pkg) =>
-          pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          pkg.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  data = data.filter(
+    (pkg) =>
+      pkg?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pkg?.description?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+}
 
     // Sort
     switch (sortBy) {

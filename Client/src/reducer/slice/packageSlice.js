@@ -9,7 +9,7 @@ export const getPackages = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await API.get("/packages");
-      return res.data.packages;
+      return res.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Something went wrong"
@@ -26,7 +26,7 @@ export const getSinglePackage = createAsyncThunk(
   async (slug, { rejectWithValue }) => {
     try {
       const res = await API.get(`/packages/${slug}`);
-      return res.data.package;
+      return res.data;
     } catch (err) {
       return rejectWithValue(
         err.response?.data?.message || "Something went wrong"

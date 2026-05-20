@@ -46,8 +46,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/flights" element={<Flights />} />
         <Route path="/hotels" element={<HotelBooking />} />
-<Route path="/hotel-booking" element={<HotelBookingPage />} />
-<Route path="/booking-confirmation" element={<BookingConfirmation />} />
+        <Route path="/hotel-booking" element={<HotelBookingPage />} />
+        <Route path="/booking-confirmation" element={<BookingConfirmation />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/all_offers" element={<AllOffers />} />
@@ -66,7 +66,7 @@ function App() {
             path="/profile"
             element={<Profile />}
           />
-        <Route path="/my-trips" element={<MyTrips />} />
+          <Route path="/my-trips" element={<MyTrips />} />
         </Route>
       </Routes>
 

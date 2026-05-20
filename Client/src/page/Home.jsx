@@ -8,6 +8,8 @@ import Footer from '../component/Footer'
 import StatsSection from '../StatsSection'
 import Offers from '../component/Offers'
 import Banners from '../component/Banners'
+import Testimonials from '../component/Testimonials'
+import FeaturedPackages from '../component/FeaturedPackages'
 
 const Home = () => {
   useEffect(() => {
@@ -17,11 +19,12 @@ const Home = () => {
     <>
       <Hero />
       <Banners />
-      <Packages />
+      <FeaturedPackages />
       <Offers />
       <PopularDestinations />
       <WhyChooseUs />
       <StatsSection />
+      <Testimonials />
 
     </>
   )
