@@ -2,8 +2,12 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
-// ================= GOOGLE =================
+
+
+
+
 passport.use(
   new GoogleStrategy(
     {
@@ -11,28 +15,51 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/api/auth/google/callback",
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails?.[0]?.value?.toLowerCase();
+        const email =
+          profile.emails?.[0]?.value?.toLowerCase();
 
         if (!email) {
           return done(null, false);
         }
 
+        // =========================
+        // FIND USER
+        // =========================
         let user = await User.findOne({ email });
 
-        if (user) {
-          return done(null, user);
+        // =========================
+        // CREATE USER IF NOT EXISTS
+        // =========================
+        if (!user) {
+          user = await User.create({
+            firstname: profile.name?.givenName || "",
+            lastname: profile.name?.familyName || "",
+            email,
+            verified: true,
+            password: null,
+            points: 500,
+          });
         }
 
-        user = await User.create({
-          firstname: profile.name?.givenName,
-          lastname: profile.name?.familyName,
-          email,
-          verified: true,
-          password: null,
-          points: 500,
-        });
+        // =========================
+        // JWT TOKEN GENERATE
+        // =========================
+        const token = jwt.sign(
+          {
+            id: user._id,
+            email: user.email,
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "7d",
+          }
+        );
+
+        // token user object me attach
+        user.token = token;
 
         return done(null, user);
       } catch (err) {
@@ -41,6 +68,20 @@ passport.use(
     }
   )
 );
+
+// =========================
+// SERIALIZE
+// =========================
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+// =========================
+// DESERIALIZE
+// =========================
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
 
 // ================= FACEBOOK =================
 passport.use(
