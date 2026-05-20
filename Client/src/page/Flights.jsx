@@ -98,7 +98,9 @@ const Flights = () => {
   const [toCode, setToCode] = useState("");
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
-  const [passengers, setPassengers] = useState(1);
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [infants, setInfants] = useState(0);
   const [isSearchLoading, setIsSearchLoading] = useState(false);
 
   // ================= FLIGHT DETAILS =================
@@ -106,153 +108,155 @@ const Flights = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   // ================= GET NEAREST AIRPORT =================
-const getDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371;
+  const getDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371;
 
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
 
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
       Math.cos((lat2 * Math.PI) / 180) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
 
-  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-};
-
-const findNearestAirport = (userLat, userLon) => {
-  let nearestAirport = null;
-  let minDistance = Infinity;
-
-  airportsData.forEach((airport) => {
-    const lat = parseFloat(
-      airport.latitude ||
-      airport.lat ||
-      airport.latitude_deg
-    );
-
-    const lon = parseFloat(
-      airport.longitude ||
-      airport.lon ||
-      airport.longitude_deg
-    );
-
-    const code =
-      airport.iata ||
-      airport.code ||
-      airport.iata_code;
-
-    // skip invalid airports
-    if (!lat || !lon || !code) return;
-
-    const distance = getDistance(userLat, userLon, lat, lon);
-
-    if (distance < minDistance) {
-      minDistance = distance;
-      nearestAirport = airport;
-    }
-  });
-
-  return nearestAirport;
-};
-
- // ================= AUTO FETCH FLIGHTS WITH USER LOCATION =================
-useEffect(() => {
-  if (location.pathname !== "/flights") return;
-  const fetchFlightsWithLocation = async () => {
-    if (hasAutoFetched.current) return;
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    const defaultDate = format(tomorrow, "yyyy-MM-dd");
-
-    const travelDate = departureDateQuery || defaultDate;
-
-    let fromAirport = "DEL";
-
-    // ================= GET USER LOCATION =================
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-        });
-      });
-
-      const userLat = position.coords.latitude;
-      const userLon = position.coords.longitude;
-
-      const nearestAirport = findNearestAirport(userLat, userLon);
-
-      if (nearestAirport) {
-        const city =
-          nearestAirport.city ||
-          nearestAirport.city_name ||
-          nearestAirport.municipality ||
-          "Unknown City";
-
-        const code =
-          nearestAirport.iata ||
-          nearestAirport.code ||
-          nearestAirport.iata_code;
-
-        if (code) {
-          fromAirport = code;
-
-          setFrom(`${city} (${code})`);
-          setFromCode(code);
-        }
-      }
-    } catch (err) {
-      console.log("Location access denied:", err);
-
-      setFrom("Delhi (DEL)");
-      setFromCode("DEL");
-    }
-
-    const toAirport = toQuery || "BOM";
-
-    if (!toQuery) {
-      setTo("Mumbai (BOM)");
-      setToCode("BOM");
-    }
-
-    setIsSearchLoading(true);
-
-    try {
-      const resultAction = await dispatch(
-        getFlightsThunk({
-          from: fromAirport,
-          to: toAirport,
-          departure_date: travelDate,
-          return_date: null,
-          passengers: 1,
-          travelClass: "Economy",
-        })
-      );
-
-      if (getFlightsThunk.fulfilled.match(resultAction)) {
-        hasAutoFetched.current = true;
-
-        if (!fromQuery && !toQuery) {
-  navigate(
-    `/flights?from=${fromAirport}&to=${toAirport}&departure_date=${travelDate}`,
-    { replace: true }
-  );
-}
-      }
-    } catch (err) {
-      console.log("Auto-fetch error:", err);
-    } finally {
-      setIsSearchLoading(false);
-    }
+    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   };
 
-  fetchFlightsWithLocation();
-}, [fromQuery, toQuery, departureDateQuery, dispatch, navigate]);
+  const findNearestAirport = (userLat, userLon) => {
+    let nearestAirport = null;
+    let minDistance = Infinity;
+
+    airportsData.forEach((airport) => {
+      const lat = parseFloat(
+        airport.latitude ||
+        airport.lat ||
+        airport.latitude_deg
+      );
+
+      const lon = parseFloat(
+        airport.longitude ||
+        airport.lon ||
+        airport.longitude_deg
+      );
+
+      const code =
+        airport.iata ||
+        airport.code ||
+        airport.iata_code;
+
+      // skip invalid airports
+      if (!lat || !lon || !code) return;
+
+      const distance = getDistance(userLat, userLon, lat, lon);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestAirport = airport;
+      }
+    });
+
+    return nearestAirport;
+  };
+
+  // ================= AUTO FETCH FLIGHTS WITH USER LOCATION =================
+  useEffect(() => {
+    if (location.pathname !== "/flights") return;
+    const fetchFlightsWithLocation = async () => {
+      if (hasAutoFetched.current) return;
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const defaultDate = format(tomorrow, "yyyy-MM-dd");
+
+      const travelDate = departureDateQuery || defaultDate;
+
+      let fromAirport = "DEL";
+
+      // ================= GET USER LOCATION =================
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+          });
+        });
+
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        const nearestAirport = findNearestAirport(userLat, userLon);
+
+        if (nearestAirport) {
+          const city =
+            nearestAirport.city ||
+            nearestAirport.city_name ||
+            nearestAirport.municipality ||
+            "Unknown City";
+
+          const code =
+            nearestAirport.iata ||
+            nearestAirport.code ||
+            nearestAirport.iata_code;
+
+          if (code) {
+            fromAirport = code;
+
+            setFrom(`${city} (${code})`);
+            setFromCode(code);
+          }
+        }
+      } catch (err) {
+        console.log("Location access denied:", err);
+
+        setFrom("Delhi (DEL)");
+        setFromCode("DEL");
+      }
+
+      const toAirport = toQuery || "BOM";
+
+      if (!toQuery) {
+        setTo("Mumbai (BOM)");
+        setToCode("BOM");
+      }
+
+      setIsSearchLoading(true);
+
+      try {
+        const resultAction = await dispatch(
+          getFlightsThunk({
+            from: fromAirport,
+            to: toAirport,
+            departure_date: travelDate,
+            return_date: null,
+            adults: 1,
+            children: 0,
+            infants: 0,
+            travelClass: "Economy",
+          })
+        );
+
+        if (getFlightsThunk.fulfilled.match(resultAction)) {
+          hasAutoFetched.current = true;
+
+          if (!fromQuery && !toQuery) {
+            navigate(
+              `/flights?from=${fromAirport}&to=${toAirport}&departure_date=${travelDate}`,
+              { replace: true }
+            );
+          }
+        }
+      } catch (err) {
+        console.log("Auto-fetch error:", err);
+      } finally {
+        setIsSearchLoading(false);
+      }
+    };
+
+    fetchFlightsWithLocation();
+  }, [fromQuery, toQuery, departureDateQuery, dispatch, navigate]);
 
   // ================= EXTRACT AIRPORT CODE =================
   const extractAirportCode = (input) => {
@@ -295,7 +299,9 @@ useEffect(() => {
         to: toAirportCode,
         departure_date: startDate,
         return_date: tripType === "roundtrip" ? endDate : null,
-        passengers,
+        adults,
+        children,
+        infants,
         travelClass,
       });
 
@@ -304,8 +310,15 @@ useEffect(() => {
           from: fromAirportCode,
           to: toAirportCode,
           departure_date: startDate,
-          return_date: tripType === "roundtrip" ? endDate : null,
-          passengers,
+          return_date:
+            tripType === "roundtrip"
+              ? endDate
+              : null,
+
+          adults,
+          children,
+          infants,
+
           travelClass,
         })
       );
@@ -480,8 +493,13 @@ useEffect(() => {
       state: {
         flight,
         offerId: flight.offerId,
-        passengersCount: passengers,
-        passengers: passengerIds,
+        passengersCount:
+          adults + children + infants,
+        passengerCounts: {
+          adults,
+          children,
+          infants,
+        }, passengers: passengerIds,
         availableSeats,
         seatServices: flight?.seatServices || [],
       },
@@ -526,7 +544,7 @@ useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const uniqueAirlines = [...new Set(flights.map((f) => f.airline))];
+  const uniqueAirlines = [...new Set(flights?.map((f) => f.airline))];
 
   // ================= FILTERED FLIGHTS =================
   const filteredFlights = flights.filter((f) => {
@@ -619,11 +637,10 @@ useEffect(() => {
                   <button
                     key={item.key}
                     onClick={() => setTripType(item.key)}
-                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                      tripType === item.key
-                        ? "bg-blue-600 text-white shadow-lg"
-                        : "bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
-                    }`}
+                    className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${tripType === item.key
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                      }`}
                   >
                     {item.label}
                   </button>
@@ -821,38 +838,114 @@ useEffect(() => {
               </div>
 
               {/* TRAVELLERS & CLASS */}
-              <div className="w-full xl:w-[280px]">
-                <div className="flex gap-2">
-                  <div className="flex-1">
-                    <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">Travellers</label>
-                    <div className="relative">
-                      <Users size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
-                      <select
-                        value={passengers}
-                        onChange={(e) => setPassengers(Number(e.target.value))}
-                        className="w-full h-[64px] border border-gray-200 rounded-2xl pl-12 pr-4 bg-white text-lg font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all appearance-none"
-                      >
-                        {[1, 2, 3, 4, 5, 6].map((n) => (
-                          <option key={n}>{n} {n === 1 ? "Traveller" : "Travellers"}</option>
-                        ))}
-                      </select>
+              <div className="w-full xl:w-[660px]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                  {/* PASSENGERS */}
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">
+                      Passengers
+                    </label>
+
+                    <div className="border border-gray-200 rounded-2xl px-3 py-2 bg-white min-h-[64px] flex items-center justify-between gap-2">
+
+                      {/* ADULT */}
+                      <div className="flex flex-col items-center flex-1">
+                        <span className="text-[10px] text-gray-500">
+                          Adults
+                        </span>
+
+                        <select
+                          value={adults}
+                          onChange={(e) =>
+                            setAdults(Number(e.target.value))
+                          }
+                          className="outline-none font-semibold bg-transparent text-sm w-full text-center"
+                        >
+                          {[1, 2, 3, 4, 5, 6].map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* CHILD */}
+                      <div className="flex flex-col items-center flex-1">
+                        <span className="text-[10px] text-gray-500">
+                          Child
+                        </span>
+
+                        <select
+                          value={children}
+                          onChange={(e) =>
+                            setChildren(Number(e.target.value))
+                          }
+                          className="outline-none font-semibold bg-transparent text-sm w-full text-center"
+                        >
+                          {[0, 1, 2, 3, 4].map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* INFANT */}
+                      <div className="flex flex-col items-center flex-1">
+                        <span className="text-[10px] text-gray-500">
+                          Infant
+                        </span>
+
+                        <select
+                          value={infants}
+                          onChange={(e) =>
+                            setInfants(Number(e.target.value))
+                          }
+                          className="outline-none font-semibold bg-transparent text-sm w-full text-center"
+                        >
+                          {[0, 1, 2].map((n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">Class</label>
+
+                  {/* CLASS */}
+                  <div>
+                    <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">
+                      Class
+                    </label>
+
                     <div className="relative">
-                      <Plane size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
+                      <Plane
+                        size={18}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600"
+                      />
+
                       <select
                         value={travelClass}
-                        onChange={(e) => setTravelClass(e.target.value)}
+                        onChange={(e) =>
+                          setTravelClass(e.target.value)
+                        }
                         className="w-full h-[64px] border border-gray-200 rounded-2xl pl-12 pr-4 bg-white text-sm font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all appearance-none"
                       >
                         {travelClassOptions.map((option) => (
-                          <option key={option} value={option}>{option}</option>
+                          <option
+                            key={option}
+                            value={option}
+                          >
+                            {option}
+                          </option>
                         ))}
                       </select>
                     </div>
                   </div>
+
                 </div>
               </div>
 

@@ -31,33 +31,65 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+
+
+
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    failureRedirect:
+      "http://localhost:5173/login?error=google_failed",
     session: false,
   }),
-  (req, res) => {
-    if (!req.user) {
-      return res.redirect("http://localhost:5173/login?error=google_failed");
+
+  async (req, res) => {
+    try {
+
+      if (!req.user) {
+        return res.redirect(
+          "http://localhost:5173/login?error=google_failed"
+        );
+      }
+
+      // =========================
+      // JWT TOKEN
+      // =========================
+      const token = jwt.sign(
+        {
+          id: req.user._id,
+          email: req.user.email,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d",
+        }
+      );
+
+      // =========================
+      // COOKIE SET
+      // =========================
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+      // =========================
+      // REDIRECT FRONTEND
+      // =========================
+      return res.redirect(
+        "http://localhost:5173/dashboard"
+      );
+
+    } catch (error) {
+
+      console.log("Google Auth Error:", error);
+
+      return res.redirect(
+        "http://localhost:5173/login?error=server_error"
+      );
     }
-
-    const token = jwt.sign(
-      { id: req.user._id, email: req.user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    // 🍪 secure cookie set
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false, // production me true (HTTPS)
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    // redirect WITHOUT token
-    return res.redirect("http://localhost:5173/dashboard");
   }
 );
 
