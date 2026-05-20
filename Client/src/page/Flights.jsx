@@ -1291,12 +1291,6 @@ const Flights = () => {
 
                           {/* PRICE */}
                           <div className="md:col-span-3 text-right">
-                            {discount > 15 && (
-                              <div className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-1 rounded-full text-xs font-bold mb-2">
-                                <TrendingDown className="w-3 h-3" />
-                                {discount}% OFF
-                              </div>
-                            )}
                             <p className="text-3xl font-bold">{f.price || "N/A"}</p>
                             <p className="text-xs text-gray-400 mb-4">per adult</p>
                             <div className="flex flex-col sm:flex-row items-center gap-3">
