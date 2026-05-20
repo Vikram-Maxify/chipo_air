@@ -65,8 +65,9 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/flight-bookings", flightBookingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
-app.use("/api/hotels", require("./routes/hotel.routes"));
 app.use("/api/destination", destinationRoutes);
+// ====================== BUILD PATHS ======================
+
 // ====================== BUILD PATHS ======================
 
 // CLIENT BUILD PATH

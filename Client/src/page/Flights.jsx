@@ -105,58 +105,154 @@ const Flights = () => {
   const [selectedFlight, setSelectedFlight] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
-  // ================= AUTO FETCH DELHI TO MUMBAI FLIGHTS ON PAGE LOAD =================
-  useEffect(() => {
-    const fetchDelhiToMumbaiFlights = async () => {
-      if (hasAutoFetched.current) return;
-      
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const defaultDate = format(tomorrow, "yyyy-MM-dd");
-      
-      const fromAirport = fromQuery || "DEL";
-      const toAirport = toQuery || "BOM";
-      const travelDate = departureDateQuery || defaultDate;
-      
-      console.log("Auto-fetching flights:", {
-        from: fromAirport,
-        to: toAirport,
-        date: travelDate
+  // ================= GET NEAREST AIRPORT =================
+const getDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+};
+
+const findNearestAirport = (userLat, userLon) => {
+  let nearestAirport = null;
+  let minDistance = Infinity;
+
+  airportsData.forEach((airport) => {
+    const lat = parseFloat(
+      airport.latitude ||
+      airport.lat ||
+      airport.latitude_deg
+    );
+
+    const lon = parseFloat(
+      airport.longitude ||
+      airport.lon ||
+      airport.longitude_deg
+    );
+
+    const code =
+      airport.iata ||
+      airport.code ||
+      airport.iata_code;
+
+    // skip invalid airports
+    if (!lat || !lon || !code) return;
+
+    const distance = getDistance(userLat, userLon, lat, lon);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      nearestAirport = airport;
+    }
+  });
+
+  return nearestAirport;
+};
+
+ // ================= AUTO FETCH FLIGHTS WITH USER LOCATION =================
+useEffect(() => {
+  if (location.pathname !== "/flights") return;
+  const fetchFlightsWithLocation = async () => {
+    if (hasAutoFetched.current) return;
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const defaultDate = format(tomorrow, "yyyy-MM-dd");
+
+    const travelDate = departureDateQuery || defaultDate;
+
+    let fromAirport = "DEL";
+
+    // ================= GET USER LOCATION =================
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+        });
       });
-      
-      setFrom(`${fromAirport === "DEL" ? "Delhi" : fromAirport} (${fromAirport})`);
-      setTo(`${toAirport === "BOM" ? "Mumbai" : toAirport} (${toAirport})`);
-      setFromCode(fromAirport);
-      setToCode(toAirport);
-      
-      setIsSearchLoading(true);
-      
-      try {
-        const resultAction = await dispatch(
-          getFlightsThunk({
-            from: fromAirport,
-            to: toAirport,
-            departure_date: travelDate,
-            return_date: null,
-            passengers: 1,
-            travelClass: "Economy",
-          })
-        );
-        
-        if (getFlightsThunk.fulfilled.match(resultAction)) {
-          console.log("Auto-fetch successful!");
-          hasAutoFetched.current = true;
-          navigate(`/flights?from=${fromAirport}&to=${toAirport}&departure_date=${travelDate}`, { replace: true });
+
+      const userLat = position.coords.latitude;
+      const userLon = position.coords.longitude;
+
+      const nearestAirport = findNearestAirport(userLat, userLon);
+
+      if (nearestAirport) {
+        const city =
+          nearestAirport.city ||
+          nearestAirport.city_name ||
+          nearestAirport.municipality ||
+          "Unknown City";
+
+        const code =
+          nearestAirport.iata ||
+          nearestAirport.code ||
+          nearestAirport.iata_code;
+
+        if (code) {
+          fromAirport = code;
+
+          setFrom(`${city} (${code})`);
+          setFromCode(code);
         }
-      } catch (err) {
-        console.log("Auto-fetch error:", err);
-      } finally {
-        setIsSearchLoading(false);
       }
-    };
-    
-    fetchDelhiToMumbaiFlights();
-  }, [fromQuery, toQuery, departureDateQuery, dispatch, navigate]);
+    } catch (err) {
+      console.log("Location access denied:", err);
+
+      setFrom("Delhi (DEL)");
+      setFromCode("DEL");
+    }
+
+    const toAirport = toQuery || "BOM";
+
+    if (!toQuery) {
+      setTo("Mumbai (BOM)");
+      setToCode("BOM");
+    }
+
+    setIsSearchLoading(true);
+
+    try {
+      const resultAction = await dispatch(
+        getFlightsThunk({
+          from: fromAirport,
+          to: toAirport,
+          departure_date: travelDate,
+          return_date: null,
+          passengers: 1,
+          travelClass: "Economy",
+        })
+      );
+
+      if (getFlightsThunk.fulfilled.match(resultAction)) {
+        hasAutoFetched.current = true;
+
+        if (!fromQuery && !toQuery) {
+  navigate(
+    `/flights?from=${fromAirport}&to=${toAirport}&departure_date=${travelDate}`,
+    { replace: true }
+  );
+}
+      }
+    } catch (err) {
+      console.log("Auto-fetch error:", err);
+    } finally {
+      setIsSearchLoading(false);
+    }
+  };
+
+  fetchFlightsWithLocation();
+}, [fromQuery, toQuery, departureDateQuery, dispatch, navigate]);
 
   // ================= EXTRACT AIRPORT CODE =================
   const extractAirportCode = (input) => {
