@@ -209,41 +209,19 @@ const Hero = () => {
   };
 
   // ================= SEARCH =================
-  const handleSearch = async () => {
-    if (!from || !to) {
-      alert("Please select airports");
-      return;
-    }
+  const handleSearch = () => {
+  if (!from || !to) {
+    alert("Please select airports");
+    return;
+  }
 
-    const departureDate = dateRange[0].startDate.toISOString().split("T")[0];
-    const returnDate = dateRange[0].endDate.toISOString().split("T")[0];
+  const departureDate = dateRange[0].startDate.toISOString().split("T")[0];
+  const returnDate = dateRange[0].endDate.toISOString().split("T")[0];
 
-    try {
-      setIsLoading(true);
-
-      const resultAction = await dispatch(
-        getFlightsThunk({
-          from: fromCode || from.split("(")[1]?.replace(")", ""),
-          to: toCode || to.split("(")[1]?.replace(")", ""),
-          departure_date: departureDate,
-          return_date: tripType === "roundtrip" ? returnDate : null,
-          passengers: travellers,
-          travelClass,
-        })
-      );
-
-      if (getFlightsThunk.fulfilled.match(resultAction)) {
-        navigate(
-          `/flights?from=${fromCode}&to=${toCode}&departure_date=${departureDate}&return_date=${returnDate}&passengers=${travellers}`
-        );
-      }
-    } catch (err) {
-      console.log(err);
-      alert("Failed to search flights");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  navigate(
+    `/flights?from=${fromCode || from.split("(")[1]?.replace(")", "")}&to=${toCode || to.split("(")[1]?.replace(")", "")}&departure_date=${departureDate}&return_date=${returnDate}&passengers=${travellers}&class=${travelClass}`
+  );
+};
 
   // Helper function to get airport display info
   const getAirportInfo = (airport) => {
@@ -549,21 +527,14 @@ const Hero = () => {
 
           {/* SEARCH BUTTON */}
           <div className="flex justify-center mt-10">
-            <button
-              onClick={handleSearch}
-              disabled={isLoading}
-              className="w-full md:w-auto px-10 md:px-24 py-4 md:py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl md:text-3xl font-bold shadow-2xl flex items-center justify-center gap-4 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? (
-                <div className="w-7 h-7 border-4 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  <Search size={28} />
-                  SEARCH
-                </>
-              )}
-            </button>
-          </div>
+  <button
+    onClick={handleSearch}
+    className="w-full md:w-auto px-10 md:px-24 py-4 md:py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl md:text-3xl font-bold shadow-2xl flex items-center justify-center gap-4 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105"
+  >
+    <Search size={28} />
+    SEARCH
+  </button>
+</div>
         </div>
       </div>
     </section>

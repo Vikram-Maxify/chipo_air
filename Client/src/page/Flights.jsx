@@ -387,10 +387,9 @@ const Flights = () => {
   // ================= UPDATE PRICE RANGE FROM FLIGHTS =================
   useEffect(() => {
     if (flights.length > 0) {
-      const prices = flights.map(f => {
-        const priceNum = parseInt(f.price?.replace(/[^0-9]/g, '') || '0');
-        return priceNum;
-      }).filter(p => p > 0);
+      const prices = flights
+  .map((f) => Number(String(f.price).replace(/[^0-9.]/g, "")))
+  .filter((p) => !isNaN(p) && p > 0);
 
       const min = Math.min(...prices);
       const max = Math.max(...prices);
@@ -555,7 +554,7 @@ const Flights = () => {
     const matchAirport = selectedAirports.length === 0 || selectedAirports.includes(f.route.to.code);
     const flightStops = getStopCount(f);
     const matchStops = selectedStops.length === 0 || selectedStops.includes(flightStops);
-    const priceNum = parseInt(f.price?.replace(/[^0-9]/g, '') || '0');
+    const priceNum = Number(String(f.price).replace(/[^0-9.]/g, ""));
     const matchPrice = priceNum >= priceRange.min && priceNum <= priceRange.max;
     const departureTimeOfDay = getTimeOfDay(f.timing.departure.scheduled);
     const matchDepartureTime = departureTimeFilter.length === 0 || departureTimeFilter.includes(departureTimeOfDay);
@@ -967,7 +966,7 @@ const Flights = () => {
             </div>
 
             {/* POPULAR CITIES */}
-            <div className="flex flex-wrap gap-2 pt-5">
+            {/* <div className="flex flex-wrap gap-2 pt-5">
               {popularCities.map((city) => (
                 <button
                   key={city.code}
@@ -980,7 +979,7 @@ const Flights = () => {
                   {city.name}
                 </button>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -1126,8 +1125,8 @@ const Flights = () => {
                       className="w-full accent-blue-600"
                     />
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">₹{priceRange.min.toLocaleString()}</span>
-                      <span className="text-gray-600">₹{priceRange.max.toLocaleString()}</span>
+                      <span className="text-gray-600">${priceRange.min.toLocaleString()}</span>
+                      <span className="text-gray-600">${priceRange.max.toLocaleString()}</span>
                     </div>
                     <div className="flex gap-2">
                       <input

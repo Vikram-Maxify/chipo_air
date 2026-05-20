@@ -24,6 +24,8 @@ import AllOffers from "./page/AllOffers";
 import MyTrips from "./page/MyTrips";
 import SingleDestination from "./page/SingleDestination";
 import HotelBooking from "./page/HotelBooking";
+import BookingConfirmation from "./page/BookingConfirmation";
+import HotelBookingPage from "./page/HotelBookingPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -44,6 +46,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/flights" element={<Flights />} />
         <Route path="/hotels" element={<HotelBooking />} />
+<Route path="/hotel-booking" element={<HotelBookingPage />} />
+<Route path="/booking-confirmation" element={<BookingConfirmation />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/all_offers" element={<AllOffers />} />
