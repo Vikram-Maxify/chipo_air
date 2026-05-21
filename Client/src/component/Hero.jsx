@@ -78,6 +78,7 @@ const Hero = () => {
 
   const [fromCode, setFromCode] = useState("");
   const [toCode, setToCode] = useState("");
+  const [showTravellerDropdown, setShowTravellerDropdown] = useState(false);
 
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
@@ -137,22 +138,22 @@ const Hero = () => {
   // ================= SWAP LOCATIONS (FIXED) =================
   const swapLocations = () => {
     console.log("Swap clicked - Before swap:", { from, to, fromCode, toCode });
-    
+
     // Swap the from and to values
     const tempFromValue = from;
     const tempFromCodeValue = fromCode;
-    
+
     setFrom(to);
     setFromCode(toCode);
-    
+
     setTo(tempFromValue);
     setToCode(tempFromCodeValue);
-    
-    console.log("Swap clicked - After swap:", { 
-      from: to, 
-      to: tempFromValue, 
-      fromCode: toCode, 
-      toCode: tempFromCodeValue 
+
+    console.log("Swap clicked - After swap:", {
+      from: to,
+      to: tempFromValue,
+      fromCode: toCode,
+      toCode: tempFromCodeValue
     });
   };
 
@@ -185,9 +186,9 @@ const Hero = () => {
   // ================= AIRPORT SEARCH =================
   const searchAirports = (value) => {
     if (!value || value.length < 2) return [];
-    
+
     const searchValue = value.toLowerCase().trim();
-    
+
     const results = airportsData
       .filter((airport) => {
         // Handle different possible field names
@@ -195,7 +196,7 @@ const Hero = () => {
         const name = (airport.name || airport.airport_name || "").toLowerCase();
         const code = (airport.iata || airport.code || airport.iata_code || "").toLowerCase();
         const country = (airport.country || airport.country_name || "").toLowerCase();
-        
+
         return (
           city.includes(searchValue) ||
           name.includes(searchValue) ||
@@ -204,24 +205,24 @@ const Hero = () => {
         );
       })
       .slice(0, 8);
-    
+
     return results;
   };
 
   // ================= SEARCH =================
   const handleSearch = () => {
-  if (!from || !to) {
-    alert("Please select airports");
-    return;
-  }
+    if (!from || !to) {
+      alert("Please select airports");
+      return;
+    }
 
-  const departureDate = dateRange[0].startDate.toISOString().split("T")[0];
-  const returnDate = dateRange[0].endDate.toISOString().split("T")[0];
+    const departureDate = dateRange[0].startDate.toISOString().split("T")[0];
+    const returnDate = dateRange[0].endDate.toISOString().split("T")[0];
 
-  navigate(
-    `/flights?from=${fromCode || from.split("(")[1]?.replace(")", "")}&to=${toCode || to.split("(")[1]?.replace(")", "")}&departure_date=${departureDate}&return_date=${returnDate}&passengers=${travellers}&class=${travelClass}`
-  );
-};
+    navigate(
+      `/flights?from=${fromCode || from.split("(")[1]?.replace(")", "")}&to=${toCode || to.split("(")[1]?.replace(")", "")}&departure_date=${departureDate}&return_date=${returnDate}&passengers=${travellers}&class=${travelClass}`
+    );
+  };
 
   // Helper function to get airport display info
   const getAirportInfo = (airport) => {
@@ -229,7 +230,7 @@ const Hero = () => {
     const name = airport.name || airport.airport_name || "Airport";
     const code = airport.iata || airport.code || airport.iata_code || "";
     const country = airport.country || airport.country_name || "";
-    
+
     return { city, name, code, country };
   };
 
@@ -264,14 +265,12 @@ const Hero = () => {
                 <button
                   key={item.key}
                   onClick={() => setTripType(item.key)}
-                  className={`flex items-center gap-2 font-semibold ${
-                    tripType === item.key ? "text-blue-600" : "text-gray-500"
-                  }`}
+                  className={`flex items-center gap-2 font-semibold ${tripType === item.key ? "text-blue-600" : "text-gray-500"
+                    }`}
                 >
                   <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      tripType === item.key ? "border-blue-600" : "border-gray-400"
-                    }`}
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${tripType === item.key ? "border-blue-600" : "border-gray-400"
+                      }`}
                   >
                     {tripType === item.key && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
                   </div>
@@ -491,50 +490,143 @@ const Hero = () => {
               </div>
 
               {/* TRAVELLERS */}
-              <div className="md:col-span-2 p-5">
+              <div className="md:col-span-2 p-5 relative">
+
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="text-gray-500 text-sm">Travellers & Class</p>
+                  <p className="text-gray-500 text-sm">
+                    Travellers & Class
+                  </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Users size={20} className="text-blue-600" />
-                  <select
-                    value={travellers}
-                    onChange={(e) => setTravellers(Number(e.target.value))}
-                    className="text-2xl md:text-3xl font-bold bg-transparent outline-none"
-                  >
-                    {[1, 2, 3, 4, 5, 6].map((num) => (
-                      <option key={num} value={num}>
-                        {num}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <select
-                  value={travelClass}
-                  onChange={(e) => setTravelClass(e.target.value)}
-                  className="mt-2 text-gray-500 bg-transparent outline-none text-sm md:text-base"
+                <div
+                  onClick={() =>
+                    setShowTravellerDropdown(
+                      !showTravellerDropdown
+                    )
+                  }
+                  className="cursor-pointer"
                 >
-                  <option>Economy</option>
-                  <option>Premium Economy</option>
-                  <option>Business</option>
-                  <option>First Class</option>
-                </select>
+
+                  <div className="flex items-center gap-2">
+
+                    <Users
+                      size={20}
+                      className="text-blue-600"
+                    />
+
+                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+                      {travellers}
+                    </h2>
+
+                    <span className="text-gray-500 text-sm md:text-base">
+                      Traveller
+                      {travellers > 1 ? "s" : ""}
+                    </span>
+
+                  </div>
+
+                  <p className="mt-2 text-gray-500 text-sm md:text-base">
+                    {travelClass}
+                  </p>
+
+                </div>
+
+                {showTravellerDropdown && (
+
+                  <div className="absolute top-full left-0 mt-3 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden">
+
+                    {/* TRAVELLERS */}
+                    <div className="p-4 border-b border-gray-100">
+
+                      <h3 className="text-sm font-semibold text-gray-700 mb-4">
+                        Travellers
+                      </h3>
+
+                      <div className="grid grid-cols-3 gap-3">
+
+                        {[1, 2, 3, 4, 5, 6].map((num) => (
+
+                          <button
+                            key={num}
+                            onClick={() =>
+                              setTravellers(num)
+                            }
+                            className={`h-11 rounded-xl border text-sm font-semibold transition-all duration-200 ${travellers === num
+                                ? "bg-blue-600 text-white border-blue-600"
+                                : "border-gray-300 text-gray-700 hover:border-blue-500"
+                              }`}
+                          >
+
+                            {num}
+
+                          </button>
+
+                        ))}
+
+                      </div>
+
+                    </div>
+
+                    {/* CLASS */}
+                    <div className="p-4">
+
+                      <h3 className="text-sm font-semibold text-gray-700 mb-4">
+                        Travel Class
+                      </h3>
+
+                      <div className="space-y-2">
+
+                        {[
+                          "Economy",
+                          "Premium Economy",
+                          "Business",
+                          "First Class",
+                        ].map((item) => (
+
+                          <button
+                            key={item}
+                            onClick={() => {
+                              setTravelClass(item);
+                              setShowTravellerDropdown(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${travelClass === item
+                                ? "bg-blue-50 text-blue-600 border border-blue-200"
+                                : "hover:bg-gray-50 text-gray-700 border border-transparent"
+                              }`}
+                          >
+
+                            {item}
+
+                            {travelClass === item && (
+                              <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
+                            )}
+
+                          </button>
+
+                        ))}
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                )}
+
               </div>
             </div>
           </div>
 
           {/* SEARCH BUTTON */}
           <div className="flex justify-center mt-10">
-  <button
-    onClick={handleSearch}
-    className="w-full md:w-auto px-10 md:px-24 py-4 md:py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl md:text-3xl font-bold shadow-2xl flex items-center justify-center gap-4 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105"
-  >
-    <Search size={28} />
-    SEARCH
-  </button>
-</div>
+            <button
+              onClick={handleSearch}
+              className="w-full md:w-auto px-10 md:px-24 py-4 md:py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl md:text-3xl font-bold shadow-2xl flex items-center justify-center gap-4 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105"
+            >
+              <Search size={28} />
+              SEARCH
+            </button>
+          </div>
         </div>
       </div>
     </section>

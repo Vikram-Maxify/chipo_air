@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
     Globe,
     Mail,
@@ -18,8 +18,16 @@ import API from "../reducer/axios";
 
 const Login = () => {
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+
+const from =
+    location.state?.from?.pathname || "/";
 
     const { loading, error } =
         useSelector((state) => state.auth || {});
@@ -123,7 +131,7 @@ const Login = () => {
 
             console.log(result);
 
-            navigate("/");
+            navigate(from, { replace: true });
 
         } catch (err) {
 

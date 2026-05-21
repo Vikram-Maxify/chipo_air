@@ -48,7 +48,7 @@ const FeaturedPackages = () => {
     };
 
     return (
-        <section className="py-20 bg-gradient-to-b from-white to-[#f8fbff]">
+        <section className="py-6 bg-gradient-to-b from-white to-[#f8fbff]">
             <div className="max-w-7xl mx-auto px-4">
 
                 {/* HEADER */}
@@ -175,7 +175,7 @@ const FeaturedPackages = () => {
                                             </p>
 
                                             <h4 className="text-3xl font-black text-blue-600">
-                                                {pkg.price?.toLocaleString()}
+                                                ${pkg.price?.toLocaleString()}
                                             </h4>
                                         </div>
 

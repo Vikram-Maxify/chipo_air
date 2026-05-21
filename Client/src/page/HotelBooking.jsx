@@ -26,6 +26,10 @@ const HotelBooking = () => {
     const [selectedPropertyTypes, setSelectedPropertyTypes] = useState([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
 
     const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
 

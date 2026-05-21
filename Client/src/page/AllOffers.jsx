@@ -41,6 +41,10 @@ const AllOffers = () => {
 
     }, [dispatch]);
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
     // ================= LOADING =================
 
     if (loading) {

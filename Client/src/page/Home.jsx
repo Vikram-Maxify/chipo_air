@@ -18,10 +18,11 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <Banners />
+      <Banners index={0}/>
       <FeaturedPackages  />
       <Offers />
       <PopularDestinations />
+      <Banners index={1} height="h-[200px]"/>
       <WhyChooseUs />
       <StatsSection />
       <Testimonials />

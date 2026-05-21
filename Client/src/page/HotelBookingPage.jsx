@@ -24,6 +24,10 @@ const HotelBookingPage = () => {
         }
     }, [hotel, navigate]);
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
     const [showCalendar, setShowCalendar] = useState(false);
     const [showGuests, setShowGuests] = useState(false);
     const [isSelectingDate, setIsSelectingDate] = useState(false);

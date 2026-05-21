@@ -56,41 +56,6 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#0B1220] text-white">
-      
-      {/* TOP CTA */}
-      <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-10">
-          <div className="bg-gradient-to-r from-[#2276FF] to-[#0057D9] rounded-[32px] p-8 md:p-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-            
-            <div>
-              <h2 className="text-3xl md:text-4xl font-black mb-3">
-                Download Our Travel App
-              </h2>
-
-              <p className="text-blue-100 text-lg leading-7 max-w-2xl">
-                Book flights, hotels, and holiday packages
-                faster with exclusive app-only deals and
-                instant notifications.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-              <input
-                type="text"
-                placeholder="Enter mobile number"
-                className="bg-white text-gray-900 px-5 py-4 rounded-2xl outline-none min-w-[260px]"
-              />
-
-              <button className="bg-[#0B1220] hover:bg-black px-7 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 transition-all">
-                Get App Link
-
-                <FaArrowRight />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* MAIN FOOTER */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         

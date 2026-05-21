@@ -8,6 +8,10 @@ import { getSingleDestination } from "../reducer/slice/destinationSlice";
 
 const SingleDestination = () => {
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
     const { id } = useParams();
 
     const navigate = useNavigate();
