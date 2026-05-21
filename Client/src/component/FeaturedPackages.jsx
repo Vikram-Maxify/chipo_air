@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPackages } from "../reducer/slice/packageSlice";
+import Banners from "./Banners";
 
 const FeaturedPackages = () => {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const FeaturedPackages = () => {
 
     return (
         <section className="py-6 bg-gradient-to-b from-white to-[#f8fbff]">
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-auto px-4 mb-2">
 
                 {/* HEADER */}
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
@@ -194,6 +195,7 @@ const FeaturedPackages = () => {
                     </div>
                 )}
             </div>
+            <Banners index={2} height="h-[200px]" />
         </section>
     );
 };

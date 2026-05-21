@@ -6,6 +6,7 @@ import { addDays, differenceInDays, format } from "date-fns";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { useNavigate } from "react-router-dom";
+import Banners from "../component/Banners";
 
 const HotelBooking = () => {
     const destinationRef = useRef(null);
@@ -27,7 +28,7 @@ const HotelBooking = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-      window.scrollTo(0, 0);
+        window.scrollTo(0, 0);
     }, []);
 
 
@@ -616,105 +617,125 @@ const HotelBooking = () => {
                         </div>
 
                         <div className="space-y-5">
-                            {filteredHotels.map((hotel) => (
-                                <div key={hotel.id} className="bg-white rounded-[30px] overflow-hidden shadow-sm hover:shadow-xl transition-all border">
-                                    <div className="grid grid-cols-1 md:grid-cols-12">
-                                        {/* IMAGE */}
-                                        <div className="md:col-span-4 relative">
-                                            <img src={hotel.image} alt={hotel.name} className="w-full h-full object-cover md:h-[280px]" />
+                            {filteredHotels.map((hotel, index) => (
 
-                                            <button className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center backdrop-blur hover:bg-white transition-all">
-                                                <Heart size={18} />
-                                            </button>
+                                <React.Fragment key={hotel.id}>
 
-                                            <div className="absolute left-4 bottom-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-                                                {hotel.discount}% OFF
-                                            </div>
+                                    {/* BANNER AFTER 4 HOTELS */}
+                                    {index === 3 && (
+                                        <div className="my-6">
+                                            <Banners
+                                                index={3}
+                                                height="h-[160px] md:h-[160px]"
+                                            />
                                         </div>
+                                    )}
 
-                                        {/* INFO */}
-                                        <div className="md:col-span-8 p-6 flex flex-col justify-between">
-                                            <div>
-                                                <div className="flex flex-wrap items-start justify-between gap-4">
-                                                    <div>
-                                                        <h3 className="text-2xl font-black">{hotel.name}</h3>
+                                    {/* HOTEL CARD */}
+                                    <div key={hotel.id} className="bg-white rounded-[30px] overflow-hidden shadow-sm hover:shadow-xl transition-all border">
+                                        <div className="grid grid-cols-1 md:grid-cols-12">
+                                            {/* IMAGE */}
+                                            <div className="md:col-span-4 relative">
+                                                <img src={hotel.image} alt={hotel.name} className="w-full h-full object-cover md:h-[280px]" />
 
-                                                        <p className="text-gray-500 mt-2 flex items-center gap-2">
-                                                            <MapPin size={16} />
-                                                            {hotel.location}
-                                                        </p>
-                                                    </div>
+                                                <button className="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/90 flex items-center justify-center backdrop-blur hover:bg-white transition-all">
+                                                    <Heart size={18} />
+                                                </button>
 
-                                                    <div className="bg-blue-600 text-white px-4 py-2 rounded-2xl text-center min-w-[90px]">
-                                                        <p className="text-2xl font-black">{hotel.rating}</p>
-                                                        <p className="text-xs">{hotel.reviews} reviews</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex flex-wrap gap-3 mt-6">
-                                                    {hotel.amenities.slice(0, 4).map((a) => (
-                                                        <div key={a} className="px-4 py-2 rounded-full bg-gray-100 text-sm font-medium">
-                                                            {a}
-                                                        </div>
-                                                    ))}
+                                                <div className="absolute left-4 bottom-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                                                    {hotel.discount}% OFF
                                                 </div>
                                             </div>
 
-                                            <div className="mt-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+                                            {/* INFO */}
+                                            <div className="md:col-span-8 p-6 flex flex-col justify-between">
                                                 <div>
-                                                    <p className="text-sm text-gray-400">Per night</p>
+                                                    <div className="flex flex-wrap items-start justify-between gap-4">
+                                                        <div>
+                                                            <h3 className="text-2xl font-black">{hotel.name}</h3>
 
-                                                    <div className="flex items-end gap-2">
-                                                        <h2 className="text-4xl font-black text-black">${hotel.price.toLocaleString()}</h2>
-                                                        <span className="text-green-600 font-semibold mb-1">+ taxes</span>
+                                                            <p className="text-gray-500 mt-2 flex items-center gap-2">
+                                                                <MapPin size={16} />
+                                                                {hotel.location}
+                                                            </p>
+                                                        </div>
+
+                                                        <div className="bg-blue-600 text-white px-4 py-2 rounded-2xl text-center min-w-[90px]">
+                                                            <p className="text-2xl font-black">{hotel.rating}</p>
+                                                            <p className="text-xs">{hotel.reviews} reviews</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex flex-wrap gap-3 mt-6">
+                                                        {hotel.amenities.slice(0, 4).map((a) => (
+                                                            <div key={a} className="px-4 py-2 rounded-full bg-gray-100 text-sm font-medium">
+                                                                {a}
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
 
-                                                <div className="flex gap-3">
-                                                    <button className="h-14 px-6 rounded-2xl border border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition-all">
-                                                        View Details
-                                                    </button>
+                                                <div className="mt-8 flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+                                                    <div>
+                                                        <p className="text-sm text-gray-400">Per night</p>
 
-                                                    <button
-                                                        onClick={() => navigate("/hotel-booking", {
-                                                            state: {
-                                                                hotel: hotel,
-                                                                searchParams: {
-                                                                    checkIn: dateRange[0].startDate,
-                                                                    checkOut: dateRange[0].endDate,
-                                                                    guests: guests,
-                                                                    rooms: guests.rooms
+                                                        <div className="flex items-end gap-2">
+                                                            <h2 className="text-4xl font-black text-black">${hotel.price.toLocaleString()}</h2>
+                                                            <span className="text-green-600 font-semibold mb-1">+ taxes</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex gap-3">
+                                                        <button className="h-14 px-6 rounded-2xl border border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition-all">
+                                                            View Details
+                                                        </button>
+
+                                                        <button
+                                                            onClick={() => navigate("/hotel-booking", {
+                                                                state: {
+                                                                    hotel: hotel,
+                                                                    searchParams: {
+                                                                        checkIn: dateRange[0].startDate,
+                                                                        checkOut: dateRange[0].endDate,
+                                                                        guests: guests,
+                                                                        rooms: guests.rooms
+                                                                    }
                                                                 }
-                                                            }
-                                                        })}
-                                                        className="h-14 px-8 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold shadow-xl hover:scale-[1.02] transition-all"
-                                                    >
-                                                        Book Now
-                                                    </button>
+                                                            })}
+                                                            className="h-14 px-8 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold shadow-xl hover:scale-[1.02] transition-all"
+                                                        >
+                                                            Book Now
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
 
-                        {filteredHotels.length === 0 && (
-                            <div className="text-center py-20 bg-white rounded-3xl">
-                                <p className="text-gray-500 text-lg">No hotels found matching your criteria</p>
-                                <button
-                                    onClick={clearAllFilters}
-                                    className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all"
-                                >
-                                    Clear all filters
-                                </button>
-                            </div>
-                        )}
+  </React.Fragment>
+
+))}
+                                </div>
+                                
+
+                        {
+                                    filteredHotels.length === 0 && (
+                                        <div className="text-center py-20 bg-white rounded-3xl">
+                                            <p className="text-gray-500 text-lg">No hotels found matching your criteria</p>
+                                            <button
+                                                onClick={clearAllFilters}
+                                                className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all"
+                                            >
+                                                Clear all filters
+                                            </button>
+                                        </div>
+                                    )
+                                }
+                    </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+            );
 };
 
-export default HotelBooking;
+            export default HotelBooking;

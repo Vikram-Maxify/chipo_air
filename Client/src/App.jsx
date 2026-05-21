@@ -26,6 +26,7 @@ import SingleDestination from "./page/SingleDestination";
 import HotelBooking from "./page/HotelBooking";
 import BookingConfirmation from "./page/BookingConfirmation";
 import HotelBookingPage from "./page/HotelBookingPage";
+import Banners from "./component/Banners";
 
 function App() {
   const dispatch = useDispatch();
@@ -73,6 +74,7 @@ function App() {
       </Routes>
 
       <CTASection />
+      <Banners index={5} height="h-[200px]" className="my-2"/>
       <Footer />
     </>
   );

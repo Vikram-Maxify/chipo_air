@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPackages } from "../reducer/slice/packageSlice";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
+import Banners from "./Banners";
 
 const Packages = () => {
   const dispatch = useDispatch();
@@ -89,6 +90,7 @@ const error = packageState?.error;
   };
 
   return (
+    <>
     <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen -z-10">
       {/* SEO */}
       <Helmet>
@@ -394,6 +396,8 @@ const error = packageState?.error;
         }
       `}</style>
     </div>
+    <Banners index={4} height="h-[200px]" />
+    </>
   );
 };
 

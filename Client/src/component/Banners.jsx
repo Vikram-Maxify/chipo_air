@@ -88,91 +88,50 @@ const Banners = ({
 
     return (
 
-        <div className={`relative max-w-7xl mx-auto overflow-hidden ${className}`}>
+  <div className={`max-w-7xl mx-auto ${className}`}>
 
-            {/* IMAGE */}
+    {currentBanner?.link ? (
 
-            <img
-                src={
-                    currentBanner
-                        ?.images?.[0]
-                }
-                alt={
-                    currentBanner?.title
-                }
-                className={`w-full ${height} object-cover rounded-[24px]`}
-            />
+      <a
+        href={
+          currentBanner.link
+        }
+        target="_blank"
+        rel="noreferrer"
+        className="block group overflow-hidden rounded-[24px]"
+      >
 
-            {/* OVERLAY */}
+        <img
+          src={
+            currentBanner
+              ?.images?.[0]
+          }
+          alt="banner"
+          className={`w-full ${height} object-cover rounded-[24px] transition-all duration-500 group-hover:scale-[1.02]`}
+        />
 
-            <div className="absolute inset-0 rounded-[24px] bg-gradient-to-r from-[#001b44]/90 via-[#001b44]/40 to-transparent" />
+      </a>
 
-            {/* CONTENT */}
+    ) : (
 
-            <div className="absolute inset-0 flex items-center px-6 md:px-12">
+      <div className="overflow-hidden rounded-[24px]">
 
-                <div className="max-w-2xl">
+        <img
+          src={
+            currentBanner
+              ?.images?.[0]
+          }
+          alt="banner"
+          className={`w-full ${height} object-cover rounded-[24px]`}
+        />
 
-                    {/* OFFER TAG */}
+      </div>
 
-                    <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/20 text-white px-4 py-1.5 rounded-full mb-4">
+    )}
 
-                        <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+  </div>
 
-                        <span className="text-xs md:text-sm font-medium tracking-wide">
-                            LIMITED PERIOD OFFER
-                        </span>
-
-                    </div>
-
-                    {/* TITLE */}
-
-                    <h1 className="text-white text-2xl md:text-5xl font-extrabold leading-tight drop-shadow-xl">
-
-                        {
-                            currentBanner?.title
-                        }
-
-                    </h1>
-
-                    {/* DESCRIPTION */}
-
-                    {currentBanner?.description && (
-
-                        <p className="mt-3 text-white/90 text-sm md:text-lg leading-relaxed max-w-xl line-clamp-2">
-
-                            {
-                                currentBanner?.description
-                            }
-
-                        </p>
-
-                    )}
-
-                    {/* BUTTON */}
-
-                    {currentBanner?.link && (
-
-                        <a
-                            href={
-                                currentBanner.link
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center justify-center mt-5 bg-white text-[#003580] px-6 py-2.5 rounded-xl text-sm md:text-base font-bold hover:scale-105 transition duration-300 shadow-lg"
-                        >
-                            Explore Now
-                        </a>
-
-                    )}
-
-                </div>
-
-            </div>
-
-        </div>
-
-    );
+);
 };
 
 export default Banners;
