@@ -1,23 +1,40 @@
-/* components/FeaturedPackages.jsx */
+{/* components/FeaturedPackages.jsx */ }
 
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, MapPin, Star, Users } from "lucide-react";
+import {
+    ArrowRight,
+    Clock,
+    MapPin,
+    Star,
+    Users,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPackages } from "../reducer/slice/packageSlice";
 
 const FeaturedPackages = () => {
     const dispatch = useDispatch();
 
-    const { packages = [], loading } = useSelector(
-        (state) => state.package
+    const packageState = useSelector(
+        (state) => state.package || {}
     );
+
+    const packages = Array.isArray(
+        packageState?.packages?.packages
+    )
+        ? packageState.packages.packages
+        : Array.isArray(packageState?.packages)
+            ? packageState.packages
+            : [];
+
+    const loading = packageState?.loading;
 
     useEffect(() => {
         dispatch(getPackages());
     }, [dispatch]);
 
-    const featuredPackages = [...packages]
+    const featuredPackages = packages
+        .slice()
         .sort(
             (a, b) =>
                 new Date(b.createdAt) -
@@ -31,24 +48,25 @@ const FeaturedPackages = () => {
     };
 
     return (
-        <section className="py-20 bg-gradient-to-b from-white to-gray-50">
+        <section className="py-20 bg-gradient-to-b from-white to-[#f8fbff]">
             <div className="max-w-7xl mx-auto px-4">
+
                 {/* HEADER */}
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
                     <div>
-                        <span className="inline-flex px-5 py-2 rounded-full bg-purple-100 text-purple-700 text-sm font-semibold">
+                        <span className="inline-flex px-5 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold">
                             TRENDING PACKAGES
                         </span>
 
-                        <h2 className="text-4xl md:text-5xl font-black text-gray-900 mt-5 leading-tight">
-                            Explore Our Best <br />
-                            Travel Packages
+                        <h2 className="text-4xl md:text-5xl font-black text-[#111827] mt-5 leading-tight">
+                            Explore Popular <br />
+                            Holiday Packages
                         </h2>
                     </div>
 
                     <Link
                         to="/packages"
-                        className="group inline-flex items-center gap-2 text-purple-600 font-semibold hover:text-purple-700 transition-all"
+                        className="group inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition-all"
                     >
                         View All Packages
 
@@ -62,14 +80,14 @@ const FeaturedPackages = () => {
                         {[1, 2, 3].map((item) => (
                             <div
                                 key={item}
-                                className="bg-white rounded-3xl overflow-hidden border border-gray-100 animate-pulse"
+                                className="bg-white rounded-[30px] overflow-hidden border border-gray-100 animate-pulse"
                             >
-                                <div className="h-56 bg-gray-200" />
+                                <div className="h-60 bg-gray-200" />
 
                                 <div className="p-6">
-                                    <div className="h-4 bg-gray-200 rounded w-24 mb-4" />
+                                    <div className="h-5 bg-gray-200 rounded w-28 mb-4" />
 
-                                    <div className="h-6 bg-gray-200 rounded w-full mb-3" />
+                                    <div className="h-7 bg-gray-200 rounded w-full mb-3" />
 
                                     <div className="h-4 bg-gray-200 rounded w-full mb-2" />
 
@@ -78,7 +96,7 @@ const FeaturedPackages = () => {
                                     <div className="flex justify-between">
                                         <div className="h-10 bg-gray-200 rounded w-24" />
 
-                                        <div className="h-10 bg-gray-200 rounded w-28" />
+                                        <div className="h-10 bg-gray-200 rounded w-32" />
                                     </div>
                                 </div>
                             </div>
@@ -91,8 +109,9 @@ const FeaturedPackages = () => {
                                 key={pkg._id}
                                 className="group bg-white rounded-[30px] overflow-hidden border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                             >
+
                                 {/* IMAGE */}
-                                <div className="relative h-60 overflow-hidden">
+                                <div className="relative h-64 overflow-hidden">
                                     <img
                                         src={
                                             pkg.images?.[0] ||
@@ -105,7 +124,7 @@ const FeaturedPackages = () => {
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
                                     {/* RATING */}
-                                    <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
+                                    <div className="absolute top-4 right-4 bg-white rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
                                         <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
 
                                         <span className="text-sm font-bold text-gray-900">
@@ -125,7 +144,7 @@ const FeaturedPackages = () => {
 
                                 {/* CONTENT */}
                                 <div className="p-6">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-all">
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-all line-clamp-2">
                                         {pkg.name}
                                     </h3>
 
@@ -155,16 +174,14 @@ const FeaturedPackages = () => {
                                                 Starting From
                                             </p>
 
-                                            <h4 className="text-3xl font-black text-purple-600">
-                                                $ {pkg.price?.toLocaleString()}
-                                                <h4 className="text-3xl font-black text-purple-600">
-                                                </h4>
+                                            <h4 className="text-3xl font-black text-blue-600">
+                                                {pkg.price?.toLocaleString()}
                                             </h4>
                                         </div>
 
                                         <Link
                                             to={`/package/${pkg.seoSlug}`}
-                                            className="group/btn inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-5 py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                                            className="group/btn inline-flex items-center gap-2 bg-gradient-to-r from-[#2276FF] to-[#0057D9] hover:from-[#1664e8] hover:to-[#0049b5] text-white px-5 py-3 rounded-2xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
                                         >
                                             View Deal
 

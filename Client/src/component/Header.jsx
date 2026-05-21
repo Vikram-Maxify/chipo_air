@@ -52,7 +52,7 @@ const Header = () => {
         { to: "/hotels", label: "Hotels", icon: MapPin },
         { to: "/packages", label: "Packages", icon: Gift },
         { to: "/all_offers", label: "Deals", icon: Calendar },
-        { to: "/my-trips", label: "My Trips", icon: MapPin },
+        // { to: "/my-trips", label: "My Trips", icon: MapPin },
     ];
 
     return (

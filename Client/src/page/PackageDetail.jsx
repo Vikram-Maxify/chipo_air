@@ -34,9 +34,17 @@ const PackageDetail = () => {
     const [activeImage, setActiveImage] = useState(0);
     const [isWishlisted, setIsWishlisted] = useState(false);
 
-    const { singlePackage: pkg, loading, error } = useSelector(
-        (state) => state.package
-    );
+    const packageState = useSelector(
+  (state) => state.package || {}
+);
+
+const pkg =
+  packageState?.singlePackage?.package ||
+  packageState?.singlePackage ||
+  null;
+
+const loading = packageState?.loading;
+const error = packageState?.error;
 
     useEffect(() => {
         if (slug) dispatch(getSinglePackage(slug));
@@ -180,13 +188,24 @@ const PackageDetail = () => {
     return (
         <div className="bg-gray-50 min-h-screen">
             <Helmet>
-                <title>{pkg.metaTitle || pkg.name} | FlightBooker</title>
-                <meta name="description" content={pkg.metaDescription} />
-                <meta
-                    name="keywords"
-                    content={pkg.metaKeywords?.join(", ")}
-                />
-            </Helmet>
+  <title>
+    {pkg?.metaTitle || pkg?.name || "Travel Package"} | FlightBooker
+  </title>
+
+  <meta
+    name="description"
+    content={
+      pkg?.metaDescription ||
+      pkg?.description ||
+      "Best travel packages"
+    }
+  />
+
+  <meta
+    name="keywords"
+    content={pkg?.metaKeywords?.join(", ") || ""}
+  />
+</Helmet>
 
             <div className="bg-white border-b">
                 <div className="max-w-7xl mx-auto px-4 py-4">
@@ -388,7 +407,7 @@ const PackageDetail = () => {
 
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-3xl font-bold text-gray-900">
-                                            ${pkg.price?.toLocaleString()}
+                                            ${pkg.price}
                                         </span>
 
                                         <span className="text-gray-500 text-sm">

@@ -21,7 +21,20 @@ import { Link } from "react-router-dom";
 
 const Packages = () => {
   const dispatch = useDispatch();
-const { packages = [], loading, error } = useSelector((state) => state.package);
+const packageState = useSelector(
+  (state) => state.package || {}
+);
+
+const packages = Array.isArray(
+  packageState?.packages?.packages
+)
+  ? packageState.packages.packages
+  : Array.isArray(packageState?.packages)
+  ? packageState.packages
+  : [];
+
+const loading = packageState?.loading;
+const error = packageState?.error;
 
   const [sortBy, setSortBy] = useState("latest");
   const [searchTerm, setSearchTerm] = useState("");
