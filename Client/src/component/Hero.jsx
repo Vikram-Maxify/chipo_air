@@ -210,19 +210,62 @@ const Hero = () => {
   };
 
   // ================= SEARCH =================
-  const handleSearch = () => {
-    if (!from || !to) {
-      alert("Please select airports");
-      return;
-    }
+const handleSearch = () => {
 
-    const departureDate = dateRange[0].startDate.toISOString().split("T")[0];
-    const returnDate = dateRange[0].endDate.toISOString().split("T")[0];
+  if (!from || !to) {
+    alert("Please select airports");
+    return;
+  }
 
-    navigate(
-      `/flights?from=${fromCode || from.split("(")[1]?.replace(")", "")}&to=${toCode || to.split("(")[1]?.replace(")", "")}&departure_date=${departureDate}&return_date=${returnDate}&passengers=${travellers}&class=${travelClass}`
-    );
-  };
+  const departureDate =
+    dateRange[0]
+      .startDate
+      .toISOString()
+      .split("T")[0];
+
+  const returnDate =
+    dateRange[0]
+      .endDate
+      .toISOString()
+      .split("T")[0];
+
+  navigate("/flights", {
+    state: {
+
+      from,
+      to,
+
+      fromCode:
+        fromCode ||
+        from
+          .split("(")[1]
+          ?.replace(")", ""),
+
+      toCode:
+        toCode ||
+        to
+          .split("(")[1]
+          ?.replace(")", ""),
+
+      departureDate,
+      returnDate,
+
+      adults:
+        travellers || 1,
+
+      children: 0,
+
+      infants: 0,
+
+      travelClass,
+
+      tripType,
+
+    },
+  });
+
+};
+
 
   // Helper function to get airport display info
   const getAirportInfo = (airport) => {
@@ -306,7 +349,7 @@ const Hero = () => {
                       setFromSuggestions([]);
                     }
                   }}
-                  placeholder="Delhi / DEL"
+                  placeholder="Departure"
                   className="w-full text-3xl md:text-4xl font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
 
@@ -383,7 +426,7 @@ const Hero = () => {
                       setToSuggestions([]);
                     }
                   }}
-                  placeholder="Mumbai / BOM"
+                  placeholder="Destination"
                   className="w-full text-3xl md:text-4xl font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
 

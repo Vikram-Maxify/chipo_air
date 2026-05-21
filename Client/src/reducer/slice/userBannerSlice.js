@@ -1,114 +1,61 @@
-// reducer/slice/userBannerSlice.js
-
-import {
-    createSlice,
-    createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import API from "../axios";
 
 // ================= GET ACTIVE BANNERS =================
 
-export const getActiveBanners =
-    createAsyncThunk(
-        "userBanner/getAll",
-        async (
-            _,
-            thunkAPI
-        ) => {
-            try {
-                const {
-                    data,
-                } =
-                    await API.get(
-                        "/banners"
-                    );
-
-                return data;
-            } catch (
-                error
-            ) {
-                return thunkAPI.rejectWithValue(
-                    error
-                        .response
-                        ?.data ||
-                        error.message
-                );
-            }
+export const getActiveBanners = createAsyncThunk(
+    "userBanner/getAll",
+    async (_, thunkAPI) => {
+        try {
+            const { data } = await API.get("/banners");
+            return data;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                error.response?.data || error.message
+            );
         }
-    );
+    }
+);
 
 // ================= SLICE =================
 
-const userBannerSlice =
-    createSlice({
-        name: "userBanner",
+const userBannerSlice = createSlice({
+    name: "userBanner",
 
-        initialState: {
-            banners: [],
-            loading: false,
-            error: null,
+    initialState: {
+        banners: [],
+        loading: false,
+        error: null,
+    },
+
+    reducers: {
+        clearBannerState: (state) => {
+            state.loading = false;
+            state.error = null;
         },
+    },
 
-        reducers: {
-            clearBannerState:
-                (
-                    state
-                ) => {
-                    state.loading = false;
-                    state.error = null;
-                },
-        },
+    extraReducers: (builder) => {
+        builder
 
-        extraReducers:
-            (
-                builder
-            ) => {
-                builder
+            .addCase(getActiveBanners.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
 
-                    // ===== GET ACTIVE BANNERS =====
+            .addCase(getActiveBanners.fulfilled, (state, action) => {
+                state.loading = false;
+                state.banners = action.payload;
+            })
 
-                    .addCase(
-                        getActiveBanners.pending,
-                        (
-                            state
-                        ) => {
-                            state.loading = true;
-                            state.error = null;
-                        }
-                    )
+            .addCase(getActiveBanners.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
+    },
+});
 
-                    .addCase(
-                        getActiveBanners.fulfilled,
-                        (
-                            state,
-                            action
-                        ) => {
-                            state.loading = false;
+export const { clearBannerState } = userBannerSlice.actions;
 
-                            state.banners =
-                                action.payload;
-                        }
-                    )
-
-                    .addCase(
-                        getActiveBanners.rejected,
-                        (
-                            state,
-                            action
-                        ) => {
-                            state.loading = false;
-
-                            state.error =
-                                action.payload;
-                        }
-                    );
-            },
-    });
-
-export const {
-    clearBannerState,
-} = userBannerSlice.actions;
-
-export default
-    userBannerSlice.reducer;
+export default userBannerSlice.reducer;
