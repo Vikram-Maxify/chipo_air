@@ -211,19 +211,7 @@ const Register = () => {
 
             {/* Right Side - Registration Form */}
             <div className="flex-1 flex items-center justify-center p-4 sm:p-8">
-                <div className="w-full max-w-md">
-
-                    {/* Mobile Logo */}
-                    <div className="lg:hidden text-center mb-8">
-                        <div className="inline-flex items-center gap-3">
-                            <div className="bg-blue-600 p-3 rounded-xl">
-                                <Plane className="w-8 h-8 text-white transform -rotate-45" />
-                            </div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                                FlightBooker
-                            </span>
-                        </div>
-                    </div>
+                <div className="w-full max-w-md -mt-20 md:-mt-0">
 
                     {/* Form Container */}
                     <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-100">

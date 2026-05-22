@@ -58,25 +58,25 @@ const Header = () => {
     return (
         <header
             className={`sticky top-0 z-[999999] transition-all duration-300 ${scrolled
-                    ? "bg-white/95 backdrop-blur-md shadow-lg"
-                    : "bg-white border-b border-gray-100"
+                ? "bg-white/95 backdrop-blur-md shadow-lg"
+                : "bg-white border-b border-gray-100"
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4">
                 <div className="flex items-center justify-between h-16 md:h-20">
 
                     {/* Logo */}
-                   <Link to="/" className="flex items-center gap-3 group">
-    <div className="relative">
-        <img
-            src="https://i.ibb.co/0y65NQpQ/logo-1.png"
-            alt="Flight Booker Logo"
-            className="h-10 md:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
-        />
+                    <Link to="/" className="flex items-center gap-3 group">
+                        <div className="relative">
+                            <img
+                                src="https://i.ibb.co/0y65NQpQ/logo-1.png"
+                                alt="Flight Booker Logo"
+                                className="h-10 md:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
+                            />
 
-        {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div> */}
-    </div>
-</Link>
+                            {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div> */}
+                        </div>
+                    </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-1">
@@ -89,8 +89,8 @@ const Header = () => {
                                     key={link.to}
                                     to={link.to}
                                     className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${isActive
-                                            ? "text-blue-600 bg-blue-50"
-                                            : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                                        ? "text-blue-600 bg-blue-50"
+                                        : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
                                         }`}
                                 >
                                     <Icon className="w-4 h-4" />
@@ -105,11 +105,6 @@ const Header = () => {
 
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-3">
-                        {/* Search Button */}
-                        <button className="p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300">
-                            <Search className="w-5 h-5" />
-                        </button>
-
                         {/* Notifications */}
                         {isAuthenticated && (
                             <button className="relative p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300">
@@ -189,20 +184,36 @@ const Header = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2">
-                                <Link
-                                    to="/login"
-                                    className="px-5 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300"
+                            <Link
+                                to="/login"
+                                className="group relative overflow-hidden px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white text-sm font-semibold shadow-[0_10px_30px_rgba(37,99,235,0.35)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                            >
+
+                                {/* Glow */}
+                                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                {/* Text */}
+                                <span className="relative z-10">
+                                    Sign In / Sign Up
+                                </span>
+
+                                {/* Arrow */}
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={2}
+                                    stroke="currentColor"
+                                    className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
                                 >
-                                    Sign In
-                                </Link>
-                                <Link
-                                    to="/register"
-                                    className="px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                                >
-                                    Sign Up
-                                </Link>
-                            </div>
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                                    />
+                                </svg>
+
+                            </Link>
                         )}
                     </div>
 
@@ -261,8 +272,8 @@ const Header = () => {
                                     to={link.to}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${isActive
-                                            ? "text-blue-600 bg-blue-50"
-                                            : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+                                        ? "text-blue-600 bg-blue-50"
+                                        : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
                                         }`}
                                 >
                                     <Icon className="w-5 h-5" />
@@ -297,7 +308,7 @@ const Header = () => {
                                         My Profile
                                     </Link>
                                     <Link
-                                        to="/bookings"
+                                        to="/my-trips"
                                         onClick={() => setMobileMenuOpen(false)}
                                         className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-xl"
                                     >
@@ -322,22 +333,37 @@ const Header = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <div className="flex gap-3">
-                                    <Link
-                                        to="/login"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="flex-1 px-4 py-3 text-center text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 rounded-xl transition-colors"
-                                    >
-                                        Sign In
-                                    </Link>
-                                    <Link
-                                        to="/register"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                        className="flex-1 px-4 py-3 text-center text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg"
-                                    >
-                                        Sign Up
-                                    </Link>
-                                </div>
+                               <Link
+  to="/login"
+  onClick={() => setMobileMenuOpen(false)}
+  className="group relative overflow-hidden w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white text-sm font-semibold shadow-[0_10px_30px_rgba(37,99,235,0.35)] flex items-center justify-center gap-2"
+>
+
+  {/* Glow */}
+  <div className="absolute inset-0 bg-white/10 opacity-0 group-active:opacity-100 transition-opacity duration-300" />
+
+  {/* Text */}
+  <span className="relative z-10">
+    Sign In / Sign Up
+  </span>
+
+  {/* Arrow */}
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={2}
+    stroke="currentColor"
+    className="relative z-10 w-4 h-4 transition-transform duration-300 group-active:translate-x-1"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+    />
+  </svg>
+
+</Link>
                             )}
                         </div>
                     </div>
