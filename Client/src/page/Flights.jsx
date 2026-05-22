@@ -938,7 +938,7 @@ const Flights = () => {
             <div className="relative flex flex-col md:flex-row md:items-center gap-3">
               {/* FROM FIELD */}
 
-              <div className="flex flex-row">
+              <div className="flex flex-row gap-2">
               <div className="flex-1 md:min-w-[180px] relative" ref={fromWrapperRef}>
                 <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">From</label>
                 <div className="relative">
@@ -956,7 +956,7 @@ const Flights = () => {
                       }
                     }}
                     placeholder="Delhi (DEL)"
-                    className="w-full h-[64px] border border-gray-200 bg-white rounded-2xl pl-12 pr-4 text-lg font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                    className="w-full h-[64px] border border-gray-200 bg-gray-200 rounded-2xl pl-12 pr-4 text-lg font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
                   />
                 </div>
                 {fromSuggestions.length > 0 && (
@@ -1001,9 +1001,9 @@ const Flights = () => {
                 </button>
               </div>
               {/*Mobile SWAP BUTTON */}
-              <div className="flex md:hidden justify-center absolute top-[7%] left-[43%] z-50">
-                <button onClick={swapLocations} className="w-12 h-12 rounded-xl text-gray-500 flex items-center justify-center">
-                  <ArrowLeftRight size={26} />
+              <div className="flex md:hidden justify-center absolute top-[10%] left-[44%] z-50">
+                <button onClick={swapLocations} className="w-10 h-[22px] rounded-xl text-white bg-blue-500/80 flex items-center justify-center">
+                  <ArrowLeftRight size={18} />
                 </button>
               </div>
 
@@ -1025,7 +1025,7 @@ const Flights = () => {
                       }
                     }}
                     placeholder="Mumbai (BOM)"
-                    className="w-full h-[64px] border border-gray-200 bg-white rounded-2xl pl-12 pr-4 text-lg font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+                    className="w-full h-[64px] border border-gray-200 bg-gray-200 rounded-2xl pl-12 pr-4 text-lg font-semibold outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
                   />
                 </div>
                 {toSuggestions.length > 0 && (
@@ -1070,7 +1070,7 @@ const Flights = () => {
                 <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">Travel Dates</label>
                 <button
                   onClick={() => setShowCalendar(!showCalendar)}
-                  className="w-full h-[64px] border border-gray-200 rounded-2xl px-4 bg-white hover:border-blue-500 hover:ring-4 hover:ring-blue-100 transition-all text-left"
+                  className="w-full h-[64px] border border-gray-200 rounded-2xl px-4 bg-gray-200 hover:border-blue-500 hover:ring-4 hover:ring-blue-100 transition-all text-left"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -1079,7 +1079,7 @@ const Flights = () => {
                         {format(dateRange[0].startDate, "dd MMM yyyy")}
                       </p>
                     </div>
-                    {tripType === "roundtrip" && <div className="h-9 w-px bg-gray-200"></div>}
+                    {tripType === "roundtrip" && <div className="h-9 w-px bg-black"></div>}
                     {tripType === "roundtrip" && (
                       <div className="text-right">
                         <p className="text-[10px] text-gray-500 uppercase">Return</p>
@@ -1143,7 +1143,7 @@ const Flights = () => {
                           !showPassengerDropdown
                         )
                       }
-                      className={`w-full h-[64px] border rounded-2xl px-4 bg-white flex items-center justify-between cursor-pointer transition-all duration-300 ${showPassengerDropdown
+                      className={`w-full h-[64px] border rounded-2xl px-4 bg-gray-200 flex items-center justify-between cursor-pointer transition-all duration-300 ${showPassengerDropdown
                         ? "border-blue-500 shadow-[0_10px_30px_rgba(37,99,235,0.12)]"
                         : "border-gray-200 hover:border-blue-300"
                         }`}
@@ -1333,7 +1333,7 @@ const Flights = () => {
                           !showClassDropdown
                         )
                       }
-                      className={`w-full h-[64px] border rounded-2xl px-4 bg-white flex items-center justify-between cursor-pointer transition-all duration-300 ${showClassDropdown
+                      className={`w-full h-[64px] border rounded-2xl px-4 bg-gray-200 flex items-center justify-between cursor-pointer transition-all duration-300 ${showClassDropdown
                         ? "border-blue-500 shadow-[0_10px_30px_rgba(37,99,235,0.12)]"
                         : "border-gray-200 hover:border-blue-300"
                         }`}
@@ -1374,7 +1374,6 @@ const Flights = () => {
 
                     {/* DROPDOWN */}
                     {showClassDropdown && (
-
                       <div className="absolute top-[110%] right-0 w-full bg-white rounded-[28px] border border-gray-100 shadow-[0_25px_80px_rgba(0,0,0,0.12)] z-50 overflow-hidden">
 
                         {/* HEADER */}

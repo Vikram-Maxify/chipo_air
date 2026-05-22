@@ -146,15 +146,15 @@ const PhoneSearchBar = ({ tripType, setTripType, from, setFrom, to, setTo, fromC
                     </div>
 
                     {/* SWAP */}
-                    <div className="flex justify-center -my-2 relative z-40">
+                    <div className="flex justify-center -my-2 -mt-[19px] relative z-40">
 
                         <button
                             onClick={swapLocations}
                             type="button"
-                            className="w-7 h-7 rounded-full shadow-lg bg-white border border-gray-200 flex items-center justify-center"
+                            className="w-10 h-10 rounded-full shadow-lg bg-white border border-gray-200 flex items-center justify-center"
                         >
 
-                            <ArrowLeftRight className="text-blue-600 w-3 h-3" />
+                            <ArrowLeftRight className="text-blue-600 w-5 h-5 rotate-90" />
 
                         </button>
 
