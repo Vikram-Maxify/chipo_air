@@ -125,10 +125,10 @@ const Header = () => {
                                     className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-300 border border-gray-200 hover:border-gray-300"
                                 >
                                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                                        {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                                        {user?.firstname?.charAt(0)?.toUpperCase() || "U"}
                                     </div>
                                     <span className="text-sm font-medium text-gray-700 max-w-[100px] truncate">
-                                        {user?.name || "User"}
+                                        {user.firstname || "User"}
                                     </span>
                                     <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${profileDropdown ? "rotate-180" : ""}`} />
                                 </button>

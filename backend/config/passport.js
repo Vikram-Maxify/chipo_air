@@ -4,10 +4,7 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
-
-
-
-
+// ================= GOOGLE =================
 passport.use(
   new GoogleStrategy(
     {
@@ -18,70 +15,67 @@ passport.use(
 
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email =
-          profile.emails?.[0]?.value?.toLowerCase();
+        const email = profile.emails?.[0]?.value?.toLowerCase();
+        const picture = profile.photos?.[0]?.value || "";
 
-        if (!email) {
-          return done(null, false);
-        }
+        if (!email) return done(null, false);
 
-        // =========================
-        // FIND USER
-        // =========================
         let user = await User.findOne({ email });
 
-        // =========================
-        // CREATE USER IF NOT EXISTS
-        // =========================
+        // ================= CREATE USER =================
         if (!user) {
-          user = await User.create({
+          user = new User({
             firstname: profile.name?.givenName || "",
             lastname: profile.name?.familyName || "",
             email,
+            image: picture,
             verified: true,
             password: null,
             points: 500,
           });
+
+          await user.save();
         }
 
-        // =========================
-        // JWT TOKEN GENERATE
-        // =========================
+        // ================= UPDATE USER =================
+        else {
+          user.firstname = user.firstname || profile.name?.givenName || "";
+          user.lastname = user.lastname || profile.name?.familyName || "";
+          user.image = user.image || picture;
+          user.verified = true;
+
+          await user.save();
+        }
+
+        // ================= TOKEN =================
         const token = jwt.sign(
           {
             id: user._id,
             email: user.email,
           },
           process.env.JWT_SECRET,
-          {
-            expiresIn: "7d",
-          }
+          { expiresIn: "7d" }
         );
 
-        // token user object me attach
-        user.token = token;
+        // ================= RESPONSE =================
+        return done(null, {
+          _id: user._id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          image: user.image,
+          points: user.points,
+          role: user.role,
+          token,
+        });
 
-        return done(null, user);
       } catch (err) {
+        console.log(err);
         return done(err, null);
       }
     }
   )
 );
-
-// =========================
-// SERIALIZE
-// =========================
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-// =========================
-// DESERIALIZE
-// =========================
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
 
 // ================= FACEBOOK =================
 passport.use(
@@ -90,13 +84,14 @@ passport.use(
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
       callbackURL: "/api/auth/facebook/callback",
-      profileFields: ["id", "emails", "name"], // 👈 important
+      profileFields: ["id", "emails", "name", "picture.type(large)"],
     },
+
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email = profile.emails?.[0]?.value?.toLowerCase();
+        const picture = profile.photos?.[0]?.value || "";
 
-        // ⚠️ Facebook kabhi email nahi deta
         if (!email) {
           return done(null, false, {
             message: "Facebook email not available",
@@ -105,35 +100,71 @@ passport.use(
 
         let user = await User.findOne({ email });
 
-        if (user) {
-          return done(null, user);
+        // ================= CREATE USER =================
+        if (!user) {
+          user = new User({
+            firstname: profile.name?.givenName || "",
+            lastname: profile.name?.familyName || "",
+            email,
+            image: picture,
+            verified: true,
+            password: null,
+            points: 500,
+          });
+
+          await user.save();
         }
 
-        user = await User.create({
-          firstname: profile.name?.givenName,
-          lastname: profile.name?.familyName,
-          email,
-          verified: true,
-          password: null,
-          points: 500,
+        // ================= UPDATE USER =================
+        else {
+          user.firstname = user.firstname || profile.name?.givenName || "";
+          user.lastname = user.lastname || profile.name?.familyName || "";
+          user.image = user.image || picture;
+          user.verified = true;
+
+          await user.save();
+        }
+
+        const token = jwt.sign(
+          {
+            id: user._id,
+            email: user.email,
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: "7d" }
+        );
+
+        return done(null, {
+          _id: user._id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          image: user.image,
+          points: user.points,
+          role: user.role,
+          token,
         });
 
-        return done(null, user);
       } catch (err) {
+        console.log(err);
         return done(err, null);
       }
     }
   )
 );
 
-// ================= SESSION (optional) =================
+// ================= SESSION =================
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-  done(null, user);
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
 });
 
 module.exports = passport;

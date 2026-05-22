@@ -104,7 +104,7 @@ const SingleDestination = () => {
                                 </p>
 
                                 <h2 className="text-3xl font-black text-white">
-                                    ₹ {destination.price?.toLocaleString()}
+                                    $ {destination.price?.toLocaleString()}
                                 </h2>
                             </div>
                         </div>
@@ -262,7 +262,7 @@ const SingleDestination = () => {
                                     </p>
 
                                     <h2 className="text-4xl font-black text-blue-600">
-                                        ₹ {destination.price?.toLocaleString()}
+                                        $ {destination.price?.toLocaleString()}
                                     </h2>
                                 </div>
 

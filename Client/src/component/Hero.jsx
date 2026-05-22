@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { getFlightsThunk } from "../reducer/slice/flightsSlice";
+import PhoneSearchBar from "./PhoneSearchBar";
 
 const Hero = () => {
   const dispatch = useDispatch();
@@ -79,6 +80,15 @@ const Hero = () => {
   const [fromCode, setFromCode] = useState("");
   const [toCode, setToCode] = useState("");
   const [showTravellerDropdown, setShowTravellerDropdown] = useState(false);
+  const [adults, setAdults] =
+    useState(1);
+
+  const [children, setChildren] =
+    useState(0);
+
+  const [infants, setInfants] =
+    useState(0);
+
 
   const [fromSuggestions, setFromSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
@@ -95,7 +105,10 @@ const Hero = () => {
   ]);
 
   const [showCalendar, setShowCalendar] = useState(false);
-  const [travellers, setTravellers] = useState(1);
+  const travellers =
+    adults +
+    children +
+    infants;
   const [travelClass, setTravelClass] = useState("Economy");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -210,61 +223,61 @@ const Hero = () => {
   };
 
   // ================= SEARCH =================
-const handleSearch = () => {
+  const handleSearch = () => {
 
-  if (!from || !to) {
-    alert("Please select airports");
-    return;
-  }
+    if (!from || !to) {
+      alert("Please select airports");
+      return;
+    }
 
-  const departureDate =
-    dateRange[0]
-      .startDate
-      .toISOString()
-      .split("T")[0];
+    const departureDate =
+      dateRange[0]
+        .startDate
+        .toISOString()
+        .split("T")[0];
 
-  const returnDate =
-    dateRange[0]
-      .endDate
-      .toISOString()
-      .split("T")[0];
+    const returnDate =
+      dateRange[0]
+        .endDate
+        .toISOString()
+        .split("T")[0];
 
-  navigate("/flights", {
-    state: {
+    navigate("/flights", {
+      state: {
 
-      from,
-      to,
+        from,
+        to,
 
-      fromCode:
-        fromCode ||
-        from
-          .split("(")[1]
-          ?.replace(")", ""),
+        fromCode:
+          fromCode ||
+          from
+            .split("(")[1]
+            ?.replace(")", ""),
 
-      toCode:
-        toCode ||
-        to
-          .split("(")[1]
-          ?.replace(")", ""),
+        toCode:
+          toCode ||
+          to
+            .split("(")[1]
+            ?.replace(")", ""),
 
-      departureDate,
-      returnDate,
+        departureDate,
+        returnDate,
 
-      adults:
-        travellers || 1,
+        adults:
+          travellers || 1,
 
-      children: 0,
+        children: 0,
 
-      infants: 0,
+        infants: 0,
 
-      travelClass,
+        travelClass,
 
-      tripType,
+        tripType,
 
-    },
-  });
+      },
+    });
 
-};
+  };
 
 
   // Helper function to get airport display info
@@ -278,62 +291,75 @@ const handleSearch = () => {
   };
 
   return (
-    <section className="relative bg-[#f5f5f5] min-h-[750px] md:min-h-[590px] overflow-visible">
+    <section className="relative bg-[#f5f5f5] min-h-[586px] md:min-h-[486px] overflow-visible pb-5">
       {/* BACKGROUND */}
       <div className="absolute top-0 left-0 w-full h-[350px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 rounded-b-[70px] md:rounded-b-[110px]" />
 
-      {/* CONTENT */}
-      <div className="relative z-[50] max-w-7xl mx-auto px-4 pt-10 overflow-visible">
+      {/* Desktop CONTENT */}
+      <div className="relative z-[50] max-w-7xl mx-auto px-4 pt-7 overflow-visible hidden md:block">
         {/* HEADER */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2 rounded-full mb-5">
+        <div className="text-center mb-7">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full mb-4">
             <Plane className="text-white w-4 h-4" />
-            <span className="text-white text-sm font-medium">Best Flight Deals</span>
+            <span className="text-white text-sm font-medium">
+              Best Flight Deals
+            </span>
           </div>
-
-          <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+          <h1 className="text-3xl md:text-[42px] font-bold text-white leading-tight">
             Domestic and International Flights
           </h1>
         </div>
 
         {/* CARD */}
-        <div className="bg-white rounded-[30px] shadow-[0_20px_80px_rgba(0,0,0,0.12)] p-4 md:p-7 overflow-visible">
+        <div className="bg-white rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 overflow-visible">
+
           {/* TOP */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-7">
+          <div className="flex items-center justify-between gap-3 mb-5">
             <div className="flex flex-wrap gap-5">
               {[
-                { key: "oneway", label: "Oneway" },
-                { key: "roundtrip", label: "Round Trip" },
+                {
+                  key: "oneway",
+                  label: "Oneway",
+                },
+                {
+                  key: "roundtrip",
+                  label: "Round Trip",
+                },
               ].map((item) => (
                 <button
                   key={item.key}
-                  onClick={() => setTripType(item.key)}
-                  className={`flex items-center gap-2 font-semibold ${tripType === item.key ? "text-blue-600" : "text-gray-500"
+                  onClick={() =>
+                    setTripType(item.key)
+                  }
+                  className={`flex items-center gap-2 font-semibold text-sm transition-all ${tripType === item.key
+                    ? "text-blue-600"
+                    : "text-gray-500"
                     }`}
                 >
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${tripType === item.key ? "border-blue-600" : "border-gray-400"
-                      }`}
-                  >
-                    {tripType === item.key && <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />}
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${tripType === item.key
+                    ? "border-blue-600"
+                    : "border-gray-400"
+                    }`}>
+                    {tripType === item.key && (
+                      <div className="w-2 h-2 rounded-full bg-blue-600" />
+                    )}
                   </div>
                   {item.label}
                 </button>
               ))}
             </div>
-
-            <p className="text-gray-600 font-medium text-sm md:text-base">
+            <p className="text-gray-600 font-medium text-sm">
               Book International and Domestic Flights
             </p>
           </div>
-
           {/* SEARCH GRID */}
-          <div className="relative border border-gray-300 rounded-[26px] bg-white z-[999]">
-            <div className="grid grid-cols-1 md:grid-cols-12 relative">
+          <div className="relative border border-gray-200 rounded-[22px] bg-white z-[99999] overflow-visible">
+            <div className="grid grid-cols-12 relative overflow-visible">
               {/* FROM */}
-              <div className="from-wrapper md:col-span-3 p-5 border-b md:border-b-0 md:border-r border-gray-300 relative">
-                <p className="text-gray-500 text-sm mb-2">From</p>
-
+              <div className="from-wrapper col-span-3 p-4 border-r border-gray-200 relative">
+                <p className="text-gray-500 text-xs mb-2">
+                  From
+                </p>
                 <input
                   type="text"
                   value={from}
@@ -341,76 +367,106 @@ const handleSearch = () => {
                     const value = e.target.value;
                     setFrom(value);
                     setFromCode("");
-
-                    if (value.length > 1) {
-                      const suggestions = searchAirports(value);
-                      setFromSuggestions(suggestions);
-                    } else {
-                      setFromSuggestions([]);
-                    }
+                    setFromSuggestions(value.length > 1 ? searchAirports(value) : []);
                   }}
                   placeholder="Departure"
-                  className="w-full text-3xl md:text-4xl font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
+                  className="w-full text-[34px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
-
                 {/* FROM DROPDOWN */}
                 {fromSuggestions.length > 0 && (
-                  <div className="absolute left-0 top-[110%] w-full bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.18)] z-[99999] max-h-[350px] overflow-y-auto border border-gray-200">
+                  <div className="absolute left-0 top-[108%] w-full bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.16)] z-[99999] max-h-[320px] overflow-y-auto border border-gray-200">
                     {fromSuggestions.map((airport, index) => {
                       const { city, name, code, country } = getAirportInfo(airport);
                       return (
                         <button
                           key={`${code}-${index}`}
-                          onClick={() => {
-                            setFrom(`${city} (${code})`);
-                            setFromCode(code);
-                            setFromSuggestions([]);
-                          }}
-                          className="w-full text-left px-4 py-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
+                          onClick={() => { setFrom(`${city} (${code})`); setFromCode(code); setFromSuggestions([]); }}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
-                              <div className="font-semibold text-black">
-                                {city}{country ? `, ${country}` : ''}
+                              <div className="font-semibold text-black text-sm">
+                                {city}
+                                {country
+                                  ? `, ${country}`
+                                  : ""}
                               </div>
-                              <div className="text-sm text-gray-500 mt-0.5">
+                              <div className="text-xs text-gray-500 mt-0.5">
                                 {name}
                               </div>
                             </div>
                             {code && (
-                              <div className="bg-blue-50 text-blue-700 font-mono font-bold px-3 py-1.5 rounded-lg text-sm ml-3">
+                              <div className="bg-blue-50 text-blue-700 font-mono font-bold px-3 py-1 rounded-lg text-xs ml-3">
                                 {code}
                               </div>
                             )}
                           </div>
                         </button>
                       );
-                    })}
+                    }
+                    )}
                   </div>
                 )}
-
                 <div className="flex items-center gap-2 mt-2">
-                  <MapPin size={16} className="text-gray-400" />
-                  <p className="text-gray-500 truncate text-sm">Enter departure airport/city</p>
+                  <MapPin
+                    size={14}
+                    className="text-gray-400"
+                  />
+                  <p className="text-gray-500 truncate text-xs">
+                    Enter departure airport/city
+                  </p>
                 </div>
               </div>
-
-              {/* SWAP BUTTON - FIXED POSITION AND FUNCTIONALITY */}
-              <div className="hidden md:flex absolute left-[22.7%] top-1/2 -translate-y-1/2 z-50">
+              {/* SWAP */}
+              <div className="absolute left-[23%] top-1/2 -translate-y-1/2 z-50">
                 <button
                   onClick={swapLocations}
                   type="button"
-                  className="w-12 h-12 rounded-xl shadow-lg bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:scale-105 transition-all duration-200 group"
-                  aria-label="Swap locations"
+                  className="w-10 h-10 rounded-xl shadow-lg bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:scale-105 transition-all duration-200"
                 >
-                  <ArrowLeftRight className="text-blue-600 w-5 h-5" />
+                  <ArrowLeftRight className="text-blue-600 w-4 h-4" />
                 </button>
               </div>
-
               {/* TO */}
-              <div className="to-wrapper md:col-span-3 p-5 md:pl-12 border-b md:border-b-0 md:border-r border-gray-300 relative z-[9999]">
-                <p className="text-gray-500 text-sm mb-2">To</p>
-
+              <div className="to-wrapper col-span-3 p-4 pl-10 border-r border-gray-200 relative z-[9999]">
+                {/* TO DROPDOWN */}
+                {toSuggestions.length > 0 && (
+                  <div className="absolute left-0 top-[105%] w-[115%] bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.18)] z-[999999] max-h-[350px] overflow-y-auto border border-gray-200">
+                    {toSuggestions.map((airport, index) => {
+                      const { city, name, code, country } = getAirportInfo(airport);
+                      return (
+                        <button
+                          key={`${code}-${index}`}
+                          onClick={() => { setTo(`${city} (${code})`); setToCode(code); setToSuggestions([]); }}
+                          className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="font-semibold text-black text-sm">
+                                {city}
+                                {country
+                                  ? `, ${country}`
+                                  : ""}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-0.5">
+                                {name}
+                              </div>
+                            </div>
+                            {code && (
+                              <div className="bg-blue-50 text-blue-700 font-mono font-bold px-3 py-1 rounded-lg text-xs ml-3">
+                                {code}
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    }
+                    )}
+                  </div>
+                )}
+                <p className="text-gray-500 text-xs mb-2">
+                  To
+                </p>
                 <input
                   type="text"
                   value={to}
@@ -418,129 +474,98 @@ const handleSearch = () => {
                     const value = e.target.value;
                     setTo(value);
                     setToCode("");
-
-                    if (value.length > 1) {
-                      const suggestions = searchAirports(value);
-                      setToSuggestions(suggestions);
-                    } else {
-                      setToSuggestions([]);
-                    }
+                    setToSuggestions(value.length > 1 ? searchAirports(value) : []);
                   }}
                   placeholder="Destination"
-                  className="w-full text-3xl md:text-4xl font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
+                  className="w-full text-[34px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
-
-                {/* TO DROPDOWN */}
-                {toSuggestions.length > 0 && (
-                  <div className="absolute left-0 top-[110%] w-full bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.18)] z-[99999] max-h-[350px] overflow-y-auto border border-gray-200">
-                    {toSuggestions.map((airport, index) => {
-                      const { city, name, code, country } = getAirportInfo(airport);
-                      return (
-                        <button
-                          key={`${code}-${index}`}
-                          onClick={() => {
-                            setTo(`${city} (${code})`);
-                            setToCode(code);
-                            setToSuggestions([]);
-                          }}
-                          className="w-full text-left px-4 py-4 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="font-semibold text-black">
-                                {city}{country ? `, ${country}` : ''}
-                              </div>
-                              <div className="text-sm text-gray-500 mt-0.5">
-                                {name}
-                              </div>
-                            </div>
-                            {code && (
-                              <div className="bg-blue-50 text-blue-700 font-mono font-bold px-3 py-1.5 rounded-lg text-sm ml-3">
-                                {code}
-                              </div>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-
                 <div className="flex items-center gap-2 mt-2">
-                  <MapPin size={16} className="text-gray-400" />
-                  <p className="text-gray-500 truncate text-sm">Enter destination airport/city</p>
+                  <MapPin
+                    size={14}
+                    className="text-gray-400"
+                  />
+                  <p className="text-gray-500 truncate text-xs">
+                    Enter destination airport/city
+                  </p>
                 </div>
               </div>
-
-              {/* Mobile Swap Button */}
-              <div className="md:hidden flex justify-center -my-3 relative z-40">
+              {/* DEPARTURE */}
+              <div
+                ref={departureRef}
+                className="col-span-2 p-4 border-r border-gray-200 relative"
+              >
                 <button
-                  onClick={swapLocations}
-                  type="button"
-                  className="w-10 h-10 rounded-full shadow-lg bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-all duration-200"
-                  aria-label="Swap locations"
+                  onClick={() =>
+                    setShowCalendar(
+                      !showCalendar
+                    )
+                  }
+                  className="w-full text-left"
                 >
-                  <ArrowLeftRight className="text-blue-600 w-4 h-4" />
+                  <div className="flex items-center gap-2 mb-2">
+                    <p className="text-gray-500 text-xs">
+                      Departure
+                    </p>
+                    <ChevronDown
+                      size={14}
+                      className="text-blue-600"
+                    />
+                  </div>
+                  <div className="text-[28px] font-bold text-black">
+                    {formatDate(
+                      dateRange[0]
+                        .startDate
+                    )}
+                  </div>
                 </button>
               </div>
-
-              {/* DEPARTURE */}
-              <div ref={departureRef} className="md:col-span-2 p-5 border-b md:border-b-0 md:border-r border-gray-300 relative">
-                <button onClick={() => setShowCalendar(!showCalendar)} className="w-full text-left">
-                  <div className="flex items-center gap-2 mb-2">
-                    <p className="text-gray-500 text-sm">Departure</p>
-                    <ChevronDown size={16} className="text-blue-600" />
-                  </div>
-
-                  <div className="text-2xl md:text-3xl font-bold text-black">
-                    {formatDate(dateRange[0].startDate)}
-                  </div>
-                </button>
-
-                {/* CALENDAR */}
+              {/* RETURN */}
+              <div className="col-span-2 p-4 border-r border-gray-200 relative">
+                {/* DESKTOP CALENDAR */}
                 {showCalendar && (
                   <div
                     ref={calendarRef}
-                    className="absolute left-1/2 -translate-x-1/2 top-full mt-4 w-[720px] max-w-[95vw] bg-white rounded-3xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.25)] z-[9999]"
+                    className="absolute top-[105%] left-[-320px] w-[720px] bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] z-[999999] overflow-hidden"
+                    onClick={(e) =>
+                      e.stopPropagation()
+                    }
                   >
-                    <div className="overflow-auto max-h-[80vh] p-4">
-                      <DateRange
-                        editableDateInputs={true}
-                        onChange={handleDateSelect}
-                        moveRangeOnFirstSelection={false}
-                        retainEndDateOnFirstSelection={false}
-                        ranges={dateRange}
-                        months={isMobile ? 1 : 2}
-                        direction={isMobile ? "vertical" : "horizontal"}
-                        minDate={new Date()}
-                        showDateDisplay={false}
-                        rangeColors={["#2563eb"]}
-                      />
-                    </div>
+                    <DateRange
+                      editableDateInputs={true}
+                      onChange={handleDateSelect}
+                      moveRangeOnFirstSelection={false}
+                      retainEndDateOnFirstSelection={false}
+                      ranges={dateRange}
+                      months={2}
+                      direction="horizontal"
+                      minDate={new Date()}
+                      showDateDisplay={false}
+                      rangeColors={["#2563eb"]}
+                    />
                   </div>
                 )}
-              </div>
-
-              {/* RETURN */}
-              <div className="md:col-span-2 p-5 border-b md:border-b-0 md:border-r border-gray-300">
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="text-gray-500 text-sm">Return</p>
+                  <p className="text-gray-500 text-xs">
+                    Return
+                  </p>
                 </div>
-
-                <div className="text-2xl md:text-3xl font-bold text-black">
-                  {tripType === "oneway" ? "--" : formatDate(dateRange[0].endDate)}
+                <div className="text-[28px] font-bold text-black">
+                  {tripType ===
+                    "oneway"
+                    ? "--"
+                    : formatDate(
+                      dateRange[0]
+                        .endDate
+                    )}
                 </div>
               </div>
-
               {/* TRAVELLERS */}
-              <div className="md:col-span-2 p-5 relative">
-
+              <div className="col-span-2 p-4 relative overflow-visible">
                 <div className="flex items-center gap-2 mb-2">
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-gray-500 text-xs">
                     Travellers & Class
                   </p>
                 </div>
-
                 <div
                   onClick={() =>
                     setShowTravellerDropdown(
@@ -550,128 +575,280 @@ const handleSearch = () => {
                   className="cursor-pointer"
                 >
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-start gap-3">
 
                     <Users
-                      size={20}
-                      className="text-blue-600"
+                      size={18}
+                      className="text-blue-600 mt-1"
                     />
 
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-                      {travellers}
-                    </h2>
+                    <div>
 
-                    <span className="text-gray-500 text-sm md:text-base">
-                      Traveller
-                      {travellers > 1 ? "s" : ""}
-                    </span>
+                      <div className="flex items-center gap-2">
+
+                        <h2 className="text-[28px] font-bold leading-none text-gray-900">
+                          {travellers}
+                        </h2>
+
+                        <span className="text-gray-500 text-sm font-medium mt-1">
+                          Travellers
+                        </span>
+
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-1 text-xs text-gray-500 font-medium mt-1">
+
+                        <span>
+                          {adults} Adult
+                        </span>
+
+                        {children > 0 && (
+                          <>
+                            <span className="text-gray-300">
+                              •
+                            </span>
+
+                            <span>
+                              {children} Child
+                            </span>
+                          </>
+                        )}
+
+                        {infants > 0 && (
+                          <>
+                            <span className="text-gray-300">
+                              •
+                            </span>
+
+                            <span>
+                              {infants} Infant
+                            </span>
+                          </>
+                        )}
+
+                      </div>
+
+                    </div>
 
                   </div>
 
-                  <p className="mt-2 text-gray-500 text-sm md:text-base">
+                  <p className="mt-1 text-gray-500 text-sm truncate">
                     {travelClass}
                   </p>
 
                 </div>
 
-                {showTravellerDropdown && (
-
-                  <div className="absolute top-full left-0 mt-3 w-80 bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden">
-
-                    {/* TRAVELLERS */}
-                    <div className="p-4 border-b border-gray-100">
-
-                      <h3 className="text-sm font-semibold text-gray-700 mb-4">
-                        Travellers
-                      </h3>
-
-                      <div className="grid grid-cols-3 gap-3">
-
-                        {[1, 2, 3, 4, 5, 6].map((num) => (
-
-                          <button
-                            key={num}
-                            onClick={() =>
-                              setTravellers(num)
-                            }
-                            className={`h-11 rounded-xl border text-sm font-semibold transition-all duration-200 ${travellers === num
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : "border-gray-300 text-gray-700 hover:border-blue-500"
-                              }`}
-                          >
-
-                            {num}
-
-                          </button>
-
-                        ))}
-
-                      </div>
-
-                    </div>
-
-                    {/* CLASS */}
-                    <div className="p-4">
-
-                      <h3 className="text-sm font-semibold text-gray-700 mb-4">
-                        Travel Class
-                      </h3>
-
-                      <div className="space-y-2">
-
-                        {[
-                          "Economy",
-                          "Premium Economy",
-                          "Business",
-                          "First Class",
-                        ].map((item) => (
-
-                          <button
-                            key={item}
-                            onClick={() => {
-                              setTravelClass(item);
-                              setShowTravellerDropdown(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${travelClass === item
-                                ? "bg-blue-50 text-blue-600 border border-blue-200"
-                                : "hover:bg-gray-50 text-gray-700 border border-transparent"
-                              }`}
-                          >
-
-                            {item}
-
-                            {travelClass === item && (
-                              <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
-                            )}
-
-                          </button>
-
-                        ))}
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                )}
-
               </div>
+
             </div>
+
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="flex justify-center mt-10">
+          <div className="flex justify-center mt-7">
+
             <button
               onClick={handleSearch}
-              className="w-full md:w-auto px-10 md:px-24 py-4 md:py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-xl md:text-3xl font-bold shadow-2xl flex items-center justify-center gap-4 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105"
+              className="px-20 py-4 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white text-2xl font-bold shadow-2xl flex items-center justify-center gap-3 hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105"
             >
-              <Search size={28} />
+
+              <Search size={24} />
+
               SEARCH
+
             </button>
+
           </div>
+
         </div>
+
+        {showTravellerDropdown && (
+
+          <div className="absolute top-[76%] right-[-9rem] -translate-x-1/2 w-[340px] bg-white rounded-[26px] border border-gray-100 shadow-[0_25px_80px_rgba(0,0,0,0.12)] z-[99999] overflow-hidden">
+
+            {/* HEADER */}
+            <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-br from-blue-50 via-white to-white">
+
+              <h3 className="text-base font-bold text-gray-900">
+                Travellers & Class
+              </h3>
+
+              <p className="text-xs text-gray-500 mt-1">
+                Select passengers and class
+              </p>
+
+            </div>
+
+            {/* BODY */}
+            <div className="p-5 space-y-4">
+
+              {[
+                {
+                  title: "Adults",
+                  sub: "12+ Years",
+                  value: adults,
+                  setValue: setAdults,
+                  min: 1,
+                },
+
+                {
+                  title: "Children",
+                  sub: "2-11 Years",
+                  value: children,
+                  setValue: setChildren,
+                  min: 0,
+                },
+
+                {
+                  title: "Infants",
+                  sub: "Below 2 Years",
+                  value: infants,
+                  setValue: setInfants,
+                  min: 0,
+                },
+
+              ].map((item, index) => (
+
+                <div
+                  key={index}
+                  className="flex items-center justify-between"
+                >
+
+                  <div>
+
+                    <h4 className="font-semibold text-sm text-gray-900">
+                      {item.title}
+                    </h4>
+
+                    <p className="text-[11px] text-gray-500 mt-0.5">
+                      {item.sub}
+                    </p>
+
+                  </div>
+
+                  <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-2 py-1.5">
+
+                    <button
+                      onClick={() =>
+                        item.setValue(
+                          item.value >
+                            item.min
+                            ? item.value - 1
+                            : item.min
+                        )
+                      }
+                      className="w-8 h-8 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-base text-gray-700 hover:border-blue-500 hover:text-blue-600 transition-all"
+                    >
+                      −
+                    </button>
+
+                    <span className="w-5 text-center font-bold text-sm text-gray-900">
+                      {item.value}
+                    </span>
+
+                    <button
+                      onClick={() =>
+                        item.setValue(
+                          item.value + 1
+                        )
+                      }
+                      className="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center text-base hover:scale-105 transition-all"
+                    >
+                      +
+                    </button>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+              {/* CLASS */}
+              <div className="pt-3 border-t border-gray-100">
+
+                <h4 className="font-semibold text-sm text-gray-900 mb-3">
+                  Travel Class
+                </h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    "Economy",
+                    "Premium Economy",
+                    "Business",
+                    "First Class",
+                  ].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() =>
+                        setTravelClass(item)
+                      }
+                      className={`h-10 rounded-2xl border text-xs font-semibold transition-all ${travelClass === item
+                        ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-blue-400 hover:text-blue-600"
+                        }`}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* FOOTER */}
+            <div className="p-5 pt-0">
+              <button
+                onClick={() =>
+                  setShowTravellerDropdown(
+                    false
+                  )
+                }
+                className="w-full h-11 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all duration-300"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* phone Serchbar */}
+      <PhoneSearchBar
+        tripType={tripType}
+        setTripType={setTripType}
+        from={from}
+        setFrom={setFrom}
+        to={to}
+        setTo={setTo}
+        fromCode={fromCode}
+        setFromCode={setFromCode}
+        toCode={toCode}
+        setToCode={setToCode}
+        fromSuggestions={fromSuggestions}
+        setFromSuggestions={setFromSuggestions}
+        toSuggestions={toSuggestions}
+        setToSuggestions={setToSuggestions}
+        searchAirports={searchAirports}
+        getAirportInfo={getAirportInfo}
+        swapLocations={swapLocations}
+        departureRef={departureRef}
+        calendarRef={calendarRef}
+        showCalendar={showCalendar}
+        setShowCalendar={setShowCalendar}
+        dateRange={dateRange}
+        formatDate={formatDate}
+        handleDateSelect={handleDateSelect}
+        isMobile={isMobile}
+        travellers={travellers}
+        adults={adults}
+        children={children}
+        infants={infants}
+        showTravellerDropdown={showTravellerDropdown}
+        setShowTravellerDropdown={setShowTravellerDropdown}
+        setAdults={setAdults}
+        setChildren={setChildren}
+        setInfants={setInfants}
+        travelClass={travelClass}
+        setTravelClass={setTravelClass}
+        handleSearch={handleSearch}
+      />
     </section>
   );
 };

@@ -145,7 +145,7 @@ const PopularDestinations = () => {
                                             </p>
 
                                             <h3 className="text-lg font-bold text-blue-600">
-                                                ₹ {dest.price?.toLocaleString()}
+                                                $ {dest.price?.toLocaleString()}
                                             </h3>
                                         </div>
 

@@ -88,7 +88,7 @@ const Banners = ({
 
     return (
 
-  <div className={`max-w-7xl mx-auto ${className}`}>
+  <div className={`max-w-7xl px-3 md:px-0 mx-auto ${className}`}>
 
     {currentBanner?.link ? (
 

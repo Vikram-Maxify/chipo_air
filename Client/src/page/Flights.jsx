@@ -911,7 +911,7 @@ const Flights = () => {
           <div className="bg-white/95 border border-blue-100 rounded-[32px] p-4 md:p-5 shadow-[0_20px_80px_rgba(37,99,235,0.12)] overflow-visible">
             {/* TOP BAR */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
-              <div className="flex flex-wrap gap-3">
+              {/* <div className="flex flex-wrap gap-3">
                 {[
                   { key: "oneway", label: "One Way" },
                   { key: "roundtrip", label: "Round Trip" },
@@ -927,7 +927,7 @@ const Flights = () => {
                     {item.label}
                   </button>
                 ))}
-              </div>
+              </div> */}
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Plane size={16} />
                 <span>Compare prices from 500+ airlines</span>
@@ -937,7 +937,9 @@ const Flights = () => {
             {/* SEARCH FIELDS */}
             <div className="relative flex flex-col md:flex-row md:items-center gap-3">
               {/* FROM FIELD */}
-              <div className="flex-1 min-w-[180px] relative" ref={fromWrapperRef}>
+
+              <div className="flex flex-row">
+              <div className="flex-1 md:min-w-[180px] relative" ref={fromWrapperRef}>
                 <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">From</label>
                 <div className="relative">
                   <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
@@ -990,7 +992,7 @@ const Flights = () => {
               </div>
 
               {/* SWAP BUTTON */}
-              <div className="hidden md:flex items-center justify-center pt-6">
+              <div className="hidden md:flex items-center justify-center px-5 pt-6">
                 <button
                   onClick={swapLocations}
                   className="w-14 h-14 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white flex items-center justify-center shadow-lg"
@@ -999,14 +1001,14 @@ const Flights = () => {
                 </button>
               </div>
               {/*Mobile SWAP BUTTON */}
-              <div className="flex md:hidden justify-center">
-                <button onClick={swapLocations} className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-lg">
-                  <ArrowLeftRight size={18} />
+              <div className="flex md:hidden justify-center absolute top-[7%] left-[43%] z-50">
+                <button onClick={swapLocations} className="w-12 h-12 rounded-xl text-gray-500 flex items-center justify-center">
+                  <ArrowLeftRight size={26} />
                 </button>
               </div>
 
               {/* TO FIELD */}
-              <div className="flex-1 min-w-[180px] relative" ref={toWrapperRef}>
+              <div className="flex-1 md:min-w-[180px] relative" ref={toWrapperRef}>
                 <label className="text-xs font-semibold text-gray-500 mb-2 block uppercase tracking-wide">To</label>
                 <div className="relative">
                   <MapPin size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-600" />
@@ -1056,6 +1058,8 @@ const Flights = () => {
                     })}
                   </div>
                 )}
+              </div>
+
               </div>
 
               {/* MOBILE SWAP */}

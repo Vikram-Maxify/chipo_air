@@ -150,26 +150,28 @@ const CTASection = () => {
             </div>
 
             {/* RIGHT */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button
-                onClick={() => navigate("/")}
-                className="bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-2xl font-bold text-lg transition-all shadow-lg"
-              >
-                Start Booking
-              </button>
+            <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row gap-3 md:gap-4 w-full sm:w-auto">
 
-              <button
-                onClick={() => navigate("/packages")}
-                className="border-2 border-white/30 hover:border-white bg-white/10 hover:bg-white/20 px-8 py-4 rounded-2xl font-semibold text-lg transition-all"
-              >
-                Explore Deals
-              </button>
-            </div>
+  <button
+    onClick={() => navigate("/")}
+    className="w-full sm:w-auto min-w-[170px] bg-white text-blue-700 hover:bg-blue-50 px-5 md:px-8 h-12 md:h-14 rounded-2xl font-bold text-sm md:text-lg transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+  >
+    Start Booking
+  </button>
+
+  <button
+    onClick={() => navigate("/packages")}
+    className="w-full sm:w-auto min-w-[170px] border-2 border-white/30 hover:border-white bg-white/10 hover:bg-white/20 backdrop-blur-md px-5 md:px-8 h-12 md:h-14 rounded-2xl font-semibold text-sm md:text-lg transition-all duration-300 hover:scale-[1.02]"
+  >
+    Explore Deals
+  </button>
+
+</div>
           </div>
         </div>
 
         {/* TRUST FEATURES */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-12">
+        <div className="grid  grid-cols-2 md:grid-cols-4 gap-5 mt-12">
           
           <div className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm">
             <ShieldCheck className="w-10 h-10 text-green-500" />
