@@ -474,7 +474,7 @@ const from =
                                 to="/register"
                                 className="font-semibold text-blue-600"
                             >
-                                Create free account
+                                Create account
                             </Link>
 
                         </p>

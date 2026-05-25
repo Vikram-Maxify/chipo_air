@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <Banners index={0} height="h-[200px]" />
+      <Banners index={0} height="h-[200px]" className='mt-1' />
       <FeaturedPackages  />
       <Offers />
       <PopularDestinations />

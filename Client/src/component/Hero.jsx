@@ -291,7 +291,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative bg-[#f5f5f5] min-h-[586px] md:min-h-[486px] overflow-visible pb-5">
+    <section className="relative bg-[#f5f5f5] min-h-[586px] md:min-h-[436px] overflow-visible pb-5">
       {/* BACKGROUND */}
       <div className="absolute top-0 left-0 w-full h-[350px] bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 rounded-b-[70px] md:rounded-b-[110px]" />
 
@@ -311,7 +311,7 @@ const Hero = () => {
         </div>
 
         {/* CARD */}
-        <div className="bg-white rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.10)] p-5 overflow-visible">
+        <div className="bg-white rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.10)] px-4 py-3 overflow-visible">
 
           {/* TOP */}
           <div className="flex items-center justify-between gap-3 mb-5">
@@ -370,7 +370,7 @@ const Hero = () => {
                     setFromSuggestions(value.length > 1 ? searchAirports(value) : []);
                   }}
                   placeholder="Departure"
-                  className="w-full text-[34px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
+                  className="w-full text-[19px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
                 {/* FROM DROPDOWN */}
                 {fromSuggestions.length > 0 && (
@@ -477,7 +477,7 @@ const Hero = () => {
                     setToSuggestions(value.length > 1 ? searchAirports(value) : []);
                   }}
                   placeholder="Destination"
-                  className="w-full text-[34px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
+                  className="w-full text-[19px] font-bold outline-none bg-transparent text-black placeholder:text-gray-300"
                 />
                 <div className="flex items-center gap-2 mt-2">
                   <MapPin
@@ -492,7 +492,7 @@ const Hero = () => {
               {/* DEPARTURE */}
               <div
                 ref={departureRef}
-                className="col-span-2 p-4 border-r border-gray-200 relative"
+                className="col-span-2 p-[10px] border-r border-gray-200 relative"
               >
                 <button
                   onClick={() =>
@@ -511,7 +511,7 @@ const Hero = () => {
                       className="text-blue-600"
                     />
                   </div>
-                  <div className="text-[28px] font-bold text-black">
+                  <div className="text-[20px] font-bold text-black">
                     {formatDate(
                       dateRange[0]
                         .startDate
@@ -549,7 +549,7 @@ const Hero = () => {
                     Return
                   </p>
                 </div>
-                <div className="text-[28px] font-bold text-black">
+                <div className="text-[20px] font-bold text-black">
                   {tripType ===
                     "oneway"
                     ? "--"
@@ -586,7 +586,7 @@ const Hero = () => {
 
                       <div className="flex items-center gap-2">
 
-                        <h2 className="text-[28px] font-bold leading-none text-gray-900">
+                        <h2 className="text-[20px] font-bold leading-none text-gray-900">
                           {travellers}
                         </h2>
 
@@ -645,7 +645,7 @@ const Hero = () => {
           </div>
 
           {/* SEARCH BUTTON */}
-          <div className="flex justify-center mt-7">
+          <div className="flex justify-center mt-3 -mb-[36px]">
 
             <button
               onClick={handleSearch}
