@@ -270,45 +270,7 @@ const PopularDestinations = () => {
                     )
                 }
 
-                {/* STATS */}
-                <div className="mt-12 pt-8 border-t border-gray-200">
-
-                    <div className="grid grid-cols-3 gap-4 text-center">
-
-                        <div>
-                            <div className="flex items-center justify-center gap-2 text-2xl sm:text-3xl font-bold text-gray-900">
-                                <Plane className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                                {destinations?.length || 0}+
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                                Destinations
-                            </p>
-                        </div>
-
-                        <div>
-                            <div className="flex items-center justify-center gap-2 text-2xl sm:text-3xl font-bold text-gray-900">
-                                <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
-                                50+
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                                Countries
-                            </p>
-                        </div>
-
-                        <div>
-                            <div className="flex items-center justify-center gap-2 text-2xl sm:text-3xl font-bold text-gray-900">
-                                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
-                                4.8
-                            </div>
-
-                            <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                                Avg Rating
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </section>
     );

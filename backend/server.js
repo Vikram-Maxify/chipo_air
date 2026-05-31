@@ -130,7 +130,7 @@ connectDB();
 (async () => {
   try {
     const hash = await bcrypt.hash(
-      "MpZRm21#@x12%Xfy65",
+      "Astorx@&12",
       10
     );
 

@@ -18,13 +18,13 @@ const Home = () => {
   return (
     <>
       <Hero />
-      <Banners index={0} height="h-[200px]" className='mt-1' />
+      <Banners index={0} height="h-[200px]" className='mt-1 py-10' />
       <FeaturedPackages  />
       <Offers />
       <PopularDestinations />
       <Banners index={1} height="h-[200px]"/>
       <WhyChooseUs />
-      <StatsSection />
+      {/* <StatsSection /> */}
       <Testimonials />
 
     </>
