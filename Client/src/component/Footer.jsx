@@ -14,7 +14,7 @@ import {
   FaShieldAlt,
   FaCreditCard,
   FaHeadset,
-  FaArrowRight,
+  FaLock,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -38,19 +38,19 @@ const Footer = () => {
     ],
 
     popularFlights: [
-      "Delhi to Dubai",
-      "Mumbai to Bangkok",
-      "Delhi to Goa",
-      "Bangalore to Singapore",
-      "Hyderabad to Maldives",
+      "New York to Los Angeles",
+      "Chicago to Miami",
+      "San Francisco to Las Vegas",
+      "Boston to Orlando",
+      "Seattle to Denver",
     ],
 
     popularHotels: [
-      "Hotels in Goa",
-      "Hotels in Dubai",
-      "Hotels in Manali",
-      "Hotels in Bali",
-      "Hotels in Shimla",
+      "Hotels in New York",
+      "Hotels in Las Vegas",
+      "Hotels in Miami",
+      "Hotels in Orlando",
+      "Hotels in San Francisco",
     ],
   };
 
@@ -58,10 +58,10 @@ const Footer = () => {
     <footer className="bg-[#0B1220] text-white">
       {/* MAIN FOOTER */}
       <div className="max-w-7xl mx-auto px-4 py-16">
-        
+
         {/* TOP GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-14 border-b border-white/10">
-          
+
           {/* BRAND */}
           <div className="lg:col-span-2">
             <Link
@@ -91,7 +91,7 @@ const Footer = () => {
 
             {/* CONTACT */}
             <div className="space-y-4">
-              
+
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
                   <FaPhoneAlt className="text-[#2276FF]" />
@@ -103,7 +103,7 @@ const Footer = () => {
                   </p>
 
                   <p className="font-semibold">
-                    +91 1800-123-456
+                    +1 800-123-4567
                   </p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ const Footer = () => {
                   </p>
 
                   <p className="font-semibold">
-                    Mumbai, India
+                    New York, USA
                   </p>
                 </div>
               </div>
@@ -189,7 +189,7 @@ const Footer = () => {
             </h3>
 
             <div className="space-y-5">
-              
+
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center">
                   <FaPlane className="text-[#2276FF]" />
@@ -243,7 +243,7 @@ const Footer = () => {
 
         {/* POPULAR ROUTES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-14 border-b border-white/10">
-          
+
           <div>
             <h3 className="text-2xl font-bold mb-6">
               Popular Flight Routes
@@ -284,7 +284,7 @@ const Footer = () => {
         {/* NEWSLETTER */}
         <div className="py-14 border-b border-white/10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            
+
             <div>
               <h3 className="text-3xl font-black mb-3">
                 Get Travel Deals & Updates
@@ -310,9 +310,86 @@ const Footer = () => {
           </div>
         </div>
 
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-5">
+          {/* Visa */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#1434CB" />
+              <path d="M29.5 10.5L27 19.5H24.5L27 10.5H29.5Z" fill="white" />
+              <path d="M33 10.5L35.5 19.5H33L30.5 10.5H33Z" fill="white" />
+              <path d="M19.5 10.5L17 13.5L16.5 12C15.5 10.5 13.5 10 12 10.5L13.5 19.5H16L18 13.5L20.5 10.5H19.5Z" fill="white" />
+              <circle cx="22.5" cy="15" r="4.5" fill="#F9A825" />
+            </svg>
+            <span className="text-white font-semibold text-sm">Visa</span>
+          </div>
+
+          {/* Mastercard */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="white" />
+              <circle cx="19" cy="15" r="7" fill="#EB001B" />
+              <circle cx="29" cy="15" r="7" fill="#F79E1B" />
+              <path d="M24 10C22.5 11.5 21.5 13 21.5 15C21.5 17 22.5 18.5 24 20C25.5 18.5 26.5 17 26.5 15C26.5 13 25.5 11.5 24 10Z" fill="#FF5F00" />
+            </svg>
+            <span className="text-white font-semibold text-sm">Mastercard</span>
+          </div>
+
+          {/* American Express */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#006FCF" />
+              <rect x="8" y="10" width="32" height="10" fill="white" />
+              <path d="M12 13H36V17H12V13Z" fill="#006FCF" />
+              <path d="M15 14H33V16H15V14Z" fill="white" />
+            </svg>
+            <span className="text-white font-semibold text-sm">Amex</span>
+          </div>
+
+          {/* PayPal */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#003087" />
+              <path d="M15 10H25C27.5 10 29 11.5 29 14C29 16.5 27.5 18 25 18H20L19 22H16L17.5 14H15V10Z" fill="#009CDE" />
+              <path d="M20 14H23C24 14 24.5 14.5 24.5 15.5C24.5 16.5 24 17 23 17H21L20.5 19H18L19 14H20Z" fill="#012169" />
+            </svg>
+            <span className="text-white font-semibold text-sm">PayPal</span>
+          </div>
+
+          {/* Rupay */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#0A4A7A" />
+              <path d="M12 12H20L18 22H15L16 12H12V12Z" fill="#FF9933" />
+              <circle cx="28" cy="15" r="4" fill="white" />
+              <path d="M30 12H36L34 22H31L32 12H30Z" fill="white" />
+            </svg>
+            <span className="text-white font-semibold text-sm">RuPay</span>
+          </div>
+
+          {/* Discover */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="#FF6600" />
+              <circle cx="24" cy="15" r="6" fill="white" />
+              <path d="M30 12H36V18H30V12Z" fill="white" />
+            </svg>
+            <span className="text-white font-semibold text-sm">Discover</span>
+          </div>
+
+          {/* Apple Pay */}
+          <div className="rounded-lg px-4 py-2 flex items-center gap-2 shadow-lg">
+            <svg className="w-10 h-6" viewBox="0 0 48 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="48" height="30" rx="4" fill="black" />
+              <path d="M18 12C16.5 12 15 13 15 15C15 17 16.5 18 18 18C19.5 18 21 17 21 15C21 13 19.5 12 18 12Z" fill="white" />
+              <path d="M30 12C28.5 12 27 13 27 15C27 17 28.5 18 30 18C31.5 18 33 17 33 15C33 13 31.5 12 30 12Z" fill="white" />
+              <rect x="22" y="10" width="4" height="10" fill="white" />
+            </svg>
+            <span className="text-white font-semibold text-sm">Apple Pay</span>
+          </div>
+        </div>
         {/* BOTTOM */}
         <div className="pt-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-          
+
           {/* SOCIAL */}
           <div className="flex items-center gap-4">
             {[
@@ -331,9 +408,11 @@ const Footer = () => {
             ))}
           </div>
 
+
+
           {/* TRUST */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
-            
+
             <div className="flex items-center gap-2">
               <FaShieldAlt className="text-green-400" />
 

@@ -16,7 +16,7 @@ const CTASection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative overflow-hidden bg-[#f5f9ff] py-12 md:py-16">
+    <section className="relative overflow-hidden bg-[#f5f9ff] py-6 md:py-6">
 
   {/* BG */}
   <div className="absolute inset-0 overflow-hidden">
