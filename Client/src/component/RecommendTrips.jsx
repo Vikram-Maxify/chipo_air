@@ -2,8 +2,30 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllTrips } from "../reducer/slice/recommendTripSlice";
 
+// Lucide Icons
+import { Plane, MapPin, CalendarDays, Clock, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const RecommendTrips = () => {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const handleSearchFlight = (trip) => {
+    navigate(
+      `/flights?from=${trip.from}&to=${trip.to}&departure_date=${trip.startDate}&return_date=${trip.endDate}`,
+      {
+        state: {
+          fromCode: trip.from,
+          toCode: trip.to,
+          departureDate: trip.startDate,
+          returnDate: trip.endDate,
+
+          recommendedTrip: true,
+        },
+      },
+    );
+  };
 
   const { trips, loading } = useSelector((state) => state.recommendTrip);
 
@@ -12,7 +34,7 @@ const RecommendTrips = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-[#f6f7fb] min-h-screen px-6 py-10">
+    <div className="bg-[#f6f7fb] px-6 py-10">
       {/* HEADER */}
       <div className="max-w-7xl mx-auto mb-8">
         <h1 className="text-3xl font-bold text-[#111827]">
@@ -31,7 +53,7 @@ const RecommendTrips = () => {
         {trips?.map((trip) => (
           <div
             key={trip._id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer"
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all overflow-hidden"
           >
             {/* IMAGE */}
             <div className="relative">
@@ -42,47 +64,87 @@ const RecommendTrips = () => {
               />
 
               {/* BADGE */}
-              <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-gray-700">
-                ✈ Recommended
+              <div className="absolute top-3 left-3 bg-white/90 px-3 py-1 rounded-full text-xs font-semibold text-gray-700">
+                Recommended
               </div>
             </div>
 
             {/* CONTENT */}
             <div className="p-4">
-              {/* PRICE + TITLE */}
+              {/* TITLE + PRICE */}
               <div className="flex justify-between items-start">
-                <h2 className="text-lg font-bold text-[#111827]">
-                  {trip.location}
-                </h2>
+                <div>
+                  <h2 className="text-lg font-bold text-[#111827]">
+                    {trip.title}
+                  </h2>
+
+                  <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                    <MapPin size={14} />
+                    {trip.location}
+                  </div>
+                </div>
 
                 <div className="text-right">
                   <p className="text-lg font-bold text-[#2563eb]">
-                    ₹ {trip.price}
+                    $ {trip.price}
                   </p>
                   <p className="text-xs text-gray-500">Round Trip</p>
                 </div>
               </div>
 
               {/* ROUTE */}
-              <p className="text-sm text-gray-500 mt-1">{trip.title}</p>
+              <div className="mt-3 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Plane size={16} />
+                {trip.from} → {trip.to}
+              </div>
 
-              {/* META */}
-              <div className="flex items-center justify-between mt-4">
-                <div className="text-xs text-gray-500">⏳ {trip.duration}</div>
+              {/* DESCRIPTION */}
+              <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                {trip.description}
+              </p>
 
-                <div className="text-xs text-yellow-500 font-semibold">
-                  ⭐ {trip.rating}
+              {/* DATES */}
+              <div className="mt-3 text-xs text-gray-600 space-y-1">
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} />
+                  {new Date(trip.startDate).toLocaleDateString()}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} />
+                  {new Date(trip.endDate).toLocaleDateString()}
                 </div>
               </div>
 
-              {/* BOTTOM BAR (like flight UI) */}
-              <div className="mt-4 border-t pt-3 flex justify-between items-center">
-                <p className="text-xs text-gray-400">View details →</p>
+              {/* META */}
+              <div className="flex justify-between items-center mt-4">
+                <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <Clock size={14} />
+                  {trip.duration} Days
+                </span>
 
-                <button className="bg-[#2563eb] text-white text-xs px-3 py-1.5 rounded-lg hover:bg-blue-700 transition">
-                  Book Now
-                </button>
+                <span className="flex items-center gap-1 text-xs font-semibold text-yellow-500">
+                  <Star size={14} />
+                  {trip.rating}
+                </span>
               </div>
+
+              {/* BUTTON */}
+              <button
+                onClick={() => handleSearchFlight(trip)}
+                className="
+        w-full
+        bg-blue-600
+        hover:bg-blue-700
+        text-white
+        py-3
+        rounded-xl
+        font-semibold
+        transition-all
+    "
+              >
+                View Flights
+              </button>
             </div>
           </div>
         ))}

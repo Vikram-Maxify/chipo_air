@@ -71,6 +71,51 @@ const Flights = () => {
       "departure_date"
     );
 
+    useEffect(() => {
+      if (!fromQuery || !toQuery || !departureDateQuery) return;
+
+      const fetchRecommendedFlight = async () => {
+        try {
+          setFrom(fromQuery);
+          setFromCode(fromQuery);
+
+          setTo(toQuery);
+          setToCode(toQuery);
+
+          const resultAction = await dispatch(
+            getFlightsThunk({
+              from: fromQuery,
+              to: toQuery,
+              departure_date: departureDateQuery.split("T")[0],
+
+              return_date: null,
+
+              adults: 1,
+              children: 0,
+              infants: 0,
+
+              travelClass: "Economy",
+            }),
+          );
+
+          if (getFlightsThunk.fulfilled.match(resultAction)) {
+            sessionStorage.setItem(
+              FLIGHT_CACHE_KEY,
+              JSON.stringify({
+                flights: resultAction.payload,
+              }),
+            );
+
+            setCachedFlights(resultAction.payload);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      fetchRecommendedFlight();
+    }, [fromQuery, toQuery, departureDateQuery, dispatch]);
+
   const {
     flights,
     loading,
@@ -268,238 +313,128 @@ const Flights = () => {
 
   // ================= AUTO FETCH FLIGHTS WITH USER LOCATION =================
   useEffect(() => {
+    if (location.pathname !== "/flights") return;
 
-    if (
-      location.pathname !==
-      "/flights"
-    ) return;
-
-    const cachedData =
-      sessionStorage.getItem(
-        FLIGHT_CACHE_KEY
-      );
+    const cachedData = sessionStorage.getItem(FLIGHT_CACHE_KEY);
 
     // ================= CACHE EXISTS =================
 
     if (cachedData) {
-
       try {
+        const parsed = JSON.parse(cachedData);
 
-        const parsed =
-          JSON.parse(cachedData);
+        if (parsed?.flights?.length) {
+          setCachedFlights(parsed.flights || []);
 
-        if (
-          parsed?.flights?.length
-        ) {
-
-          setCachedFlights(
-            parsed.flights || []
-          );
-
-          setIsInitialLoading(
-            false
-          );
+          setIsInitialLoading(false);
 
           return;
-
         }
-
       } catch (err) {
-
-        console.log(
-          "Cache parse error:",
-          err
-        );
-
+        console.log("Cache parse error:", err);
       }
-
     }
 
     // ================= BACKGROUND FETCH =================
 
-    const fetchFlightsWithLocation =
-      async () => {
+    const fetchFlightsWithLocation = async () => {
+      if (fromQuery && toQuery && departureDateQuery) {
+        hasAutoFetched.current = true;
+      
+      if (hasAutoFetched.current) return;
 
-        if (
-          hasAutoFetched.current
-        ) return;
+      const tomorrow = new Date();
 
-        const tomorrow =
-          new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
 
-        tomorrow.setDate(
-          tomorrow.getDate() + 1
+      const defaultDate = format(tomorrow, "yyyy-MM-dd");
+
+      const travelDate = departureDateQuery || defaultDate;
+
+      let fromAirport = "DEL";
+
+      try {
+        const position = await new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+
+            timeout: 10000,
+          });
+        });
+
+        const userLat = position.coords.latitude;
+
+        const userLon = position.coords.longitude;
+
+        const nearestAirport = findNearestAirport(userLat, userLon);
+
+        if (nearestAirport) {
+          const city =
+            nearestAirport.city ||
+            nearestAirport.city_name ||
+            nearestAirport.municipality ||
+            "Unknown City";
+
+          const code =
+            nearestAirport.iata ||
+            nearestAirport.code ||
+            nearestAirport.iata_code;
+
+          if (code) {
+            fromAirport = code;
+
+            setFrom(`${city} (${code})`);
+
+            setFromCode(code);
+          }
+        }
+      } catch (err) {
+        console.log("Location denied:", err);
+      }
+
+      const toAirport = toQuery || "BOM";
+
+      try {
+        const resultAction = await dispatch(
+          getFlightsThunk({
+            from: fromAirport,
+
+            to: toAirport,
+
+            departure_date: travelDate,
+
+            return_date: null,
+
+            adults: 1,
+
+            children: 0,
+
+            infants: 0,
+
+            travelClass: "Economy",
+          }),
         );
 
-        const defaultDate =
-          format(
-            tomorrow,
-            "yyyy-MM-dd"
+        if (getFlightsThunk.fulfilled.match(resultAction)) {
+          hasAutoFetched.current = true;
+
+          // SAVE CACHE
+          sessionStorage.setItem(
+            FLIGHT_CACHE_KEY,
+            JSON.stringify({
+              flights: resultAction.payload,
+            }),
           );
-
-        const travelDate =
-          departureDateQuery ||
-          defaultDate;
-
-        let fromAirport =
-          "DEL";
-
-        try {
-
-          const position =
-            await new Promise(
-              (
-                resolve,
-                reject
-              ) => {
-
-                navigator.geolocation.getCurrentPosition(
-                  resolve,
-                  reject,
-                  {
-                    enableHighAccuracy:
-                      true,
-
-                    timeout: 10000,
-                  }
-                );
-
-              }
-            );
-
-          const userLat =
-            position.coords
-              .latitude;
-
-          const userLon =
-            position.coords
-              .longitude;
-
-          const nearestAirport =
-            findNearestAirport(
-              userLat,
-              userLon
-            );
-
-          if (
-            nearestAirport
-          ) {
-
-            const city =
-              nearestAirport.city ||
-              nearestAirport.city_name ||
-              nearestAirport.municipality ||
-              "Unknown City";
-
-            const code =
-              nearestAirport.iata ||
-              nearestAirport.code ||
-              nearestAirport.iata_code;
-
-            if (code) {
-
-              fromAirport =
-                code;
-
-              setFrom(
-                `${city} (${code})`
-              );
-
-              setFromCode(
-                code
-              );
-
-            }
-
-          }
-
-        } catch (err) {
-
-          console.log(
-            "Location denied:",
-            err
-          );
-
         }
-
-        const toAirport =
-          toQuery || "BOM";
-
-        try {
-
-          const resultAction =
-            await dispatch(
-              getFlightsThunk({
-                from:
-                  fromAirport,
-
-                to:
-                  toAirport,
-
-                departure_date:
-                  travelDate,
-
-                return_date:
-                  null,
-
-                adults: 1,
-
-                children: 0,
-
-                infants: 0,
-
-                travelClass:
-                  "Economy",
-              })
-            );
-
-          if (
-            getFlightsThunk.fulfilled.match(
-              resultAction
-            )
-          ) {
-
-            hasAutoFetched.current =
-              true;
-
-            // SAVE CACHE
-            sessionStorage.setItem(
-              FLIGHT_CACHE_KEY,
-              JSON.stringify({
-                flights:
-                  resultAction
-                    .payload,
-              })
-            );
-
-          }
-
-        } catch (err) {
-
-          console.log(
-            "Auto fetch error:",
-            err
-          );
-
-        } finally {
-
-          setIsInitialLoading(
-            false
-          );
-
-        }
-
-      };
+      } catch (err) {
+        console.log("Auto fetch error:", err);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
 
     fetchFlightsWithLocation();
-
-  }, [
-    fromQuery,
-    toQuery,
-    departureDateQuery,
-    dispatch,
-    navigate,
-  ]);
+  }}, [fromQuery, toQuery, departureDateQuery, dispatch]);
 
   // ================= EXTRACT AIRPORT CODE =================
   const extractAirportCode = (input) => {
@@ -512,6 +447,8 @@ const Flights = () => {
   };
 
   // ================= MANUAL SEARCH FUNCTION =================
+
+  hasAutoFetched.current = true;
   const handleSearch = async () => {
     if (!from || !to) {
       alert("Please enter both departure and destination cities");
