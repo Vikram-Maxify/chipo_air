@@ -33,6 +33,7 @@ const flightBookingRoutes = require("./routes/flightBookingRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const destinationRoutes = require("./routes/destinationRoutes");
 const testimonialRoutes = require("./routes/testimonialRoutes");
+const recommendTripRoutes = require("./routes/recommendTripRoutes");
 
 // ====================== MIDDLEWARE ======================
 
@@ -69,7 +70,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/travel-offers", require("./routes/travelOfferRoutes"));
 app.use("/api/destination", destinationRoutes);
 app.use("/api/testimonial",testimonialRoutes);
-
+app.use("/api/recommend-trip", require("./routes/recommendTripRoutes"));
 // ====================== BUILD PATHS ======================
 
 // CLIENT BUILD PATH

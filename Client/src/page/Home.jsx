@@ -10,6 +10,7 @@ import Offers from '../component/Offers'
 import Banners from '../component/Banners'
 import Testimonials from '../component/Testimonials'
 import FeaturedPackages from '../component/FeaturedPackages'
+import RecommendTrips from '../component/RecommendTrips'
 
 const Home = () => {
   useEffect(() => {
@@ -20,6 +21,7 @@ const Home = () => {
       <Hero />
       <Banners index={0} height="h-[200px]" className='mt-1 py-10' />
       <FeaturedPackages  />
+      <RecommendTrips />
       <Offers />
       <PopularDestinations />
       <Banners index={1} height="h-[200px]"/>

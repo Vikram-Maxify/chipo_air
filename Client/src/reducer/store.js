@@ -9,6 +9,7 @@ import userOfferReducer from "./slice/userOfferSlice";
 import bannerSliceReducer from "./slice/userBannerSlice";
 import destinationReducer from "./slice/destinationSlice";
 import testimonialReducer from "./slice/testimonialSlice";
+import recommendTripReducer from "./slice/recommendTripSlice";
 
 
 const store = configureStore({
@@ -23,6 +24,7 @@ const store = configureStore({
     userBanner: bannerSliceReducer,
     destination: destinationReducer,
     testimonials: testimonialReducer,
+    recommendTrip: recommendTripReducer,
   },
 });
 
