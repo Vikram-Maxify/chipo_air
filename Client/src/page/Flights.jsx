@@ -418,7 +418,7 @@ const Flights = () => {
         if (getFlightsThunk.fulfilled.match(resultAction)) {
           hasAutoFetched.current = true;
 
-          // SAVE CACHE
+          // SAVE CACHE 
           sessionStorage.setItem(
             FLIGHT_CACHE_KEY,
             JSON.stringify({
