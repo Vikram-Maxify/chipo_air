@@ -16,7 +16,9 @@ import {
     Bell,
     Search,
     MapPin,
-    Phone
+    Phone,
+    Headphones,
+    Clock
 } from "lucide-react";
 
 const Header = () => {
@@ -48,12 +50,15 @@ const Header = () => {
         setProfileDropdown(false);
     };
 
+    const handleCallClick = () => {
+        window.location.href = "tel:+919876543210";
+    };
+
     const navLinks = [
         { to: "/flights", label: "Flights", icon: Plane },
         { to: "/hotels", label: "Hotels", icon: MapPin },
         { to: "/packages", label: "Packages", icon: Gift },
         { to: "/all_offers", label: "Deals", icon: Calendar },
-        // { to: "/my-trips", label: "My Trips", icon: MapPin },
     ];
 
     return (
@@ -74,8 +79,6 @@ const Header = () => {
                   alt="Flight Booker Logo"
                   className="h-10 md:h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
                 />
-
-                {/* <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div> */}
               </div>
             </Link>
 
@@ -105,9 +108,46 @@ const Header = () => {
               })}
             </nav>
 
+            {/* Premium Call Support Badge - Desktop */}
+            <div className="hidden md:flex items-center">
+              <button
+                onClick={handleCallClick}
+                className="relative group focus:outline-none"
+              >
+                {/* Animated gradient border */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+                
+                {/* Inner content */}
+                <div className="relative flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200/50 group-hover:border-blue-300/70 transition-all duration-300 cursor-pointer">
+                  
+                  {/* Support icon with animation */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-blue-400 rounded-full blur-sm opacity-50 animate-pulse"></div>
+                    <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 p-1.5 rounded-full">
+                      <Headphones className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                  
+                  {/* Text content */}
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                      <Clock className="w-2.5 h-2.5" />
+                      24/7 Support
+                    </p>
+                    <p className="text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent flex items-center gap-1">
+                      <Phone className="w-3 h-3 text-blue-500" />
+                      +1 (888) 555-1234
+                    </p>
+                  </div>
+
+                  {/* Shine effect on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-xl"></div>
+                </div>
+              </button>
+            </div>
+
             {/* Desktop Actions */}
             <div className="hidden md:flex items-center gap-3">
-             
               {/* Notifications */}
               {isAuthenticated && (
                 <button className="relative p-2.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-300">
@@ -195,13 +235,8 @@ const Header = () => {
                   to="/login"
                   className="group relative overflow-hidden px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white text-sm font-semibold shadow-[0_10px_30px_rgba(37,99,235,0.35)] hover:shadow-[0_15px_40px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-105 flex items-center gap-2"
                 >
-                  {/* Glow */}
                   <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  {/* Text */}
                   <span className="relative z-10">Sign In / Sign Up</span>
-
-                  {/* Arrow */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -269,6 +304,43 @@ const Header = () => {
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
+              </div>
+
+              {/* Mobile Call Support Badge */}
+              <div className="px-2 pb-3">
+                <button
+                  onClick={handleCallClick}
+                  className="w-full group relative focus:outline-none"
+                >
+                  <div className="relative overflow-hidden bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-200/50 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-active:translate-x-full transition-transform duration-700"></div>
+                    
+                    <div className="relative flex items-center gap-3">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-blue-400 rounded-full blur-sm opacity-50 animate-pulse"></div>
+                        <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-full">
+                          <Headphones className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-[11px] font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          24/7 Support
+                        </p>
+                        <p className="text-sm font-bold text-gray-800 flex items-center gap-1">
+                          <Phone className="w-3.5 h-3.5 text-blue-500" />
+                          +91 98765 43210
+                        </p>
+                      </div>
+                      <div className="text-blue-600 group-active:translate-x-1 transition-transform">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </button>
               </div>
 
               {/* Mobile Nav Links */}
@@ -351,13 +423,8 @@ const Header = () => {
                     onClick={() => setMobileMenuOpen(false)}
                     className="group relative overflow-hidden w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 text-white text-sm font-semibold shadow-[0_10px_30px_rgba(37,99,235,0.35)] flex items-center justify-center gap-2"
                   >
-                    {/* Glow */}
                     <div className="absolute inset-0 bg-white/10 opacity-0 group-active:opacity-100 transition-opacity duration-300" />
-
-                    {/* Text */}
                     <span className="relative z-10">Sign In / Sign Up</span>
-
-                    {/* Arrow */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -379,7 +446,7 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Add to global CSS */}
+        {/* Global CSS animations */}
         <style jsx>{`
           @keyframes fadeIn {
             from {
@@ -391,8 +458,19 @@ const Header = () => {
               transform: translateY(0);
             }
           }
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 0.5;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
           .animate-fadeIn {
             animation: fadeIn 0.2s ease-out;
+          }
+          .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
           }
         `}</style>
       </header>
