@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllTrips } from "../reducer/slice/recommendTripSlice";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Shield, Headphones, Award, CalendarCheck } from "lucide-react";
 
 const RecommendTrips = () => {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ const RecommendTrips = () => {
   const scrollContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-  const [canScroll, setCanScroll] = useState(false);
+  const [isSliderMode, setIsSliderMode] = useState(false);
 
   const { trips, loading } = useSelector(
     (state) => state.recommendTrip,
@@ -24,14 +24,17 @@ const RecommendTrips = () => {
     const checkScrollability = () => {
       if (scrollContainerRef.current && trips?.length > 0) {
         const container = scrollContainerRef.current;
-        const isScrollable = container.scrollWidth > container.clientWidth;
-        setCanScroll(isScrollable);
+        // Check if slider mode should be enabled (more than 4 cards)
+        const shouldBeSlider = trips.length > 4;
+        setIsSliderMode(shouldBeSlider);
         
-        // Check if we can scroll left/right
-        const hasLeftScroll = container.scrollLeft > 0;
-        const hasRightScroll = container.scrollLeft + container.clientWidth < container.scrollWidth;
-        setShowLeftArrow(hasLeftScroll);
-        setShowRightArrow(hasRightScroll);
+        if (shouldBeSlider) {
+          const isScrollable = container.scrollWidth > container.clientWidth;
+          const hasLeftScroll = container.scrollLeft > 0;
+          const hasRightScroll = container.scrollLeft + container.clientWidth < container.scrollWidth;
+          setShowLeftArrow(hasLeftScroll);
+          setShowRightArrow(hasRightScroll);
+        }
       }
     };
 
@@ -42,7 +45,7 @@ const RecommendTrips = () => {
   }, [trips]);
 
   const handleScroll = () => {
-    if (scrollContainerRef.current) {
+    if (scrollContainerRef.current && isSliderMode) {
       const container = scrollContainerRef.current;
       const hasLeftScroll = container.scrollLeft > 0;
       const hasRightScroll = container.scrollLeft + container.clientWidth < container.scrollWidth;
@@ -87,10 +90,65 @@ const RecommendTrips = () => {
       day: "2-digit",
     });
 
+  const trustStats = [
+    {
+      icon: Shield,
+      title: "Price Match Promise",
+      description: "Found a better deal? We'll match it!",
+    },
+    {
+      icon: Headphones,
+      title: "24/7 Customer Support",
+      description: "Speak to our travel experts anytime, anywhere.",
+    },
+    {
+      icon: Award,
+      title: "ClubMiles Rewards",
+      description: "Stack points & airline miles to save.",
+    },
+    {
+      icon: CalendarCheck,
+      title: "Easy Cancellations",
+      description: "Convenient options online and 24/7 global concierge.",
+    },
+  ];
+
   return (
-    <section className="bg-[#f8f9fa] py-12 px-4 md:px-6">
+    <section className="bg-[#f8f9fa] py-6 px-4 md:px-6">
       <div className="max-w-[1280px] mx-auto">
-        {/* HEADER */}
+        {/* TRUST STATS SECTION */}
+        <div className="mb-12 border border-[#BCC8DC] rounded-2xl p-4 ">
+          <div className="mb-8">
+            <h2 className="text-[32px] md:text-[28px] font-semibold text-[#0b2a6f]">
+              Book with Confidence. Trusted by 40M+ Travelers
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {trustStats.map((stat, index) => (
+              <div
+                key={index}
+                className=""
+              >
+                <div className="flex items-start">
+                  <div className="bg-[#0b2a6f]/10 rounded-full p-3 mb-4 mr-3">
+                    <stat.icon className="w-6 h-6 text-[#0b2a6f]" />
+                  </div>
+                  <span>
+                  <h3 className="text-[18px] font-semibold text-[#202124] mb-2">
+                    {stat.title}
+                  </h3>
+                  <p className="text-[14px] text-[#5f6368] leading-relaxed">
+                    {stat.description}
+                  </p>
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RECOMMENDED TRIPS HEADER */}
         <div className="mb-8">
           <h2 className="text-[28px] md:text-[42px] font-semibold text-[#0b2a6f] leading-tight">
             Recommended for your next trip
@@ -108,22 +166,22 @@ const RecommendTrips = () => {
           </div>
         )}
 
-        {/* TRIPS - SLIDER SECTION */}
+        {/* TRIPS - SLIDER OR GRID SECTION */}
         {!loading && trips?.length > 0 && (
           <div className="relative group">
-            {/* Left Arrow */}
-            {canScroll && showLeftArrow && (
+            {/* Left Arrow - only show in slider mode */}
+            {isSliderMode && showLeftArrow && (
               <button
                 onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity border border-gray-200"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 border border-gray-200"
                 aria-label="Scroll left"
               >
                 <ChevronLeft className="w-6 h-6 text-gray-700" />
               </button>
             )}
 
-            {/* Right Arrow */}
-            {canScroll && showRightArrow && (
+            {/* Right Arrow - only show in slider mode */}
+            {isSliderMode && showRightArrow && (
               <button
                 onClick={() => scroll('right')}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-white transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 border border-gray-200"
@@ -138,24 +196,16 @@ const RecommendTrips = () => {
               ref={scrollContainerRef}
               onScroll={handleScroll}
               className={`
-                overflow-x-auto scroll-smooth
-                ${canScroll ? 'overflow-x-auto' : 'overflow-x-hidden'}
-                [&::-webkit-scrollbar]:h-2
-                [&::-webkit-scrollbar-track]:bg-gray-100
-                [&::-webkit-scrollbar-track]:rounded-full
-                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb]:hover:bg-gray-400
+                ${isSliderMode ? 'overflow-x-auto scroll-smooth' : 'overflow-x-hidden'}
+                ${isSliderMode ? '[&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-gray-400' : ''}
               `}
-              style={{
+              style={isSliderMode ? {
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#cbd5e1 #f1f5f9'
-              }}
+              } : {}}
             >
               <div className={`
-                flex gap-6
-                ${!canScroll ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4' : ''}
-                pb-4
+                ${isSliderMode ? 'flex gap-6 pb-4' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'}
               `}>
                 {trips.map((trip) => (
                   <div
@@ -170,8 +220,7 @@ const RecommendTrips = () => {
                       cursor-pointer
                       transition-all
                       hover:shadow-lg
-                      flex-shrink-0
-                      ${canScroll ? 'w-[280px] md:w-[300px]' : 'w-full'}
+                      ${isSliderMode ? 'flex-shrink-0 w-[280px] md:w-[300px]' : 'w-full'}
                     `}
                   >
                     {/* IMAGE */}
@@ -236,8 +285,8 @@ const RecommendTrips = () => {
               </div>
             </div>
 
-            {/* Scroll Indicators (Optional - shows when scrollable but arrows hidden) */}
-            {canScroll && !showLeftArrow && !showRightArrow && (
+            {/* Scroll Indicators - only show in slider mode when no arrows visible */}
+            {isSliderMode && !showLeftArrow && !showRightArrow && trips.length > 4 && (
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 mt-2 flex gap-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-pulse"></div>
                 <div className="w-1.5 h-1.5 rounded-full bg-gray-400"></div>

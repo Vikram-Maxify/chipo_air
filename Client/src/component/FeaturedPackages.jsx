@@ -49,7 +49,7 @@ const FeaturedPackages = () => {
     };
 
     return (
-        <section className="py-10 bg-gradient-to-b from-white to-[#f8fbff]">
+        <section className="pt-10 bg-gradient-to-b from-white to-[#f8fbff]">
             <div className="max-w-7xl mx-auto px-4">
                 {/* HEADER - Compact */}
                 <div className="flex flex-row items-center justify-between gap-3 mb-6">
@@ -141,7 +141,7 @@ const FeaturedPackages = () => {
                     </div>
                 )}
             </div>
-            <Banners index={2} height="h-[160px]" className="py-10" />
+            <Banners index={2} height="h-[160px]" className="py-5" />
         </section>
     );
 };
